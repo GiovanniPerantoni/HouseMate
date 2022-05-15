@@ -1,0 +1,19 @@
+{
+  "name": "housemate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiovanniPerantoni/HouseMate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GiovanniPerantoni/HouseMate/issues"
+  },
+  "homepage": "https://github.com/GiovanniPerantoni/HouseMate#readme"
+}
