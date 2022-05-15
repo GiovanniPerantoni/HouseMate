@@ -1,0 +1,50 @@
+FORMAT: 1A
+HOST: https://polls.apiblueprint.org/
+
+# HouseMate 
+
+
+## Registration [/api/v1/]
+
+### Login [POST]
+
++ Request (application/json)
+
+        {
+            "user": "",
+            "pass": "",
+        }
+
++ Response 200 (application/json)
+
+        {
+            "token": ""
+        }
+        
++ Response 400 (application/json)
+
+        {
+            "motivation": ""
+        }
+
+### Sign up [POST]
+
++ Request (application/json)
+
+        {
+            "user": "",
+            "pass": "",
+        }
+
++ Response 200 (application/json)
+
+        {
+            "token": ""
+        }
+        
++ Response 400 (application/json)
+
+        {
+            "motivation": ""
+        }
+
