@@ -19,7 +19,7 @@
             }
         </style>
         <script>
-            function matchPassword() {
+            function validateForm() {
                 const errElement = document.getElementById('errMsg');
                 let name = document.getElementById("typeNameX").value;
                 let surname = document.getElementById("typeSurnameX").value;
@@ -30,6 +30,11 @@
                 // If form not completely edited
                 if (name == '' || surname == '' || email == '' || pass1 == '' || pass2 == '') {
                     errElement.innerHTML = "Please fill all the fields.";
+                    return false;
+                }
+
+                if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+                    errElement.innerHTML = "Invalid Email.";
                     return false;
                 }
 
@@ -60,12 +65,14 @@
                                     <p class="text-white-50 mv-5"></p>
 
                                     <div class="row">
+                                        <!-- Name input field -->
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
                                                 <input type="text" id="typeNameX" class="form-control" />
                                                 <label class="form-label" for="typeNameX">Nome</label>
                                             </div>
                                         </div>
+                                        <!-- Surname input field -->
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
                                                 <input type="text" id="typeSurnameX" class="form-control" />
@@ -74,33 +81,39 @@
                                         </div>
                                     </div>
 
+                                    <!-- Email input fied -->
                                     <div class="form-outline form-white mb-4">
                                         <input type="email" id="typeEmailX" class="form-control" />
                                         <label class="form-label" for="typeEmailX">Email</label>
                                     </div>
 
+                                    <!-- Password input field -->
                                     <div class="form-outline form-white mb-4">
                                         <input type="password" id="typePasswordX" class="form-control" />
                                         <label class="form-label" for="typePasswordX">Password</label>
                                     </div>
 
+                                    <!-- Password confirmation input field -->
                                     <div class="form-outline form-white mb-4">
                                         <input type="password" id="typePassword2X" class="form-control" />
                                         <label class="form-label" for="typePassword2X">Ripeti la Password</label>
                                     </div>
 
+                                    <!-- SignUp Button -->
                                     <button class="btn btn-outline-light btn-lg px-5" id="submitBtn" type="submit">Sign Up</button>
                                     <script>
                                         var btn = document.getElementById("submitBtn");
-                                        btn.addEventListener("click", matchPassword);
+                                        btn.addEventListener("click", validateForm);
                                     </script>
 
+                                    <!-- Error message (hidden by default) -->
                                     <div>
                                         <p class="mt-4 text-danger" id="errMsg"></p>
                                     </div>
 
                                 </div>
 
+                                <!-- Redirect to SignIn page-->
                                 <div>
                                     <p class="mb-0">Hai già un account? <a href="signIn.html" class="text-white-50 fw-bold">Sign In</a>
                                     </p>
