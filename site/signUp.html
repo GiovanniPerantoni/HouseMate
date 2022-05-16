@@ -29,19 +29,19 @@
 
                 // If form not completely edited
                 if (name == '' || surname == '' || email == '' || pass1 == '' || pass2 == '') {
-                    errElement.innerHTML = "Please fill all the fields.";
+                    errElement.innerHTML = "Riempi tutti i campi del form.";
                     return false;
                 }
 
                 if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-                    errElement.innerHTML = "Invalid Email.";
+                    errElement.innerHTML = "Email non valida: inserisci una mail valida.";
                     return false;
                 }
 
                 // If npt same password return False else return True
                 if (pass1 != pass2) {
                     //alert("\nPassword did not match: Please try again...");
-                    errElement.innerHTML = "Password did not match: Please try again...";
+                    errElement.innerHTML = "Le password non corrispondono: inseriscile di nuovo...";
                     return false;
                 } else {
                     errElement.innerHTML = "";
