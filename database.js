@@ -1,4 +1,5 @@
 //!! file scaffolding usato per testare le funzionalità delle api !!!
+const jwt = require("jsonwebtoken");
 
 var utenti = [
     { 
@@ -17,13 +18,12 @@ var utenti = [
     }   //pass
 ]
 
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const tokenLen = 20;
-function generateToken() {
-    let result  = "";
-    for (let i = 0; i < tokenLen; i++ )
-       result += characters.charAt(Math.floor(Math.random() * characters.length));
-    return result;
+function generateToken(email) {
+    return jwt.sign(
+        { email: email },
+        process.env.TOKEN_KEY,
+        { expiresIn: "23h", }
+    );
 }
 
 
@@ -33,7 +33,7 @@ function login(email, sha) {
         
         if(user.email == email && user.pass == sha)
         {
-            let token = generateToken()
+            let token = generateToken(email)
             user.token = token;
             return token;
         }
@@ -59,7 +59,7 @@ function createAccount(nome, cognome, email, sha) {
     if(emailExists(email))
         return null;
 
-    let token = generateToken();
+    let token = generateToken(email);
     utenti.push({ 
         "nome": nome,
         "cognome": cognome,
@@ -70,5 +70,6 @@ function createAccount(nome, cognome, email, sha) {
 
     return token;
 }
+
 
 module.exports = {login, createAccount}
