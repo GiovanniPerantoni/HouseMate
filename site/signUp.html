@@ -18,6 +18,30 @@
                 background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
             }
         </style>
+        <script>
+            function matchPassword() {
+                pass1 = document.getElementById("typePasswordX").value;
+                pass2 = document.getElementById("typePassword2X").value;
+                // If password not entered
+                if (pass1 == '') {
+                    alert("Please enter Password");
+                    return false;
+                }
+                // If confirm password not entered
+                if (pass2 == '') {
+                    alert("Please confirm Password");
+                    return false;
+                }
+                // If npt same password return False else return True
+                if (pass1 != pass2) {
+                    alert("\nPassword did not match: Please try again...");
+                    return false;
+                } else {
+                    alert("\nOk");
+                    return true;
+                }
+            }
+        </script>
     </head>
     <body>
         <section class="vh-200 gradient-custom">
@@ -31,18 +55,6 @@
 
                                     <h2 class="fw-bold mb-2 text-uppercase">Sign Up</h2>
                                     <p class="text-white-50 mv-5"></p>
-                                    
-                                    <!--
-                                    <div class="form-outline form-white mb-4">
-                                        <input type="text" id="typeNameX" class="form-control form-control-lg" />
-                                        <label class="form-label" for="typeNameX">First Name</label>
-                                    </div>
-
-                                    <div class="form-outline form-white mb-4">
-                                        <input type="text" id="typeSurnameX" class="form-control form-control-lg" />
-                                        <label class="form-label" for="typeSurnameX">Last Name</label>
-                                    </div>
-                                    -->
 
                                     <div class="row">
                                         <div class="col-md-6 mb-4">
@@ -74,12 +86,20 @@
                                         <label class="form-label" for="typePassword2X">Ripeti la Password</label>
                                     </div>
 
-                                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Sign Up</button>
+                                    <button class="btn btn-outline-light btn-lg px-5" id="submitBtn" type="submit">Sign Up</button>
+                                    <script>
+                                        var btn = document.getElementById("submitBtn");
+                                        btn.addEventListener("click", matchPassword);
+                                    </script>
+
+                                    <div>
+                                        <p class="mt-3" id="errMsg"></p>
+                                    </div>
 
                                 </div>
 
                                 <div>
-                                    <p class="mb-0">Hai già un account? <a href="#!" class="text-white-50 fw-bold">Sign In</a>
+                                    <p class="mb-0">Hai già un account? <a href="signIn.html" class="text-white-50 fw-bold">Sign In</a>
                                     </p>
                                 </div>
 
