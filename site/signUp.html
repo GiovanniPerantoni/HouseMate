@@ -20,23 +20,26 @@
         </style>
         <script>
             function matchPassword() {
-                pass1 = document.getElementById("typePasswordX").value;
-                pass2 = document.getElementById("typePassword2X").value;
-                // If password not entered
-                if (pass1 == '') {
-                    alert("Please enter Password");
+                const errElement = document.getElementById('errMsg');
+                let name = document.getElementById("typeNameX").value;
+                let surname = document.getElementById("typeSurnameX").value;
+                let email = document.getElementById("typeEmailX").value;
+                let pass1 = document.getElementById("typePasswordX").value;
+                let pass2 = document.getElementById("typePassword2X").value;
+
+                // If form not completely edited
+                if (name == '' || surname == '' || email == '' || pass1 == '' || pass2 == '') {
+                    errElement.innerHTML = "Please fill all the fields.";
                     return false;
                 }
-                // If confirm password not entered
-                if (pass2 == '') {
-                    alert("Please confirm Password");
-                    return false;
-                }
+
                 // If npt same password return False else return True
                 if (pass1 != pass2) {
-                    alert("\nPassword did not match: Please try again...");
+                    //alert("\nPassword did not match: Please try again...");
+                    errElement.innerHTML = "Password did not match: Please try again...";
                     return false;
                 } else {
+                    errElement.innerHTML = "";
                     alert("\nOk");
                     return true;
                 }
@@ -93,7 +96,7 @@
                                     </script>
 
                                     <div>
-                                        <p class="mt-3" id="errMsg"></p>
+                                        <p class="mt-4 text-danger" id="errMsg"></p>
                                     </div>
 
                                 </div>
