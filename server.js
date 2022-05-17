@@ -12,6 +12,12 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: false}));
 
 //---------------------API SECTION---------------------\\
+const auth = require("./middleware");
+// TODO: check
+app.post("/welcome", auth, (req, res) => {
+    res.status(200).send("Welcome 🙌 ");
+});
+
 app.post(PREFIX + "/login", async (req, res) => {
     
     const { email, pass } = req.body;
