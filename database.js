@@ -1,75 +1,66 @@
-//!! file scaffolding usato per testare le funzionalità delle api !!!
+const dotenv = require('dotenv').config();
+const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
 
-var utenti = [
-    { 
-        "nome" : "admin",
-        "cognome" : "admin",
-        "email": "na@na.com",
-        "pass": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
-        "token": ""
-    },  //admin
-    { 
-        "nome": "enrico",
-        "cognome": "enrico",
-        "email": "na2@na.com",
-        "pass": "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1",
-        "token": ""
-    }   //pass
-]
+main().catch(err => console.log(err));
 
-function generateToken(email) {
-    return jwt.sign(
-        { email: email },
-        process.env.TOKEN_KEY,
-        { expiresIn: "23h", }
-    );
+async function main() {
+  await mongoose.connect(process.env.MONGO_URI);
 }
 
+const userSchema = new mongoose.Schema({
+    first_name: { type: String, default: null },
+    last_name: { type: String, default: null },
+    email: { type: String, unique: true },
+    password: { type: String },
+    token: { type: String },
+  }); 
+const User = mongoose.model("User", userSchema);
+module.exports = mongoose.model("user", userSchema);
 
-function login(email, sha) {
-    for (let i = 0; i < utenti.length; i++) {
-        const user = utenti[i];
-        
-        if(user.email == email && user.pass == sha)
+async function login(email, password) {
+    const user = await User.findOne({email});
+    if (user && user.password==password) {
+      var token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_KEY,
         {
-            let token = generateToken(email)
-            user.token = token;
-            return token;
+          expiresIn: "1d",
         }
+      );
+      user.token = token;
+      await user.save();
+      return user;
     }
-
     return null;
 }
 
-function emailExists(email) {
-    for (let i = 0; i < utenti.length; i++) {
-        const user = utenti[i];
-        
-        if(user.email == email)
-            return true;
+async function createAccount(first_name, last_name, email, password) {
+  // Checks if the user already exist
+  const oldUser = await User.findOne({email});
+  if (oldUser) {
+    console.log(oldUser);
+    return null;
+  }
+
+  const user = await User.create({
+    first_name,
+    last_name,
+    email: email.toLowerCase(),
+    password: password,
+  });
+
+  const token = jwt.sign(
+    { user_id: user._id, email },
+    process.env.TOKEN_KEY,
+    {
+      expiresIn: "1d",
     }
+  );
+  user.token = token;
+  await user.save();
 
-    return false;
+  return user;
 }
 
-
-function createAccount(nome, cognome, email, sha) {
-
-    if(emailExists(email))
-        return null;
-
-    let token = generateToken(email);
-    utenti.push({ 
-        "nome": nome,
-        "cognome": cognome,
-        "email": email,
-        "pass": sha,
-        "token": token
-    });
-
-    return token;
-}
-
-
-module.exports = {login, createAccount}
+module.exports = { login, createAccount }

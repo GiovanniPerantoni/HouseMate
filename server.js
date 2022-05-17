@@ -1,98 +1,56 @@
-const express = require('express')
-const db = require('./database.js')
-var sha256 = require('js-sha256').sha256;
-const jwt = require("jsonwebtoken");
-require("dotenv").config()
+const dotenv = require('dotenv').config();
+const express = require('express');
+const bodyparser = require('body-parser');
+const sha256 = require('js-sha256').sha256;
+const db = require('./database.js');
+
+const PREFIX = process.env.PREFIX;
+const PORT = process.env.PORT;
 
 const app = express()
-
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended: false}));
 
 //---------------------API SECTION---------------------\\
-
 const auth = require("./middleware");
-
+// TODO: check
 app.post("/welcome", auth, (req, res) => {
     res.status(200).send("Welcome 🙌 ");
-  });
+});
 
-function checkParams(query, paramsList)
-{
-    for (let i = 0; i < paramsList.length; i++) {
-        console.log(query, paramsList[i]);
-        if(!query[paramsList[i]])
-            return false;
-    }
-    return true;
-}
-
-
-app.post(process.env.prefixAPI + "/login", (req, res) => {
-    console.log(req.query)      //params sono quelli prima del ? (es: /login/123)
-
-    let q = req.query;
-    if(!checkParams(q, ["email", "pass"]))
-    {
-        res.status(400).send({
-            "motivation": "required parameters missing"
-        });
-        return;
-    }
-    let token = db.login(q.email, sha256(q.pass));
-
-    let status = token == null ? 409 : 200;
-    let body;
-    if(status == 409)
-    {
-        body = {
-            "motivation": "user not present"
-        }
-    }
-    else 
-    {
-        body = {
-            "token": token
-        }
+app.post(PREFIX + "/login", async (req, res) => {
+    
+    const { email, pass } = req.body;
+    if (!(email && pass)) {
+      res.status(400).send({"motivation":"Missing parameters in request."});
+      return;
     }
 
-    res.status(status).send(body);
+    const user = await db.login(email, sha256(pass));
+    if (!user) {
+        res.status(400).send({"motivation":"Invalid credentials."});
+    } else {
+        res.status(200).json(user)
+    }
+
 });
 
 
-app.post(process.env.prefixAPI + "/singup", (req, res) => {
-    console.log(req.query)      //params sono quelli prima del ? (es: /login/123)
-    
-    //TODO controllare che i parametri passati ci siaono tutti quelli necessari
-    let q = req.query;
-    if(!checkParams(q, ["email", "pass"]))
-    {
-        res.status(400).send({
-            "motivation": "required parameters missing"
-        });
+app.post(PREFIX + "/signup", async (req, res) => {
+
+    const { first_name, last_name, email, pass } = req.body;
+    if (!(email && pass && first_name && last_name)) {
+        res.status(400).send({"motivation":"Missing parameters in request."});
         return;
     }
-    let token = db.createAccount(q.nome, q.cognome, q.email, sha256(q.pass));
 
-	//TODO provare mailer con gmail (mandare un token temporaneo di conferma email prima di inserire un nuovo utente)
-
-    let status = token == null ? 409 : 200;
-    let body;
-    if(status == 409)
-    {
-        body = {
-            "motivation": "email already used"
-        }
+    const user = await db.createAccount(first_name, last_name, email, sha256(pass));
+    if (!user) {
+        res.status(400).send({"motivation":"Email already used."});
+    } else {
+        res.status(200).json(user)
     }
-    else 
-    {
-        body = {
-            "token": token
-        }
-    }
-
-    res.status(status).send(body);
 });
 
 //---------------------WEBSITE SECTION---------------------\\
-
-
-app.listen(process.env.PORT)
+app.listen(PORT)
