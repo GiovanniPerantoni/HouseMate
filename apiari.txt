@@ -4,7 +4,7 @@ HOST: https://polls.apiblueprint.org/
 # HouseMate 
 
 
-## Registration [/api/v1/]
+## Registration [/api/v1/ /login]
 
 ### Login [POST]
 
@@ -27,7 +27,8 @@ HOST: https://polls.apiblueprint.org/
             "motivation": ""
         }
 
-### Sign up [POST]
+### Sign up [POST /signup]
+
 
 + Request (application/json)
 
