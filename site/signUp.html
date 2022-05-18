@@ -61,7 +61,7 @@
                            url: "http://127.0.0.1:3000/api/v1/signup",
                            type: "POST",
                            contentType: "application/json",
-                           data: obj,
+                           data: JSON.stringify(obj),
                            success: function (data, textStatus, jqXHR) {
                                console.log("SUCCESS!");
                            },
