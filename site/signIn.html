@@ -19,10 +19,37 @@
 
             }
         </style>
-        <script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript">
             function checkValidity() {
-                document.getElementById('errMsg').innerHTML = "Email o Password non valide.";
-                return false;
+                const errElement = document.getElementById('errMsg');
+                let email = document.getElementById("typeEmailX").value;
+                let password = document.getElementById("typePasswordX").value;
+
+                if (email == '' || password == '') {
+                    errElement.innerHTML = "Riempire entrambi i campi";
+                    return false;
+                }
+
+                let text = '{"email":"'+email+'", "pass":"'+password+'"}';
+                obj = JSON.parse(text);
+                console.log(obj);
+
+                $(function() {
+                       $.ajax({
+                           url: "http://127.0.0.1:3000/api/v1/signup",
+                           type: "POST",
+                           contentType: "application/json",
+                           data: JSON.stringify(obj),
+                           success: function (data, textStatus, jqXHR) {
+                               console.log("SUCCESS!");
+                           },
+                           error: function (jqXHR, textStatus, errorThrown) {
+                               console.log("FAILURE");
+                           }
+                       })
+                   });
+
             }
         </script>
     </head>
@@ -50,6 +77,8 @@
                                         <input type="password" id="typePasswordX" class="form-control form-control-lg" />
                                         <label class="form-label" for="typePasswordX">Password</label>
                                     </div>
+
+                                    <div><p class="mt-5"></p></div>
 
                                     <!-- SignIn button -->
                                     <button class="btn btn-outline-light btn-lg px-5" id="submitBtn" type="submit">Sign In</button>
