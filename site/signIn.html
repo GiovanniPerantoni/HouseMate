@@ -19,6 +19,12 @@
 
             }
         </style>
+        <script>
+            function checkValidity() {
+                document.getElementById('errMsg').innerHTML = "Email o Password non valide.";
+                return false;
+            }
+        </script>
     </head>
     <body>
         <section class="vh-100 gradient-custom">
@@ -46,7 +52,16 @@
                                     </div>
 
                                     <!-- SignIn button -->
-                                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Sign In</button>
+                                    <button class="btn btn-outline-light btn-lg px-5" id="submitBtn" type="submit">Sign In</button>
+                                    <script>
+                                        var btn = document.getElementById("submitBtn");
+                                        btn.addEventListener("click", checkValidity);
+                                    </script>
+
+                                    <!-- Error message (hidden by default) -->
+                                    <div>
+                                        <p class="mt-3 text-danger" id="errMsg"></p>
+                                    </div>
 
                                 </div>
 

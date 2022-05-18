@@ -18,7 +18,8 @@
                 background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
             }
         </style>
-        <script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript">
             function validateForm() {
                 const errElement = document.getElementById('errMsg');
                 let name = document.getElementById("typeNameX").value;
@@ -33,22 +34,45 @@
                     return false;
                 }
 
+                // If email isn't valid
                 if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
                     errElement.innerHTML = "Email non valida: inserisci una mail valida.";
                     return false;
                 }
 
-                // If npt same password return False else return True
+                // If not same password return False else return True
                 if (pass1 != pass2) {
-                    //alert("\nPassword did not match: Please try again...");
                     errElement.innerHTML = "Le password non corrispondono: inseriscile di nuovo...";
                     return false;
                 } else {
                     errElement.innerHTML = "";
-                    alert("\nOk");
+                    let text = '{"email":"'+email+'", "first_name":"'+name+'", "last_name":"'+surname+'", "pass":"'+pass1+'"}';
+                    obj = JSON.parse(text);
                     return true;
                 }
             }
+
+            function sendData() {
+                let res = validateForm();
+                if (res) {
+                   //console.log(obj);
+                   $(function() {
+                       $.ajax({
+                           url: "http://127.0.0.1:3000/api/v1/signup",
+                           type: "POST",
+                           contentType: "application/json",
+                           data: obj,
+                           success: function (data, textStatus, jqXHR) {
+                               console.log("SUCCESS!");
+                           },
+                           error: function (jqXHR, textStatus, errorThrown) {
+                               console.log("FAILURE");
+                           }
+                       })
+                   });
+                }
+            };
+
         </script>
     </head>
     <body>
@@ -103,7 +127,7 @@
                                     <button class="btn btn-outline-light btn-lg px-5" id="submitBtn" type="submit">Sign Up</button>
                                     <script>
                                         var btn = document.getElementById("submitBtn");
-                                        btn.addEventListener("click", validateForm);
+                                        btn.addEventListener("click", sendData);
                                     </script>
 
                                     <!-- Error message (hidden by default) -->
