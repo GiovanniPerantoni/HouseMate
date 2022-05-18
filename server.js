@@ -15,41 +15,39 @@ app.use(bodyparser.urlencoded({extended: false}));
 const auth = require("./middleware");
 // TODO: check
 app.post("/welcome", auth, (req, res) => {
-    res.status(200).send("Welcome 🙌 ");
+	res.status(200).send("Welcome 🙌 ");
 });
 
 app.post(PREFIX + "/login", async (req, res) => {
-    
-    const { email, pass } = req.body;
-    if (!(email && pass)) {
-      res.status(400).send({"motivation":"Missing parameters in request."});
-      return;
-    }
+	
+	const { email, pass } = req.body;
+	if (!(email && pass)) {
+		res.status(400).send({"motivation":"Missing attributes in request."});
+		return;
+	}
 
-    const user = await db.login(email, sha256(pass));
-    if (!user) {
-        res.status(400).send({"motivation":"Invalid credentials."});
-    } else {
-        res.status(200).json(user)
-    }
+	const user = await db.login(email, sha256(pass));
+	if (!user)
+		res.status(401).send({"motivation":"Invalid credentials."});
+	else
+		res.status(200).json(user);
 
 });
 
 
 app.post(PREFIX + "/signup", async (req, res) => {
 
-    const { first_name, last_name, email, pass } = req.body;
-    if (!(email && pass && first_name && last_name)) {
-        res.status(400).send({"motivation":"Missing parameters in request."});
-        return;
-    }
+	const { first_name, last_name, email, pass } = req.body;
+	if (!(email && pass && first_name && last_name)) {
+		res.status(400).send({"motivation":"Missing attributes in request."});
+		return;
+	}
 
-    const user = await db.createAccount(first_name, last_name, email, sha256(pass));
-    if (!user) {
-        res.status(400).send({"motivation":"Email already used."});
-    } else {
-        res.status(200).json(user)
-    }
+	const user = await db.createAccount(first_name, last_name, email, sha256(pass));
+	if (!user)
+		res.status(400).send({"motivation":"Email already used."});
+	else
+		res.status(200).json(user);
 });
 
 //---------------------WEBSITE SECTION---------------------\\

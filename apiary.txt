@@ -1,0 +1,75 @@
+FORMAT: 1A
+HOST: https://polls.apiblueprint.org/
+
+# HouseMate 
+
+## Registration [/api/v1/]
+
+### Login [POST /login]
+
++ Request (application/json)
+    
+    This request is used to request a new `token` to the server by giving the correct `credential` to be identified.
+    
+    + Attributes (object)
+        + email (string) - user's email (can be used only for 1 account)
+        + pass (string) - user's password (clear)
+
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + token (string) - token used to authenticate the user for a session.
+
+
++ Response 401 (application/json)
+
+    This will be the response if the correct attributes are provided but they are incorrect
+
+    + Body
+
+            { "motivation": "Invalid credentials." }
+
++ Response 400 (application/json)
+
+    This will be the response if some attributes are `missing`.
+
+    + Body
+
+            { "motivation": "Missing attributes in request." }
+            
+
+### Sign Up [POST /signup]
+
++ Request (application/json)
+    
+    This request is used to request the creation of a `new account` and, if successfull, a new `token` to be used in this session.
+    
+    + Attributes (object)
+        + first_name (string) - user's first name (name)
+        + last_name (string) - user's last name (surname)
+        + email (string) - user's email (can be used only for 1 account)
+        + pass (string) - user's password (clear)
+
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + token (string) - token used to authenticate the user for a session
+
+
++ Response 400 (application/json)
+
+    This will be the response if the user ask to create an account with an `email` already in use in another account.
+
+    + Body
+
+            { "motivation": "Email already used." }
+
++ Response 400 (application/json)
+
+    This will be the response if some attributes are `missing`
+
+    + Body
+
+            { "motivation": "Missing attributes in request." }
