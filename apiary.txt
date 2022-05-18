@@ -5,7 +5,7 @@ HOST: https://polls.apiblueprint.org/
 
 ## Registration [/api/v1/]
 
-### Login [POST /login]
+### Login [POST /api/v1/login]
 
 + Request (application/json)
     
@@ -19,7 +19,7 @@ HOST: https://polls.apiblueprint.org/
 + Response 200 (application/json)
 
     + Attributes (object)
-        + token (string) - token used to authenticate the user for a session.
+        + token (string) - token used to authenticate the user for a day.
 
 
 + Response 401 (application/json)
@@ -28,7 +28,9 @@ HOST: https://polls.apiblueprint.org/
 
     + Body
 
-            { "motivation": "Invalid credentials." }
+            {
+                "motivation": "Invalid credentials."
+            }
 
 + Response 400 (application/json)
 
@@ -36,10 +38,12 @@ HOST: https://polls.apiblueprint.org/
 
     + Body
 
-            { "motivation": "Missing attributes in request." }
+            {
+                "motivation": "Missing attributes in request."
+            }
             
 
-### Sign Up [POST /signup]
+### Sign Up [POST /api/v1/signup]
 
 + Request (application/json)
     
@@ -55,7 +59,7 @@ HOST: https://polls.apiblueprint.org/
 + Response 200 (application/json)
 
     + Attributes (object)
-        + token (string) - token used to authenticate the user for a session
+        + token (string) - token used to authenticate the user for a day
 
 
 + Response 400 (application/json)
@@ -64,7 +68,9 @@ HOST: https://polls.apiblueprint.org/
 
     + Body
 
-            { "motivation": "Email already used." }
+            { 
+                "motivation": "Email already used."
+            }
 
 + Response 400 (application/json)
 
@@ -72,4 +78,167 @@ HOST: https://polls.apiblueprint.org/
 
     + Body
 
-            { "motivation": "Missing attributes in request." }
+            { 
+                "motivation": "Missing attributes in request." 
+            }
+
+## Expenses [/api/v1/appartment/expenses]
+
+### View [POST /api/v1/appartment/expenses/view]
+
++ Request (application/json)
+    
+    + Attributes (object)
+        + limit (optional, number) - override the default number of expenses to be return (default: 20)
+    
+    + Headers
+        token: token used to authenticate the user for a day
+
++ Response 200 (application/json)
+
+    + Body
+
+            { 
+                "expensePerBuyer" : [
+                    "[name of user]":"[euros spend in total]", 
+                    ...
+                ],
+                "list": [
+                    {
+                        "date": "",
+                        "userID": "",
+                        "price": "",
+                        "product": ""
+                    }
+                    ... until limit
+                ]
+            }
+            
++ Response 403
+
+    This will be the response if the user has not provided a `correct token`
+
+    + Body
+
+
+### Add [POST /api/v1/appartment/expenses/add]
+
++ Request (application/json)
+
+    + Headers
+        token: token used to authenticate the user for a day
+    
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + date (string) - date nel formato UTC 
+        + userID (string) - name of the product
+        + price (number)
+        + product (number)
+        
++ Response 403
+
+    This will be the response if the user has not provided a `correct token`
+
+    + Body
+        
+
+### Modify [PATCH /api/v1/appartment/expenses/modify/{userid}/{indexExpenses}]
+
++ Request (application/json)
+
+    This request is used to modify an existing expense created by the user that is submitting this request
+    
+    + Parameters 
+        + userid (string, required)
+        + indexExpenses (string, required) - index of the expenses owned by the user
+
+    + Headers
+        token: token used to authenticate the user for a day
+    
+
++ Response 200 (application/json)
+
+    The user need to specify only the data that want to be modified
+
+    + Attributes (object)
+        + date (optional, string) - date nel formato UTC 
+        + product (optional, string) - name of the product
+        + price (optional, number)
+
+            
++ Response 403
+
+    This will be the response if the user has not provided a `correct token`
+
+    + Body
+    
+
+### Delete [DELETE /api/v1/appartment/expenses/delete/{userid}/{indexExpenses}]
+
++ Request (application/json)
+
+    This request is used to modify an existing expense created by the user that is submitting this request
+    
+    + Parameters 
+        + userid (string, required)
+        + indexExpenses (string, required) - index of the expenses owned by the user
+
+    + Headers
+        token: token used to authenticate the user for a day
+    
+
++ Response 200
+            
++ Response 403
+
+    This will be the response if the user has not provided a `correct token`
+
+    + Body
+
+
+## Apparment Managment [/api/v1/appartment/manage/]
+
+### View [GET /api/v1/appartment/manage/info]
+
++ Request (application/json)
+        
+    + Attributes (object)
+        + rules (string) - list of rules to be accepted before entering the appartment
+        + name (string) - name of the appartment
+        + address (string)
+    
+
++ Response 200
+            
++ Response 403
+
+    This will be the response if the user has not provided a `correct token`
+
+    + Body
+    
+### Add or Modify [PATCH /api/v1/appartment/manage/info]
+
++ Request (application/json)
+
+    This request is used to add or modify an existing the info of the appartment
+    When the appartment is created this method can be used by settings all the attributes
+    
+    + Headers
+        token: token used to authenticate the owner for a day
+        
+    + Attributes (object)
+        + rules (string) - list of rules to be accepted before entering the appartment
+        + name (string) - name of the appartment
+        + address (string)
+    
+
++ Response 200
+            
++ Response 403
+
+    This will be the response if the user has not provided a `correct token`
+
+    + Body
+
