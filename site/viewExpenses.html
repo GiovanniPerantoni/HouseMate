@@ -29,35 +29,48 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">HouseMate</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse mx-5" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item mx-2">
-                    <a class="nav-link active" aria-current="page" href="#">Spese</a>
-                  </li>
-                  <li class="nav-item mx-2">
-                    <a class="nav-link disabled" href="#">Lista</a>
-                  </li>
-                  <li class="nav-item mx-2">
-                    <a class="nav-link disabled" href="#">Mansioni</a>
-                  </li>
-                </ul>
-                <span class="navbar-text">
+                <!-- Titolo -->
+                <a class="navbar-brand" href="#">HouseMate</a>
+                <!-- Bottoni Sx -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse mx-5" id="navbarText">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item mx-3">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <!-- Spese -->
+                        <li class="nav-item mx-2">
+                            <a class="nav-link active" aria-current="page" href="#">Spese</a>
+                        </li>
+                        <!-- Lista -->
+                        <li class="nav-item mx-2">
+                            <a class="nav-link disabled" href="#">Lista</a>
+                        </li>
+                        <!-- Mansioni -->
+                        <li class="nav-item mx-2">
+                            <a class="nav-link disabled" href="#">Mansioni</a>
                         </li>
                     </ul>
-                </span>
-              </div>
+                    <!-- Bottoni Dx -->
+                    <span class="navbar-text">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <!-- Profilo -->
+                            <li class="nav-item mx-3">
+                                <a class="nav-link disabled" aria-current="page" href="#">Profilo</a>
+                            </li>
+                            <!-- Logout -->
+                            <li class="nav-item mx-3">
+                                <a class="nav-link disabled" aria-current="page" href="#">Logout</a>
+                            </li>
+                        </ul>
+                    </span>
+                </div>
             </div>
         </nav>
 
         <!-- Body -->
         <div class="p-5 text-left gradient-custom">
+
+            <!-- Contributi -->
             <h1 class="mb-3">Contributi:</h1>
             
             <!--
@@ -67,6 +80,7 @@
             </svg>
             -->
 
+            <!-- Storico -->
             <h1 class="mb-3">Storico:</h1>
           
             <section class="vh-100">
@@ -76,6 +90,7 @@
                             <div class="card bg-dark text-white" id="list1" style="border-radius: .75rem;">
                                 <div class="card-body py-4 px-4 px-md-5">
                                     
+                                    <!-- Aggiunta Spesa -->
                                     <div class="pb-2">
                                         <div class="card">
                                             <div class="card-body">
@@ -92,13 +107,18 @@
                                             </div>
                                         </div>
                                     </div>
+
                                    <hr class="my-4">
-                                   <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+                                   
+                                   <!-- Lista Spese -->
+                                    <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+                                        <!--
                                         <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
                                             <div class="form-check">
                                                 <input class="form-check-input me-0" type="checkbox" value="" id="flexCheckChecked1" aria-label="..." checked/>
                                             </div>
                                         </li>
+                                        -->
                                         <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
                                             <p class="lead fw-normal mb-0 text-white">Roberto ha comprato Pasta</p>
                                         </li>
@@ -118,7 +138,8 @@
                                             </div>
                                         </li>
                                     </ul>
-                                 </div>
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>
