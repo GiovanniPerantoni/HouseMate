@@ -39,7 +39,7 @@ HOST: https://polls.apiblueprint.org/
     + Body
 
             {
-                "motivation": "Missing attributes in request."
+                "motivation": "Missing parameters in request."
             }
             
 
@@ -79,7 +79,7 @@ HOST: https://polls.apiblueprint.org/
     + Body
 
             { 
-                "motivation": "Missing attributes in request." 
+                "motivation": "Missing parameters in request." 
             }
 
 ## Expenses [/api/v1/appartment/expenses]
@@ -99,26 +99,42 @@ HOST: https://polls.apiblueprint.org/
     + Body
 
             { 
-                "expensePerBuyer" : [
+                "totals" : [
                     "[name of user]":"[euros spend in total]", 
                     ...
                 ],
-                "list": [
+                "expenses": [
                     {
+                        "expenseID": "",
                         "date": "",
                         "userID": "",
-                        "price": "",
+                        "price": 0,
                         "product": ""
                     }
                     ... until limit
                 ]
             }
             
-+ Response 403
+            
++ Response 403 (application/json)
 
-    This will be the response if the user has not provided a `correct token`
+    This will be the response if it hasn't been provided a `token`
 
     + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
 
 
 ### Add [POST /api/v1/appartment/expenses/add]
@@ -128,78 +144,178 @@ HOST: https://polls.apiblueprint.org/
     + Headers
         token: token used to authenticate the user for a day
     
-
-+ Response 200 (application/json)
-
     + Attributes (object)
-        + date (string) - date nel formato UTC 
-        + userID (string) - name of the product
-        + price (number) - price of the product (not negative)
-        + product (number)
+        + date (string) - date in the UTC format
+        + price (number)
+        + product (string) - name of the product
         
-+ Response 403
-
-    This will be the response if the user has not provided a `correct token`
++ Response 200 (application/json)
 
     + Body
         
++ Response 400 (application/json)
 
-### Modify [PATCH /api/v1/appartment/expenses/modify/{userid}/{indexExpenses}]
+    This will be the response if the attribute price is passed but it's less or equal to 0
+
+    + Body
+
+            {
+                "motivation": "Invalid price."
+            }
+            
+
++ Response 400 (application/json)
+
+    This will be the response if there is a generic error.
+
+    + Body
+
+            {
+                "motivation": "Couldn't add expense."
+            }
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing`.
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
+        
+
+### Modify [PATCH /api/v1/appartment/expenses/modify]
 
 + Request (application/json)
 
-    This request is used to modify an existing expense `created by the user` that is submitting this request.
-    
-    For administration issues also the `owner` can modify any expenses.
-    
-    + Parameters 
-        + userid (string, required)
-        + indexExpenses (string, required) - index of the expenses owned by the user
+    This request is used to modify an existing expense created by the user that is submitting this request
+  
+    The user need to specify only the data that want to be modified
 
+    + Attributes (object)
+        + date (optional, string) - date in the UTC format 
+        + product (optional, string) - name of the product
+        + price (optional, number)
+        + expensesID (string)
+   
     + Headers
         token: token used to authenticate the user for a day
     
 
 + Response 200 (application/json)
 
-    The user need to specify only the data that want to be modified
+    + Body
 
-    + Attributes (object)
-        + date (optional, string) - date nel formato UTC 
-        + product (optional, string) - name of the product
-        + price (optional, number) - price of the product (not negative)
++ Response 400 (application/json)
 
-            
-+ Response 403
-
-    This will be the response if the user has not provided a `correct token`
+    This will be the response if there is a generic error.
 
     + Body
+
+            {
+                "motivation": "Couldn't add expense."
+            }
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing` (in this case expenseID).
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
     
 
-### Delete [DELETE /api/v1/appartment/expenses/delete/{userid}/{indexExpenses}]
+### Delete [DELETE /api/v1/appartment/expenses/delete]
 
 + Request (application/json)
 
-    This request is used to modify an existing expense `created by the user` that is submitting this request
+    This request is used to modify an existing expense created by the user that is submitting this request
     
-    For administration issues also the `owner` can modify any expenses.
-    
-    + Parameters 
-        + userid (string, required)
-        + indexExpenses (string, required) - index of the expenses owned by the user
-
+    + Attributes (object)
+        + expensesID (string)
+   
     + Headers
         token: token used to authenticate the user for a day
     
 
 + Response 200
-            
-+ Response 403
 
-    This will be the response if the user has not provided a `correct token`
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
 
     + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing`.
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
 
 
 ## Apparment Managment [/api/v1/appartment/manage/]
@@ -207,20 +323,51 @@ HOST: https://polls.apiblueprint.org/
 ### View [GET /api/v1/appartment/manage/info]
 
 + Request (application/json)
+    
+    + Headers
+        token: token used to authenticate the user for a day
+        
+
++ Response 200
         
     + Attributes (object)
         + rules (string) - list of rules to be accepted before entering the appartment
         + name (string) - name of the appartment
         + address (string)
-    
-
-+ Response 200
             
-+ Response 403
 
-    This will be the response if the user has not provided a `correct token`
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
 
     + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing` (in this case expenseID).
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
+    
+
     
 ### Add or Modify [PATCH /api/v1/appartment/manage/info]
 
@@ -233,16 +380,74 @@ HOST: https://polls.apiblueprint.org/
         token: token used to authenticate the owner for a day
         
     + Attributes (object)
-        + rules (string) - list of rules to be accepted before entering the appartment
-        + name (string) - name of the appartment
-        + address (string)
+        + rules (optional, string) - list of rules to be accepted before entering the appartment
+        + name (optional, string) - name of the appartment
+        + address (optional, string)
     
 
 + Response 200
             
-+ Response 403
+    + Body
 
-    This will be the response if the user has not provided a `correct token`
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
 
     + Body
 
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
+
+
+
+## Apparment Users [/api/v1/appartment/users/]
+
+### View [PATCH /api/v1/appartment/users]
+
++ Request (application/json)
+
+    This request is used to retrieve the `list of users` in the appartment in which the user that requested it is.
+    
+    + Headers
+        token: token used to authenticate the user for a day
+        
++ Response 200
+
+    + Attributes (object)
+        + first_name (string) - user's first name (name)
+        + last_name (string) - user's last name (surname)
+        + color (string) - the color associated with the user (in hex format)
+
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
