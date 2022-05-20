@@ -3,6 +3,7 @@ const express = require('express');
 const bodyparser = require('body-parser');
 const sha256 = require('js-sha256').sha256;
 const db = require('./database.js');
+const cors = require('cors');
 
 const PREFIX = process.env.PREFIX;
 const PORT = process.env.PORT;
@@ -10,6 +11,7 @@ const PORT = process.env.PORT;
 const app = express()
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: false}));
+app.use(cors());
 
 //---------------------API SECTION---------------------\\
 const auth = require("./middleware");
@@ -51,4 +53,7 @@ app.post(PREFIX + "/signup", async (req, res) => {
 });
 
 //---------------------WEBSITE SECTION---------------------\\
+app.use('/', express.static(__dirname + '/site'));
+app.use(express.static(__dirname + '/site'));
+
 app.listen(PORT)
