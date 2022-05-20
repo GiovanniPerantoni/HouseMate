@@ -11,7 +11,7 @@ const apartmentSchema = new mongoose.Schema({
     expenses: { type: [mongoose.Schema.Types.ObjectId]},
     totals: { type: [
         {
-            user_id: { type: mongoose.Schema.Types.ObjectId },
+            userID: { type: mongoose.Schema.Types.ObjectId },
             total: Number
         }
     ]}
@@ -20,23 +20,23 @@ const Apartment = mongoose.model("apartment", apartmentSchema);
 
 async function getApartment(user) {
     const apartment = await Apartment.findOne({
-        users: user.user_id
+        users: user.userID
     });
     return apartment;
 }
 
 async function getUsers(user) {
     const apartment = await Apartment.findOne({
-        users: user.user_id
+        users: user.userID
     });
     const users = await auth.User.find({
         _id: { $in : apartment.users }
-    }).select("_id first_name last_name color");
+    }).select("userID first_name last_name color");
     return users;
 }
 
 async function isOwner(user) {
-    return await Apartment.find({ "owners" : user.user_id}).count() > 0;
+    return await Apartment.find({ "owners" : user.userID}).count() > 0;
 }
 
 module.exports = { Apartment, getUsers, getApartment, isOwner }

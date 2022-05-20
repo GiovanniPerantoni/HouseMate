@@ -27,7 +27,7 @@ app.post(PREFIX + "/login", async (req, res) => {
 
     const user = await auth.login(email, sha256(pass));
     if (!user) {
-        res.status(400).send({"motivation":"Invalid credentials."});
+        res.status(401).send({"motivation":"Invalid credentials."});
     } else {
         res.status(200).json(user);
     }
@@ -52,10 +52,6 @@ app.post(PREFIX + "/signup", async (req, res) => {
 
 // Apartment
 app.post(PREFIX + "/apartment/users", auth.verifyToken, async (req, res) => {
-    await apt.Apartment.updateOne({ name: "test" }, 
-    {
-        $push: { totals: { user_id: req.user.user_id, total: 0 } }
-    });
     const users = await apt.getUsers(req.user);
     res.status(200).json(users);
 })
@@ -64,13 +60,17 @@ app.post(PREFIX + "/apartment/users", auth.verifyToken, async (req, res) => {
 app.post(PREFIX + "/apartment/expenses/view", auth.verifyToken, async (req, res) => {
     var { limit } = req.body;
     if (!limit) {
-        limit = 50;
+        limit = 20;
+    }
+    if (limit < 1) {
+        res.status(400).send({"motivation":"Limit can't be less than 1."});
+        return;
     }
     const exps = await expenses.getExpenses(req.user, limit);
     res.status(200).json(exps);
 });
 
-app.post(PREFIX + "/apartment/expenses/create", auth.verifyToken, async (req, res) => {
+app.post(PREFIX + "/apartment/expenses/add", auth.verifyToken, async (req, res) => {
     
     const { product, date, price } = req.body;
     if (!(product && date && price)) {
@@ -83,7 +83,7 @@ app.post(PREFIX + "/apartment/expenses/create", auth.verifyToken, async (req, re
     }
     const exp = await expenses.createExpense(req.user, 
         {
-            user_id: req.user.user_id,
+            userID: req.user.userID,
             product: product,
             date: date,
             price: price
@@ -97,10 +97,10 @@ app.post(PREFIX + "/apartment/expenses/create", auth.verifyToken, async (req, re
 
 });
 
-app.post(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, res) => {
+app.patch(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, res) => {
     
-    const { _id, product, date, price } = req.body;
-    if (!(_id && product && date && price)) {
+    const { expenseID, product, date, price } = req.body;
+    if (!expenseID) {
       res.status(400).send({"motivation":"Missing parameters in the request."});
       return;
     }
@@ -108,36 +108,35 @@ app.post(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, re
         res.status(400).send({"motivation":"Invalid price."});
         return;
     }
-    const exp = await expenses.modifyExpense(req.user, 
-        {
-            _id: _id,
-            product: product,
-            date: date,
-            price: price
-        }
-    );
-    if (!exp) {
-        res.status(400).send({"motivation":"Couldn't modify expense."});
-    } else {
-        res.status(200).json(exp);
-    }
-
-});
-
-app.post(PREFIX + "/apartment/expenses/delete", auth.verifyToken, async (req, res) => {
-
-    const { _id } = req.body;
-    if (!_id) {
-        res.status(400).send({"motivation":"Missing parameters in the request."});
-        return;
-    }
-    const result = await expenses.deleteExpense(user, { _id: _id });
+    const expense = { _id: expenseID };
+    if (product) expense.product = product;
+    if (date) expense.date = date;
+    if (price) expense.price = price;
+    const result = await expenses.modifyExpense(req.user, expense)
     if (!result) {
         res.status(400).send({"motivation":"Couldn't modify expense."});
     } else {
         res.status(200).json({"message":"Ok."});
     }
 
+    return;
+});
+
+app.delete(PREFIX + "/apartment/expenses/delete", auth.verifyToken, async (req, res) => {
+
+    const { expenseID } = req.body;
+    if (!expenseID) {
+        res.status(400).send({"motivation":"Missing parameters in the request."});
+        return;
+    }
+    const result = await expenses.deleteExpense(user, { _id: expenseID });
+    if (!result) {
+        res.status(400).send({"motivation":"Couldn't modify expense."});
+    } else {
+        res.status(200).json({"message":"Ok."});
+    }
+
+    return;
 });
 
 //---------------------WEBSITE SECTION---------------------\\

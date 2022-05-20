@@ -11,15 +11,20 @@ const userSchema = new mongoose.Schema({
     password: { type: String },
     color: { type: String },
     token: { type: String },
-}); 
-
+});
+userSchema.virtual('userID').get(function(){
+  return this._id.toHexString();
+});
+userSchema.set('toJSON', {
+  virtuals: true
+});
 const User = mongoose.model("User", userSchema);
 
 async function login(email, password) {
     const user = await User.findOne({email});
     if (user && user.password==password) {
       var token = jwt.sign(
-        { user_id: user._id, email },
+        { userID: user._id, email },
         process.env.TOKEN_KEY,
         {
           expiresIn: "1d",
@@ -48,7 +53,7 @@ async function createAccount(first_name, last_name, email, password) {
   });
 
   const token = jwt.sign(
-    { user_id: user._id, email },
+    { userID: user._id, email },
     process.env.TOKEN_KEY,
     {
       expiresIn: "1d",
