@@ -134,7 +134,7 @@ HOST: https://polls.apiblueprint.org/
     + Attributes (object)
         + date (string) - date nel formato UTC 
         + userID (string) - name of the product
-        + price (number)
+        + price (number) - price of the product (not negative)
         + product (number)
         
 + Response 403
@@ -148,7 +148,9 @@ HOST: https://polls.apiblueprint.org/
 
 + Request (application/json)
 
-    This request is used to modify an existing expense created by the user that is submitting this request
+    This request is used to modify an existing expense `created by the user` that is submitting this request.
+    
+    For administration issues also the `owner` can modify any expenses.
     
     + Parameters 
         + userid (string, required)
@@ -165,7 +167,7 @@ HOST: https://polls.apiblueprint.org/
     + Attributes (object)
         + date (optional, string) - date nel formato UTC 
         + product (optional, string) - name of the product
-        + price (optional, number)
+        + price (optional, number) - price of the product (not negative)
 
             
 + Response 403
@@ -179,7 +181,9 @@ HOST: https://polls.apiblueprint.org/
 
 + Request (application/json)
 
-    This request is used to modify an existing expense created by the user that is submitting this request
+    This request is used to modify an existing expense `created by the user` that is submitting this request
+    
+    For administration issues also the `owner` can modify any expenses.
     
     + Parameters 
         + userid (string, required)
