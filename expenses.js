@@ -35,7 +35,6 @@ async function updateTotal(user) {
     const apartment = await apt.getApartment(user);
     const totals = apartment.totals;
     const total = agg[0].total;
-    console.log(totals);
     for (const t in totals) {
         if (totals[t].userID.toString() == user.userID) {
             totals[t].total = total;
