@@ -21,7 +21,7 @@ app.post(PREFIX + "/login", async (req, res) => {
     
     const { email, pass } = req.body;
     if (!(email && pass)) {
-      res.status(400).send({"motivation":"Missing parameters in request."});
+      res.status(400).send({"motivation":"Missing parameters in the request."});
       return;
     }
 
@@ -38,7 +38,7 @@ app.post(PREFIX + "/signup", async (req, res) => {
 
     const { first_name, last_name, email, pass } = req.body;
     if (!(email && pass && first_name && last_name)) {
-        res.status(400).send({"motivation":"Missing parameters in request."});
+        res.status(400).send({"motivation":"Missing parameters in the request."});
         return;
     }
 
@@ -52,6 +52,10 @@ app.post(PREFIX + "/signup", async (req, res) => {
 
 // Apartment
 app.post(PREFIX + "/apartment/users", auth.verifyToken, async (req, res) => {
+    await apt.Apartment.updateOne({ name: "test" }, 
+    {
+        $push: { totals: { user_id: req.user.user_id, total: 0 } }
+    });
     const users = await apt.getUsers(req.user);
     res.status(200).json(users);
 })
@@ -97,7 +101,7 @@ app.post(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, re
     
     const { _id, product, date, price } = req.body;
     if (!(_id && product && date && price)) {
-      res.status(400).send({"motivation":"Missing parameters in request."});
+      res.status(400).send({"motivation":"Missing parameters in the request."});
       return;
     }
     if (price <= 0) {
@@ -107,7 +111,6 @@ app.post(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, re
     const exp = await expenses.modifyExpense(req.user, 
         {
             _id: _id,
-            user_id: req.user.user_id,
             product: product,
             date: date,
             price: price
@@ -121,6 +124,21 @@ app.post(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, re
 
 });
 
+app.post(PREFIX + "/apartment/expenses/delete", auth.verifyToken, async (req, res) => {
+
+    const { _id } = req.body;
+    if (!_id) {
+        res.status(400).send({"motivation":"Missing parameters in the request."});
+        return;
+    }
+    const result = await expenses.deleteExpense(user, { _id: _id });
+    if (!result) {
+        res.status(400).send({"motivation":"Couldn't modify expense."});
+    } else {
+        res.status(200).json({"message":"Ok."});
+    }
+
+});
 
 //---------------------WEBSITE SECTION---------------------\\
 app.listen(PORT)

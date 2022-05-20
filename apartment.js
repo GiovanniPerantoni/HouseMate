@@ -36,8 +36,7 @@ async function getUsers(user) {
 }
 
 async function isOwner(user) {
-    const apartment = getApartment(user);
-    return apartment.owners.includes(user.user_id);
+    return await Apartment.find({ "owners" : user.user_id}).count() > 0;
 }
 
 module.exports = { Apartment, getUsers, getApartment, isOwner }
