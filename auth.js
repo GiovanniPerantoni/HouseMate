@@ -50,6 +50,7 @@ async function createAccount(first_name, last_name, email, password) {
     last_name,
     email: email.toLowerCase(),
     password: password,
+    color: "#" + Math.floor(Math.random()*16777215).toString(16)
   });
 
   const token = jwt.sign(
