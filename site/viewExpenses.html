@@ -98,9 +98,9 @@
                 let usrToken = getCookie("token");
                 //let usrToken = "token";
 
-                let text = '{"price":"'+price+'", "product":"'+product+'", "date":"'+date+'", "token":"'+usrToken+'"}';
-                obj = JSON.parse(text);
-                console.log(obj);
+                let text = '{"price":'+price+', "product":"'+product+'", "date":"'+date+'", "token":"'+usrToken+'"}';
+                //obj = JSON.parse(text);
+                //console.log(obj);
 
                 if (product != '' && price != '') {
                     $(function() {
@@ -109,7 +109,7 @@
                             type: "post",
                             contentType: "application/json",
                             token: usrToken,
-                            data: JSON.stringify(obj),
+                            data: text,
                             success: function (data, textStatus, jqXHR) {
                                 insertLine("Francesco", product, price, date.toLocaleDateString());
                                 console.log("SUCCESS");

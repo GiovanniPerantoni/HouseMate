@@ -46,8 +46,7 @@
                     return false;
                 } else {
                     errElement.innerHTML = "";
-                    let text = '{"email":"'+email+'", "first_name":"'+name+'", "last_name":"'+surname+'", "pass":"'+pass1+'"}';
-                    obj = JSON.parse(text);
+                    text = '{"email":"'+email+'", "first_name":"'+name+'", "last_name":"'+surname+'", "pass":"'+pass1+'"}';
                     return true;
                 }
             }
@@ -55,13 +54,12 @@
             function sendData() {
                 let res = validateForm();
                 if (res) {
-                   //console.log(obj);
                    $(function() {
                        $.ajax({
                            url: "http://127.0.0.1:3000/api/v1/signup",
                            type: "POST",
                            contentType: "application/json",
-                           data: JSON.stringify(obj),
+                           data: text,
                            success: function (data, textStatus, jqXHR) {
                                const d = new Date();
                                d.setTime(d.getTime() + (24*60*60*1000));

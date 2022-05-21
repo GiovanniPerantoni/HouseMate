@@ -31,16 +31,14 @@
                     return false;
                 }
 
-                let text = '{"email":"'+email+'", "pass":"'+password+'"}';
-                obj = JSON.parse(text);
-                //console.log(obj);
-
+                text = '{"email":"'+email+'", "pass":"'+password+'"}';
+                
                 $(function() {
                        $.ajax({
                            url: "http://127.0.0.1:3000/api/v1/login",
                            type: "POST",
                            contentType: "application/json",
-                           data: JSON.stringify(obj),
+                           data: text,
                            success: function (data, textStatus, jqXHR) {
                                //console.log(data.token);
                                const d = new Date();
