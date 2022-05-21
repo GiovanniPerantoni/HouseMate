@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const sha256 = require('js-sha256').sha256;
 const moment = require('moment');
+const cors = require('cors');
 
+const db = require('./database.js');
 const auth = require("./auth");
 const apt = require("./apartment");
 const expenses = require("./expenses");
@@ -15,6 +17,7 @@ const PORT = process.env.PORT;
 const app = express()
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
+app.use(cors());
 
 //---------------------API SECTION---------------------\\
 
@@ -193,4 +196,7 @@ app.delete(PREFIX + "/apartment/expenses/delete", auth.verifyToken, async (req, 
 });
 
 //---------------------WEBSITE SECTION---------------------\\
+app.use('/', express.static(__dirname + '/site'));
+app.use(express.static(__dirname + '/site'));
+
 app.listen(PORT)
