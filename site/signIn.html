@@ -33,7 +33,7 @@
 
                 let text = '{"email":"'+email+'", "pass":"'+password+'"}';
                 obj = JSON.parse(text);
-                console.log(obj);
+                //console.log(obj);
 
                 $(function() {
                        $.ajax({
@@ -47,13 +47,13 @@
                                d.setTime(d.getTime() + (24*60*60*1000));
                                let expires = "expires="+d.toUTCString();
                                document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                               console.log(document.cookie);
-                               console.log("SUCCESS!");
+                               //console.log(document.cookie);
+                               //console.log("SUCCESS!");
                                window.location = "/viewExpenses.html"
                            },
                            error: function (jqXHR, textStatus, errorThrown) {
                                errElement.innerHTML = "Email o Password incorrette"
-                               console.log("FAILURE");
+                               //console.log("FAILURE");
                            }
                        })
                    });

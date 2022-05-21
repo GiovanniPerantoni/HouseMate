@@ -11,6 +11,13 @@
             .gradient-custom {
                 /* Fallback for old browsers */
                 background: #fccb90;
+
+                /* Chrome 10-25, Safari 5.1-6 */
+                background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
+                /* W3C, IE 10+/Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
             }
             #list1 .form-control {
                 border-color: transparent;
@@ -213,14 +220,17 @@
                                     <div id="expensesList">
                                         <div>
                                             <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+                                                <!-- Stringa -->
                                                 <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
                                                     <p class="lead fw-normal mb-0 text-white">Roberto ha comprato Pasta (€ 4.00)</p>
                                                 </li>
                                                 <li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
                                                     <div class="d-flex flex-row justify-content-end mb-1">
+                                                        <!-- Edit -->
                                                         <a href="#!" class="text-info" data-mdb-toggle="tooltip" title="Edit todo">
                                                             <i class="bi bi-pencil me-3"></i>
                                                         </a>
+                                                        <!-- Edit -->
                                                         <a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">
                                                             <i class="bi bi-trash"></i>
                                                         </a>
