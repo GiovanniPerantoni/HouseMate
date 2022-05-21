@@ -38,13 +38,13 @@ app.post(PREFIX + "/login", async (req, res) => {
         } else {
             res.status(200).json(user);
         }
-    } catch {
+    } catch (err) {
         res.status(500).send({ "motivation": "Unexpected error." })
+        console.log(err);
     }
 });
 
 app.post(PREFIX + "/signup", async (req, res) => {
-
     try {
         const { first_name, last_name, email, pass } = req.body;
         if (!(email && pass && first_name && last_name)) {
@@ -64,8 +64,9 @@ app.post(PREFIX + "/signup", async (req, res) => {
         } else {
             res.status(200).json(user);
         }
-    } catch {
-        res.status(500).send({ "motivation": "Unexpected error." })
+    } catch (err) {
+        res.status(500).send({ "motivation": "Unexpected error." });
+        console.log(err);
     }
 });
 
@@ -92,8 +93,9 @@ app.post(PREFIX + "/apartment/expenses/view", auth.verifyToken, async (req, res)
         }
         const exps = await expenses.getExpenses(req.user, limit);
         res.status(200).json(exps);
-    } catch {
-        res.status(500).send({ "motivation": "Unexpected error." })
+    } catch (err) {
+        res.status(500).send({ "motivation": "Unexpected error." });
+        console.log(err);
     }
 });
 
@@ -127,8 +129,9 @@ app.post(PREFIX + "/apartment/expenses/add", auth.verifyToken, async (req, res) 
         } else {
             res.status(200).json(exp);
         }
-    } catch {
-        res.status(500).send({ "motivation": "Unexpected error." })
+    } catch (err) {
+        res.status(500).send({ "motivation": "Unexpected error." });
+        console.log(err);
     }
 });
 
@@ -160,8 +163,9 @@ app.patch(PREFIX + "/apartment/expenses/modify", auth.verifyToken, async (req, r
         } else {
             res.status(200).json({ "message": "Ok." });
         }
-    } catch {
-        res.status(500).send({ "motivation": "Unexpected error." })
+    } catch (err) {
+        res.status(500).send({ "motivation": "Unexpected error." });
+        console.log(err);
     }
 });
 
@@ -176,14 +180,15 @@ app.delete(PREFIX + "/apartment/expenses/delete", auth.verifyToken, async (req, 
             res.status(400).send({ "motivation": "Invalid parameters in request." });
             return;
         }
-        const result = await expenses.deleteExpense(user, { _id: expenseID });
+        const result = await expenses.deleteExpense(req.user, { _id: expenseID });
         if (!result) {
             res.status(400).send({ "motivation": "Can't access expense." });
         } else {
             res.status(200).json({ "message": "Ok." });
         }
-    } catch {
-        res.status(500).send({ "motivation": "Unexpected error." })
+    } catch (err) {
+        res.status(500).send({ "motivation": "Unexpected error." });
+        console.log(err);
     }
 });
 

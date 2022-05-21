@@ -49,6 +49,8 @@ async function updateTotal(user) {
 }
 
 async function createExpense(user, expense) {
+    const apartment = await apt.getApartment(user);
+    if (!apartment) return false;
     const exp = await Expense.create(expense);
     await apt.Apartment.updateOne(
         { users: user.userID },
@@ -59,7 +61,8 @@ async function createExpense(user, expense) {
 }
 
 async function modifyExpense(user, expense) {
-    var exp = await Expense.findOne({ _id: expense._id });
+    const exp = await Expense.findOne({ _id: expense._id });
+    if (!exp) return false;
     if ((user.userID == exp.userID) || (await apt.isOwner(user))) {
         await Expense.updateOne(
             { _id: expense._id },
@@ -68,11 +71,12 @@ async function modifyExpense(user, expense) {
         await updateTotal({userID: exp.userID});
         return await Expense.findOne({ _id: expense._id });
     }
-    return null;
+    return false;
 }
 
 async function deleteExpense(user, expense) {
-    const exp = Expense.findOne({ _id: expense._id });
+    const exp = await Expense.findOne({ _id: expense._id });
+    if (!exp) return false;
     if ((user.userID == exp.userID) || (await apt.isOwner(user))) {
         await Expense.deleteOne({ _id: expense._id });
         await apt.Apartment.updateOne(
