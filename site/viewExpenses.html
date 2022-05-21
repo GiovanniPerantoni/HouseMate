@@ -71,7 +71,7 @@
             function viewExpense() {
                 $(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/appartment/expenses/view",
+                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
                         type: "post",
                         contentType: "application/json",
                         token: getCookie("token"),
@@ -105,7 +105,7 @@
                 if (product != '' && price != '') {
                     $(function() {
                         $.ajax({
-                            url: "http://127.0.0.1:3000/api/v1/appartment/expenses/add",
+                            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
                             type: "post",
                             contentType: "application/json",
                             data: JSON.stringify(obj),
