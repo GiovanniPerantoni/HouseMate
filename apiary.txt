@@ -211,7 +211,7 @@ HOST: https://polls.apiblueprint.org/
 + Request (application/json)
 
     This request is used to modify an existing expense created by the user that is submitting this request
-  
+
     The user need to specify only the data that want to be modified
 
     + Attributes (object)
@@ -323,6 +323,8 @@ HOST: https://polls.apiblueprint.org/
 ### View [GET /api/v1/appartment/manage/info]
 
 + Request (application/json)
+
+    This request is used to view the info of the appartment, usefull to know them before entering
     
     + Headers
         token: token used to authenticate the user for a day
@@ -355,17 +357,6 @@ HOST: https://polls.apiblueprint.org/
             {
                 "motivation": "Invalid or expired token."
             }
-
-
-+ Response 403 (application/json)
-
-    This will be the response if some attributes are `missing` (in this case expenseID).
-
-    + Body
-
-            {
-                "motivation": "Missing parameters in request."
-            }
     
 
     
@@ -373,7 +364,7 @@ HOST: https://polls.apiblueprint.org/
 
 + Request (application/json)
 
-    This request is used to add or modify an existing the info of the appartment
+    This request is used to add or modify an existing info of the appartment
     When the appartment is created this method can be used by settings all the attributes
     
     + Headers
@@ -419,7 +410,7 @@ HOST: https://polls.apiblueprint.org/
 
 + Request (application/json)
 
-    This request is used to retrieve the `list of users` in the appartment in which the user that requested it is.
+    This request is used to retrieve the `list of users` in the appartment in which the user that requested it is in.
     
     + Headers
         token: token used to authenticate the user for a day
