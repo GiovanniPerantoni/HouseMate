@@ -49,6 +49,7 @@
                                document.cookie = "token="+data.token+"; "+expires+"; path=/";
                                console.log(document.cookie);
                                console.log("SUCCESS!");
+                               window.location = "/viewExpenses.html"
                            },
                            error: function (jqXHR, textStatus, errorThrown) {
                                errElement.innerHTML = "Email o Password incorrette"
