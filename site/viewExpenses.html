@@ -42,7 +42,7 @@
 
             // Function used to insert a new expense on the html
             function insertLine(person, product, price, date) {
-                document.getElementById("expensesList").innerHTML = 
+                document.getElementById("expensesList").innerHTML += 
                 '<div>'+
                 '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
                 '<li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">'+
@@ -64,7 +64,7 @@
                 '</div>'+
                 '</li>'+
                 '</ul>'+
-                '</div>' + document.getElementById("expensesList").innerHTML;
+                '</div>';
 
             }
 
@@ -81,11 +81,11 @@
                             users = data.totals;
                             for (let i in users) {
                                 let str = '<h4 class="mb-4" style="color: orange">' + users[i].userID + ' ha contribuito con: ' + users[i].total + '</p>';
-                                totalsElem.innerHTML += str
+                                contributiElem.innerHTML += str
                             }
                             expenses = data.expenses;
                             for (let i in expenses) {
-                                insertLine(expenses[i].userID, expenses[i].product, expenses[i].price, (expenses[i].date).toLocaleDateString());
+                                insertLine(expenses[i].userID, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10));
                             }
                             console.log("SUCCESS");
                         },
@@ -174,7 +174,7 @@
         <div class="p-5 text-left gradient-custom">
 
             <script>
-                //viewExpenses();
+                viewExpenses();
             </script>
 
 
