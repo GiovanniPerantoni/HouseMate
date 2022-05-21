@@ -24,6 +24,98 @@
             }
         </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+        <script type="text/javascript">
+            // Function used to get cookies by name
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            // Function used to insert a new expense on the html
+            function insertLine(person, product, price, date) {
+                document.getElementById("expensesList").innerHTML = 
+                '<div>'+
+                '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
+                '<li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">'+
+                '<p class="lead fw-normal mb-0 text-white">'+person+' ha comprato '+product+' (€ '+price+')</p>'+
+                '</li>'+
+                '<li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">'+
+                '<div class="d-flex flex-row justify-content-end mb-1">'+
+                '<a href="#!" class="text-info" data-mdb-toggle="tooltip" title="Edit todo">'+
+                '<i class="bi bi-pencil me-3"></i>'+
+                '</a>'+
+                '<a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">'+
+                '<i class="bi bi-trash"></i>'+
+                '</a>'+
+                '</div>'+
+                '<div class="text-end text-muted">'+
+                '<a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">'+
+                '<p class="small mb-0"><i class="bi bi-info-circle-fill me-2"></i>'+date+'</p>'+
+                '</a>'+
+                '</div>'+
+                '</li>'+
+                '</ul>'+
+                '</div>' + document.getElementById("expensesList").innerHTML;
+
+            }
+
+            function viewExpense() {
+                $(function() {
+                    $.ajax({
+                        url: "http://127.0.0.1:3000/api/v1/appartment/expenses/view",
+                        type: "post",
+                        contentType: "application/json",
+                        token: getCookie("token"),
+                        success: function(data, textStatus, jqXHR) {
+                            users = data.totals;
+
+                            console.log("SUCCESS");
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log("FAILURE");
+                        }
+                    })
+                });
+            }
+
+            // Function used to add an Expense
+            function addExpense() {
+                let product = document.getElementById("typeProductX").value;
+                let price = document.getElementById("typePriceX").value;
+
+                const date = new Date();
+                date.getUTCDate();
+                
+                //let token = getCookie("token");
+                let token = "token";
+
+                let text = '{"price":"'+price+'", "product":"'+product+'", "date":"'+date+'", "token":"'+token+'"}';
+                obj = JSON.parse(text);
+                console.log(obj);
+
+                // !!! DA SPOSTARE IN SUCCESS !!!
+                insertLine("Francesco", product, price, date.toLocaleDateString());
+
+                if (product != '' && price != '') {
+                    $(function() {
+                        $.ajax({
+                            url: "http://127.0.0.1:3000/api/v1/appartment/expenses/add",
+                            type: "post",
+                            contentType: "application/json",
+                            data: JSON.stringify(obj),
+                            success: function (data, textStatus, jqXHR) {
+                                console.log("SUCCESS");
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log("FAILURE");
+                            }
+                        })
+                    });
+                }
+            }
+        </script>
     </head>
     <body>
         <!-- Navbar -->
@@ -83,7 +175,7 @@
             <!-- Storico -->
             <h1 class="mb-3">Storico:</h1>
           
-            <section class="vh-100">
+            <section class="vh-200">
                 <div class="container py-5 h-100">
                     <div class="row d-flex justify-content-left align-items-left h-100">
                         <div class="col">
@@ -93,51 +185,57 @@
                                     <!-- Aggiunta Spesa -->
                                     <div class="pb-2">
                                         <div class="card">
-                                            <div class="card-body">
+                                            <div class="card-body bg-secondary">
                                                 <div class="d-flex flex-row align-items-center">
-                                                    <input type="text" class="form-control form-control-lg" id="formControlInput1"
+                                                    <!-- Prodotto -->
+                                                    <input type="text" class="form-control form-control-lg" id="typeProductX"
                                                       placeholder="Aggiungi una nuova spesa...">
-                                                    <a href="#!" data-mdb-toggle="tooltip" title="Set due date">
-                                                        <i class="bi bi-calendar me-3"></i>
-                                                    </a>
+                                                    <!-- Prezzo -->
+                                                    <div class="col-sx-2 mx-4">
+                                                        <input type="number" class="form-control form-control-lg" id="typePriceX"
+                                                          placeholder="Prezzo...">
+                                                    </div>
                                                     <div>
-                                                        <button type="button" class="btn btn-secondary">Aggiungi</button>
+                                                        <button type="button" class="btn btn-dark mx-1" id="addBtn">Aggiungi</button>
+                                                        <script>
+                                                            var btn = document.getElementById("addBtn");
+                                                            btn.addEventListener("click", addExpense);
+                                                        </script>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                   <hr class="my-4">
+                                    <hr class="my-4">
                                    
-                                   <!-- Lista Spese -->
-                                    <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
-                                        <!--
-                                        <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                                            <div class="form-check">
-                                                <input class="form-check-input me-0" type="checkbox" value="" id="flexCheckChecked1" aria-label="..." checked/>
-                                            </div>
-                                        </li>
-                                        -->
-                                        <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
-                                            <p class="lead fw-normal mb-0 text-white">Roberto ha comprato Pasta</p>
-                                        </li>
-                                        <li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
-                                            <div class="d-flex flex-row justify-content-end mb-1">
-                                                <a href="#!" class="text-info" data-mdb-toggle="tooltip" title="Edit todo">
-                                                    <i class="bi bi-pencil me-3"></i>
-                                                </a>
-                                                <a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            </div>
-                                            <div class="text-end text-muted">
-                                                <a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">
-                                                    <p class="small mb-0"><i class="bi bi-info-circle-fill me-2"></i>19/05/2022</p>
-                                                </a>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                    <!-- Lista Spese -->
+                                    <div id="expensesList">
+                                        <div>
+                                            <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+                                                <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
+                                                    <p class="lead fw-normal mb-0 text-white">Roberto ha comprato Pasta (€ 4.00)</p>
+                                                </li>
+                                                <li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
+                                                    <div class="d-flex flex-row justify-content-end mb-1">
+                                                        <a href="#!" class="text-info" data-mdb-toggle="tooltip" title="Edit todo">
+                                                            <i class="bi bi-pencil me-3"></i>
+                                                        </a>
+                                                        <a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="text-end text-muted">
+                                                        <a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">
+                                                            <p class="small mb-0"><i class="bi bi-info-circle-fill me-2"></i>19/05/2022</p>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    
                                     
                                 </div>
                             </div>
