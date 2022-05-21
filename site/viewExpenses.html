@@ -77,7 +77,7 @@
                         token: getCookie("token"),
                         success: function(data, textStatus, jqXHR) {
                             users = data.totals;
-
+                            console.log(users);
                             console.log("SUCCESS");
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
@@ -95,15 +95,12 @@
                 const date = new Date();
                 date.getUTCDate();
                 
-                //let token = getCookie("token");
-                let token = "token";
+                let token = getCookie("token");
+                //let token = "token";
 
                 let text = '{"price":"'+price+'", "product":"'+product+'", "date":"'+date+'", "token":"'+token+'"}';
                 obj = JSON.parse(text);
                 console.log(obj);
-
-                // !!! DA SPOSTARE IN SUCCESS !!!
-                insertLine("Francesco", product, price, date.toLocaleDateString());
 
                 if (product != '' && price != '') {
                     $(function() {
@@ -113,6 +110,7 @@
                             contentType: "application/json",
                             data: JSON.stringify(obj),
                             success: function (data, textStatus, jqXHR) {
+                                insertLine("Francesco", product, price, date.toLocaleDateString());
                                 console.log("SUCCESS");
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
