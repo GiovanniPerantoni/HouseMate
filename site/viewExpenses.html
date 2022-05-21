@@ -68,6 +68,20 @@
 
             }
 
+            function retriveUserInfo(userID) {
+                $(function() {
+                    $.ajax({
+                        url: "http://127.0.0.1:3000/api/v1/appartment/users",
+                        type: "patch",
+                        contentType: "application/json",
+                        headers: {'x-access-token' : userID},
+                        success: function(data, textStatus, jqXHR) {
+                            return [data.first_name, data.last_name, data.color];
+                        }
+                    })
+                });
+            }
+
             function viewExpenses() {
                 usrToken = getCookie("token");
                 $(function() {
@@ -75,17 +89,19 @@
                         url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
                         type: "post",
                         contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
+                        headers: {'x-access-token' : usrToken},
                         success: function(data, textStatus, jqXHR) { 
                             let contributiElem = document.getElementById('contribuenti');
                             users = data.totals;
                             for (let i in users) {
-                                let str = '<h4 class="mb-4" style="color: orange">' + users[i].userID + ' ha contribuito con: ' + users[i].total + '</p>';
+                                let userInfo = retriveUserInfo(users[i].userID);
+                                let str = '<h4 class="mb-4" style="color: orange">' + userInfo[0] + ' ha contribuito con: ' + users[i].total + '</p>';
                                 contributiElem.innerHTML += str
                             }
                             expenses = data.expenses;
                             for (let i in expenses) {
-                                insertLine(expenses[i].userID, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10));
+                                let userInfo = retriveUserInfo(expenses[i].userID);
+                                insertLine(userInfo[0], expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10));
                             }
                             console.log("SUCCESS");
                         },
