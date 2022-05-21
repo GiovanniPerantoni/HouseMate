@@ -149,9 +149,7 @@ HOST: https://polls.apiblueprint.org/
         + price (number)
         + product (string) - name of the product
         
-+ Response 200 (application/json)
-
-    + Body
++ Response 200 
         
 + Response 400 (application/json)
 
@@ -224,9 +222,7 @@ HOST: https://polls.apiblueprint.org/
         token: token used to authenticate the user for a day
     
 
-+ Response 200 (application/json)
-
-    + Body
++ Response 200 
 
 + Response 400 (application/json)
 
@@ -330,13 +326,12 @@ HOST: https://polls.apiblueprint.org/
         token: token used to authenticate the user for a day
         
 
-+ Response 200
++ Response 200 (application/json)
         
     + Attributes (object)
         + rules (string) - list of rules to be accepted before entering the appartment
         + name (string) - name of the appartment
         + address (string)
-            
 
 + Response 403 (application/json)
 
@@ -415,7 +410,7 @@ HOST: https://polls.apiblueprint.org/
     + Headers
         token: token used to authenticate the user for a day
         
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + first_name (string) - user's first name (name)
