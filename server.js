@@ -127,7 +127,7 @@ app.post(PREFIX + "/apartment/expenses/add", auth.verifyToken, async (req, res) 
         if (!exp) {
             res.status(400).send({ "motivation": "Couldn't add expense." });
         } else {
-            res.status(200).json(exp);
+            res.status(200).send(exp);
         }
     } catch (err) {
         res.status(500).send({ "motivation": "Unexpected error." });
