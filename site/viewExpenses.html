@@ -95,10 +95,10 @@
                 const date = new Date();
                 date.getUTCDate();
                 
-                let token = getCookie("token");
-                //let token = "token";
+                let usrToken = getCookie("token");
+                //let usrToken = "token";
 
-                let text = '{"price":"'+price+'", "product":"'+product+'", "date":"'+date+'", "token":"'+token+'"}';
+                let text = '{"price":"'+price+'", "product":"'+product+'", "date":"'+date+'", "token":"'+usrToken+'"}';
                 obj = JSON.parse(text);
                 console.log(obj);
 
@@ -108,6 +108,7 @@
                             url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
                             type: "post",
                             contentType: "application/json",
+                            token: usrToken,
                             data: JSON.stringify(obj),
                             success: function (data, textStatus, jqXHR) {
                                 insertLine("Francesco", product, price, date.toLocaleDateString());
