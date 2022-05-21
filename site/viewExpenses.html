@@ -68,16 +68,21 @@
 
             }
 
-            function viewExpense() {
+            function viewExpenses() {
+                usrToken = getCookie("token");
                 $(function() {
                     $.ajax({
                         url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
                         type: "post",
                         contentType: "application/json",
-                        token: getCookie("token"),
+                        headers: {'x-access-token' : getCookie("token")},
                         success: function(data, textStatus, jqXHR) {
+                            let totalsElem = document.getElementById('contribuenti');
                             users = data.totals;
-                            console.log(users);
+                            for (let i in users) {
+                                let str = "<p>" + users[i].userID + " ha contribuito con: " + users[i].total + "</p>";
+                                totalsElem.innerHTML += str
+                            }
                             console.log("SUCCESS");
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
@@ -94,13 +99,8 @@
 
                 const date = new Date();
                 date.getUTCDate();
-                
-                let usrToken = getCookie("token");
-                //let usrToken = "token";
 
-                let text = '{"price":'+price+', "product":"'+product+'", "date":"'+date+'", "token":"'+usrToken+'"}';
-                //obj = JSON.parse(text);
-                //console.log(obj);
+                let text = '{"price":'+price+', "product":"'+product+'", "date":"'+date+'"}';
 
                 if (product != '' && price != '') {
                     $(function() {
@@ -108,7 +108,7 @@
                             url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
                             type: "post",
                             contentType: "application/json",
-                            token: usrToken,
+                            headers: {'x-access-token' : getCookie("token")},
                             data: text,
                             success: function (data, textStatus, jqXHR) {
                                 insertLine("Francesco", product, price, date.toLocaleDateString());
@@ -168,9 +168,17 @@
         <!-- Body -->
         <div class="p-5 text-left gradient-custom">
 
+            <script>
+                viewExpenses();
+            </script>
+
             <!-- Contributi -->
             <h1 class="mb-3">Contributi:</h1>
             
+            <div id="contribuenti">
+
+            </div>
+
             <!--
             <svg width="90%" height="70">
                 <rect x="50" y="20" width="20%" height="30" style="fill:red;stroke:black;stroke-width:5;opacity:0.5" />
