@@ -32,8 +32,10 @@
         </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript">
+
             usrInfo = "";
             globalProductID = "";
+
             // Function used to get cookies by name
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -74,6 +76,7 @@
             // Function used to insert a new expense on the html
             function insertLine(productID, person, product, price, date) {
                 document.getElementById("expensesList").innerHTML += 
+
                 '<div>'+
                 '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
                 '<li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">'+
@@ -81,13 +84,12 @@
                 '</li>'+
                 '<li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">'+
                 '<div class="d-flex flex-row justify-content-end mb-1">'+
-                '<button type="button" class="btn btn-outline-info mx-1 px-1" data-bs-toggle="modal" data-bs-target="#editExpense"'+
-                'onclick="globalProducID=\''+producID+'\'">'+
+                '<button type="button" class="btn btn-outline-info mx-1 px-1" data-bs-toggle="modal" data-bs-target="#editExpense" onclick="globalProductID=\''+productID+'\'">'+
                 '<i class="bi bi-pencil mx-2"></i>'+
                 '</button>'+
-                '<a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">'+
+                '<button type="button" class="btn btn-outline-danger ml-1" onclick="globalProductID=\''+productID+'\'">'+
                 '<i class="bi bi-trash"></i>'+
-                '</a>'+
+                '</button>'+
                 '</div>'+
                 '<div class="text-end text-muted">'+
                 '<a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">'+
@@ -189,7 +191,7 @@
 
                 $(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/appartment/expenses/modify",
+                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/modify",
                         type: "patch",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
@@ -257,13 +259,13 @@
                 setUpPage();
             </script>
 
+            <!-- Contributi -->
             <section class="vh-200">
                 <div class="container py-5 h-100">
                     <div class="row d-flex justify-content-left align-items-left h-100">
                         <div class="col">
                             <div class="card bg-dark text-white" id="list1" style="border-radius: .75rem;">
                                 <div class="card-body py-4 px-4 px-md-5">
-                                    <!-- Contributi -->
                                         <h1 class="mb-3 text-white">Contributi:</h1>
 
                                         <div id="contribuenti">
@@ -285,12 +287,10 @@
                         </div>
                     </div>
                 </div>
-
+            </section>
             
 
             <!-- Storico -->
-            
-          
             <section class="vh-200">
                 <div class="container py-5 h-100">
                     <div class="row d-flex justify-content-left align-items-left h-100">
