@@ -41,6 +41,27 @@
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
 
+            // Function used to retrive all users from api
+            async function retriveUserInfo(userID) {
+                //$(async function() {
+                    await $.ajax({
+                        url: "http://127.0.0.1:3000/api/v1/apartment/users",
+                        type: "post",
+                        contentType: "application/json",
+                        headers: {'x-access-token' : userID},
+                        success: function(data, textStatus, jqXHR) {
+                            usrInfo = data;
+                            console.log("SUCCESS in retrive User Info");
+                        },
+                        failure: function(jqXHR, textStatus, errorThrown) {
+                            console.log("FAILURE in retrive user info");
+                            //return ["", "", ""];
+                        }
+                    });
+                //});
+            }
+
+            // Function used to get user info from cookie
             function getUser(userID) {
                 for (let u=0; u<usrInfo.length; u++) {
                     if (usrInfo[u].userID == userID) {
@@ -79,26 +100,7 @@
 
             }
 
-            async function retriveUserInfo(userID) {
-                //$(async function() {
-                    await $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/users",
-                        type: "post",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : userID},
-                        success: function(data, textStatus, jqXHR) {
-                            usrInfo = data;
-                            //console.log(userInfo);
-                            console.log("SUCCESS in retrive User Info");
-                        },
-                        failure: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in retrive user info");
-                            //return ["", "", ""];
-                        }
-                    });
-                //});
-            }
-
+            // Function used to show the expenses
             function viewExpenses() {
                 usrToken = getCookie("token");
                 $(function() {
@@ -130,6 +132,7 @@
                 });
             }
 
+            // Wrapper function used for the setup of the page
             async function setUpPage() {
                 await retriveUserInfo(getCookie("token"));
                 viewExpenses();
@@ -154,7 +157,7 @@
                             headers: {'x-access-token' : getCookie("token")},
                             data: text,
                             success: function (data, textStatus, jqXHR) {
-                                //insertLine("Francesco", product, price, date.toLocaleDateString());
+                                insertLine("Francesco", product, price, date.toLocaleDateString());
                                 console.log("SUCCESS in addExpenses");
                                 window.location.reload();
                             },
@@ -251,7 +254,7 @@
         <div class="p-5 text-left gradient-custom">
 
             <script>
-                //setUpPage();
+                setUpPage();
             </script>
 
             <section class="vh-200">
@@ -264,11 +267,11 @@
                                         <h1 class="mb-3 text-white">Contributi:</h1>
 
                                         <div id="contribuenti">
-                                            
+                                            <!--
                                             <h4 class="mb-4" style="color: blue">Mario ha contribuito con: 12.43 €</h4>
                                             <h4 class="mb-4" style="color: orange">Luigi ha contribuito con: 124542.43 €</h4>
                                             <h4 class="mb-4" style="color: green">Pesca ha contribuito con: 0 €</h4>
-                                            
+                                            -->
                                         </div>
                                     
                                         <!--
@@ -326,8 +329,8 @@
                                    
                                     <!-- Lista Spese -->
                                     <div id="expensesList">
-                                        <div id="">
-                                            
+                                        <!--
+                                        <div>
                                             <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
                                                 <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
                                                     <p class="lead fw-normal mb-0 text-white">Roberto ha comprato Pasta (€ 4.00)</p>
@@ -351,8 +354,8 @@
                                                     </div>
                                                 </li>
                                             </ul>
-                                            
                                         </div>
+                                        -->
                                     </div>
  
                                 </div>
