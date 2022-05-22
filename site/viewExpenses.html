@@ -75,8 +75,8 @@
 
             // Function used to insert a new expense on the html
             function insertLine(productID, person, product, price, date) {
+                let i = 0;
                 document.getElementById("expensesList").innerHTML += 
-
                 '<div>'+
                 '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
                 '<li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">'+
@@ -87,9 +87,13 @@
                 '<button type="button" class="btn btn-outline-info mx-1 px-1" data-bs-toggle="modal" data-bs-target="#editExpense" onclick="globalProductID=\''+productID+'\'">'+
                 '<i class="bi bi-pencil mx-2"></i>'+
                 '</button>'+
-                '<button type="button" class="btn btn-outline-danger ml-1" onclick="globalProductID=\''+productID+'\'">'+
+                '<button type="button" class="btn btn-outline-danger ml-1" id="deleteBtn'+i+'" onclick="globalProductID=\''+productID+'\'">'+
                 '<i class="bi bi-trash"></i>'+
                 '</button>'+
+                '<script>'+
+                'var btn = document.getElementById("deleteBtn"+'+(i++)+');'+
+                'btn.addEventListener(\'click\', deleteExpense);'+
+                '</script>'+
                 '</div>'+
                 '<div class="text-end text-muted">'+
                 '<a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">'+
@@ -200,12 +204,33 @@
                             console.log("SUCESS in modifyExpense");
                             window.location.reload();
                         },
-                        failure: function(data, textStatus, jqXHR) {
+                        error: function(jqXHR, textStatus, errorThrown) {
                             console.log("FAILURE in modifyExpense");
                         }
                     })
                 });
 
+            }
+
+            // Function used to delete an expense
+            function deleteExpense() {
+                let text = '{"expenseID":"'+globalProductID+'"';
+                $(function() {
+                    $.ajax({
+                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/delete",
+                        type: "delete",
+                        contentType: "application/json",
+                        headers: {'x-access-token' : getCookie("token")},
+                        data: text,
+                        success: function(data, textStatus, jqXHR) {
+                            console.log("SUCCESS in deleteExpense");
+                            window.location.reload();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log("FAILURE in deleteExpense");
+                        }
+                    })
+                })
             }
 
         </script>
@@ -345,6 +370,10 @@
                                                         <button type="button" class="btn btn-outline-danger ml-1" onclick="globalProductID='abscd23455'">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
+                                                        <script>
+                                                            var btn = document.getElementById("deleteBtn"+i);
+                                                            btn.addEventListener('click', deleteExpense);
+                                                        </script>
 
                                                     </div>
                                                     <div class="text-end text-muted">
