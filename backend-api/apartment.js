@@ -1,4 +1,4 @@
-const apt = require("./backend-db/apartment");
+const apt = require("../backend-db/apartment");
 
 async function users (req, res) {
 	try {

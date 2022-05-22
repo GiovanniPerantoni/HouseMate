@@ -1,4 +1,4 @@
-const expenses = require("./backend-db/expenses");
+const expenses = require("../backend-db/expenses");
 const mongoose = require('mongoose');
 
 const moment = require('moment');
