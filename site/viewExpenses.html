@@ -31,9 +31,9 @@
             }
         </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-
         <script type="text/javascript">
             usrInfo = "";
+            globalProductID = "";
             // Function used to get cookies by name
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -51,7 +51,7 @@
             }
 
             // Function used to insert a new expense on the html
-            function insertLine(person, product, price, date) {
+            function insertLine(productID, person, product, price, date) {
                 document.getElementById("expensesList").innerHTML += 
                 '<div>'+
                 '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
@@ -60,9 +60,10 @@
                 '</li>'+
                 '<li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">'+
                 '<div class="d-flex flex-row justify-content-end mb-1">'+
-                '<a href="#!" class="text-info" data-mdb-toggle="tooltip" title="Edit todo">'+
-                '<i class="bi bi-pencil me-3"></i>'+
-                '</a>'+
+                '<button type="button" class="btn btn-outline-info mx-1 px-1" data-bs-toggle="modal" data-bs-target="#editExpense"'+
+                'onclick="globalProducID=\''+producID+'\'">'+
+                '<i class="bi bi-pencil mx-2"></i>'+
+                '</button>'+
                 '<a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">'+
                 '<i class="bi bi-trash"></i>'+
                 '</a>'+
@@ -118,7 +119,7 @@
                             expenses = data.expenses;
                             for (let i in expenses) {
                                 let infos = getUser(expenses[i].userID);
-                                insertLine(infos.first_name, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10));
+                                insertLine(expenses[i].expenseID, infos.first_name, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10));
                             }
                             console.log("SUCCESS in viewExpenses");
                         },
@@ -154,16 +155,54 @@
                             data: text,
                             success: function (data, textStatus, jqXHR) {
                                 //insertLine("Francesco", product, price, date.toLocaleDateString());
-                                console.log("SUCCESS");
+                                console.log("SUCCESS in addExpenses");
                                 window.location.reload();
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
-                                console.log("FAILURE");
+                                console.log("FAILURE in addExpenses");
                             }
                         })
                     });
                 }
             }
+
+            // Function used to modify an expense
+            function modifyExpense() {
+                let product = document.getElementById("modifyProductX").value;
+                let price = document.getElementById("modifyPriceX").value;
+                let date = document.getElementById("modifyDateX").value;
+                
+                let text = '{"expenseID":"'+globalProductID+'"';
+                if (product != '') {
+                    text += ', "product":"'+product+'"';
+                }
+                if (price != '') {
+                    text += ', "price":'+price;
+                }
+                if (date != '') {
+                    text += ', "date":"'+date+'"';
+                }
+                text += '}';
+
+                $(function() {
+                    $.ajax({
+                        url: "http://127.0.0.1:3000/api/v1/appartment/expenses/modify",
+                        type: "patch",
+                        contentType: "application/json",
+                        headers: {'x-access-token' : getCookie("token")},
+                        data: text,
+                        success: function(data, textStatus, jqXHR) {
+                            console.log("SUCESS in modifyExpense");
+                            window.location.reload();
+                        },
+                        failure: function(data, textStatus, jqXHR) {
+                            console.log("FAILURE in modifyExpense");
+                        }
+                    })
+                });
+
+            }
+
         </script>
     </head>
     <body>
@@ -212,8 +251,7 @@
         <div class="p-5 text-left gradient-custom">
 
             <script>
-                //console.log(usrInfo);
-                setUpPage();
+                //setUpPage();
             </script>
 
             <section class="vh-200">
@@ -226,11 +264,11 @@
                                         <h1 class="mb-3 text-white">Contributi:</h1>
 
                                         <div id="contribuenti">
-                                            <!--
+                                            
                                             <h4 class="mb-4" style="color: blue">Mario ha contribuito con: 12.43 €</h4>
                                             <h4 class="mb-4" style="color: orange">Luigi ha contribuito con: 124542.43 €</h4>
                                             <h4 class="mb-4" style="color: green">Pesca ha contribuito con: 0 €</h4>
-                                            -->
+                                            
                                         </div>
                                     
                                         <!--
@@ -288,20 +326,23 @@
                                    
                                     <!-- Lista Spese -->
                                     <div id="expensesList">
-                                        <div>
-                                            <!--
+                                        <div id="">
+                                            
                                             <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
                                                 <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
                                                     <p class="lead fw-normal mb-0 text-white">Roberto ha comprato Pasta (€ 4.00)</p>
                                                 </li>
                                                 <li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
                                                     <div class="d-flex flex-row justify-content-end mb-1">
-                                                        <a href="#!" class="text-info" data-mdb-toggle="tooltip" title="Edit todo">
-                                                            <i class="bi bi-pencil me-3"></i>
-                                                        </a>
-                                                        <a href="#!" class="text-danger" data-mdb-toggle="tooltip" title="Delete todo">
+
+                                                        <button type="button" class="btn btn-outline-info mx-1 px-1" data-bs-toggle="modal" data-bs-target="#editExpense" onclick="globalProductID='asdf'">
+                                                            <i class="bi bi-pencil mx-2"></i>
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-outline-danger ml-1" onclick="globalProductID='abscd23455'">
                                                             <i class="bi bi-trash"></i>
-                                                        </a>
+                                                        </button>
+
                                                     </div>
                                                     <div class="text-end text-muted">
                                                         <a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">
@@ -310,19 +351,58 @@
                                                     </div>
                                                 </li>
                                             </ul>
-                                            -->
+                                            
                                         </div>
                                     </div>
-
-                                    
-                                    
+ 
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-          
+
+        </div>
+
+        <!-- Modal per editare le spese -->
+        <div class="modal" id="editExpense">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white">
+                    <!-- Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Modifica Spesa</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="modal-body">
+                        <h6 class="mb-3">Lascia il campo vuoto se non vuoi modificarlo</h6>
+                        <form>
+                            <div class="form-group">
+                                <label for="modifyProductX">Prodotto</label>
+                                <input type="text" class="form-control" id="modifyProductX" placeholder="Prodotto...">
+                            </div>
+                            <div class="form-group">
+                                <label for="modifyPriceX">Prezzo</label>
+                                <input type="number" class="form-control" id="modifyPriceX" placeholder="Prezzo...">
+                            </div>
+                            <div class="form-group">
+                                <label for="modifyDateX">Data</label>
+                                <input type="date" class="form-control" id="modifyDateX" placeholder="Date...">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal" id="modifyBtn">Salva</button>
+                        <script>
+                            var btn = document.getElementById("modifyBtn");
+                            btn.addEventListener('click', modifyExpense);
+                        </script>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </body>
