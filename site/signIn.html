@@ -31,28 +31,27 @@
                     return false;
                 }
 
-                let text = '{"email":"'+email+'", "pass":"'+password+'"}';
-                obj = JSON.parse(text);
-                console.log(obj);
-
+                text = '{"email":"'+email+'", "pass":"'+password+'"}';
+                
                 $(function() {
                        $.ajax({
                            url: "http://127.0.0.1:3000/api/v1/login",
                            type: "POST",
                            contentType: "application/json",
-                           data: JSON.stringify(obj),
+                           data: text,
                            success: function (data, textStatus, jqXHR) {
                                //console.log(data.token);
                                const d = new Date();
                                d.setTime(d.getTime() + (24*60*60*1000));
                                let expires = "expires="+d.toUTCString();
                                document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                               console.log(document.cookie);
-                               console.log("SUCCESS!");
+                               //console.log(document.cookie);
+                               //console.log("SUCCESS!");
+                               window.location = "/viewExpenses.html"
                            },
                            error: function (jqXHR, textStatus, errorThrown) {
                                errElement.innerHTML = "Email o Password incorrette"
-                               console.log("FAILURE");
+                               //console.log("FAILURE");
                            }
                        })
                    });
