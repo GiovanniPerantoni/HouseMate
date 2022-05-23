@@ -1,0 +1,439 @@
+FORMAT: 1A
+HOST: https://polls.apiblueprint.org/
+
+# HouseMate 
+
+## Registration [/api/v1/]
+
+### Login [POST /api/v1/login]
+
++ Request (application/json)
+    
+    This request is used to request a new `token` to the server by giving the correct `credential` to be identified.
+    
+    + Attributes (object)
+        + email (string) - user's email (can be used only for 1 account)
+        + pass (string) - user's password (clear)
+
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + token (string) - token used to authenticate the user for a day.
+
+
++ Response 401 (application/json)
+
+    This will be the response if the correct attributes are provided but they are incorrect
+
+    + Body
+
+            {
+                "motivation": "Invalid credentials."
+            }
+
++ Response 400 (application/json)
+
+    This will be the response if some attributes are `missing`.
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
+            
+
+### Sign Up [POST /api/v1/signup]
+
++ Request (application/json)
+    
+    This request is used to request the creation of a `new account` and, if successfull, a new `token` to be used in this session.
+    
+    + Attributes (object)
+        + first_name (string) - user's first name (name)
+        + last_name (string) - user's last name (surname)
+        + email (string) - user's email (can be used only for 1 account)
+        + pass (string) - user's password (clear)
+
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + token (string) - token used to authenticate the user for a day
+
+
++ Response 400 (application/json)
+
+    This will be the response if the user ask to create an account with an `email` already in use in another account.
+
+    + Body
+
+            { 
+                "motivation": "Email already used."
+            }
+
++ Response 400 (application/json)
+
+    This will be the response if some attributes are `missing`
+
+    + Body
+
+            { 
+                "motivation": "Missing parameters in request." 
+            }
+
+## Expenses [/api/v1/appartment/expenses]
+
+### View [POST /api/v1/appartment/expenses/view]
+
++ Request (application/json)
+    
+    + Attributes (object)
+        + limit (optional, number) - override the default number of expenses to be return (default: 20)
+    
+    + Headers
+        token: token used to authenticate the user for a day
+
++ Response 200 (application/json)
+
+    + Body
+
+            { 
+                "totals" : [
+                    "[name of user]":"[euros spend in total]", 
+                    ...
+                ],
+                "expenses": [
+                    {
+                        "expenseID": "",
+                        "date": "",
+                        "userID": "",
+                        "price": 0,
+                        "product": ""
+                    }
+                    ... until limit
+                ]
+            }
+            
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
+### Add [POST /api/v1/appartment/expenses/add]
+
++ Request (application/json)
+
+    + Headers
+        token: token used to authenticate the user for a day
+    
+    + Attributes (object)
+        + date (string) - date in the UTC format
+        + price (number)
+        + product (string) - name of the product
+        
++ Response 200 
+        
++ Response 400 (application/json)
+
+    This will be the response if the attribute price is passed but it's less or equal to 0
+
+    + Body
+
+            {
+                "motivation": "Invalid price."
+            }
+            
+
++ Response 400 (application/json)
+
+    This will be the response if there is a generic error.
+
+    + Body
+
+            {
+                "motivation": "Couldn't add expense."
+            }
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing`.
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
+        
+
+### Modify [PATCH /api/v1/appartment/expenses/modify]
+
++ Request (application/json)
+
+    This request is used to modify an existing expense created by the user that is submitting this request
+
+    The user need to specify only the data that want to be modified
+
+    + Attributes (object)
+        + date (optional, string) - date in the UTC format 
+        + product (optional, string) - name of the product
+        + price (optional, number)
+        + expensesID (string)
+   
+    + Headers
+        token: token used to authenticate the user for a day
+    
+
++ Response 200 
+
++ Response 400 (application/json)
+
+    This will be the response if there is a generic error.
+
+    + Body
+
+            {
+                "motivation": "Couldn't add expense."
+            }
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing` (in this case expenseID).
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
+    
+
+### Delete [DELETE /api/v1/appartment/expenses/delete]
+
++ Request (application/json)
+
+    This request is used to modify an existing expense created by the user that is submitting this request
+    
+    + Attributes (object)
+        + expensesID (string)
+   
+    + Headers
+        token: token used to authenticate the user for a day
+    
+
++ Response 200
+
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
++ Response 403 (application/json)
+
+    This will be the response if some attributes are `missing`.
+
+    + Body
+
+            {
+                "motivation": "Missing parameters in request."
+            }
+
+
+## Apparment Managment [/api/v1/appartment/manage/]
+
+### View [GET /api/v1/appartment/manage/info]
+
++ Request (application/json)
+
+    This request is used to view the info of the appartment, usefull to know them before entering
+    
+    + Headers
+        token: token used to authenticate the user for a day
+        
+
++ Response 200 (application/json)
+        
+    + Attributes (object)
+        + rules (string) - list of rules to be accepted before entering the appartment
+        + name (string) - name of the appartment
+        + address (string)
+
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+    
+
+    
+### Add or Modify [PATCH /api/v1/appartment/manage/info]
+
++ Request (application/json)
+
+    This request is used to add or modify an existing info of the appartment
+    When the appartment is created this method can be used by settings all the attributes
+    
+    + Headers
+        token: token used to authenticate the owner for a day
+        
+    + Attributes (object)
+        + rules (optional, string) - list of rules to be accepted before entering the appartment
+        + name (optional, string) - name of the appartment
+        + address (optional, string)
+    
+
++ Response 200
+            
+    + Body
+
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }
+
+
+
+
+
+## Apparment Users [/api/v1/appartment/users/]
+
+### View [PATCH /api/v1/appartment/users]
+
++ Request (application/json)
+
+    This request is used to retrieve the `list of users` in the appartment in which the user that requested it is in.
+    
+    + Headers
+        token: token used to authenticate the user for a day
+        
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + first_name (string) - user's first name (name)
+        + last_name (string) - user's last name (surname)
+        + color (string) - the color associated with the user (in hex format)
+
+            
++ Response 403 (application/json)
+
+    This will be the response if it hasn't been provided a `token`
+
+    + Body
+
+            {
+                "motivation": "A token is required for authentication."
+            }
+
++ Response 401 (application/json)
+
+    This will be the response if it hasn't been provided a `correct token`
+
+    + Body
+
+            {
+                "motivation": "Invalid or expired token."
+            }

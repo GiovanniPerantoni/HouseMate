@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/GiovanniPerantoni/HouseMate/issues"
   },
-  "homepage": "https://github.com/GiovanniPerantoni/HouseMate#readme"
+  "homepage": "https://github.com/GiovanniPerantoni/HouseMate#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "js-sha256": "^0.9.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.3",
+    "mongoose": "^6.3.3"
+  }
 }
