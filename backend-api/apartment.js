@@ -5,7 +5,7 @@ const com = require("./common");
 async function users (req, res) {
 	try {
 		const users = await apt.getUsers(req.user);		//il parametro user viene messo in authentication/verifyToken prima di passare a questa funzione
-		res.status(200).json(com.cleanObjectDataArray(users, ["first_name", "last_name", "color"]));
+		res.status(200).json(com.cleanObjectDataArray(users, ["userID", "first_name", "last_name", "color"]));
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
 		console.log(err);

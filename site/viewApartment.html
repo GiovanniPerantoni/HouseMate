@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>HouseMate</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <style>
+            .gradient-custom {
+                /* Fallback for old browsers */
+                background: #fccb90;
+
+                /* Chrome 10-25, Safari 5.1-6 */
+                background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
+                /* W3C, IE 10+/Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
+            }
+        </style>
+        <script>
+            // Function used to get cookies by name
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            function viewApartment() {
+                $(function() {
+                    $.ajax({
+                        url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+                        type: "get",
+                        contentType: "application/json",
+                        headers: {'x-access-token' : getCookie("token")},
+                        success: function(data, textStatus, jqXHR) {
+                            document.getElementById("apartmentName").innerHTML = data.name;
+                            document.getElementById("apartmentAddress").innerHTML = data.address;
+                            document.getElementById("apartmentRules").innerHTML = data.rules;
+                            console.log("SUCCESS in viewApartment");
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log("FAILURE in viewExpenses");
+                        }
+                    })
+                })
+            }
+        </script>
+    </head>
+    <body>
+
+        <script>
+            viewApartment();
+        </script>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <!-- Titolo -->
+                <a class="navbar-brand" href="#">HouseMate</a>
+                <!-- Bottoni Sx -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse mx-5" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Spese -->
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" aria-current="page" href="viewExpenses.html">Spese</a>
+                        </li>
+                        <!-- Lista -->
+                        <li class="nav-item mx-2">
+                            <a class="nav-link disabled" href="#">Lista</a>
+                        </li>
+                        <!-- Mansioni -->
+                        <li class="nav-item mx-2">
+                            <a class="nav-link disabled" href="#">Mansioni</a>
+                        </li>
+                    </ul>
+                    <!-- Bottoni Dx -->
+                    <span class="navbar-text">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <!-- Profilo -->
+                            <li class="nav-item mx-3">
+                                <a class="nav-link disabled" aria-current="page" href="#">Profilo</a>
+                            </li>
+                            <li class="nav-item mx-3">
+                                <a class="nav-link active" aria-current="page" href="viewApartment.html">Appartamento</a>
+                            </li>
+                            <!-- Logout -->
+                            <li class="nav-item mx-3">
+                                <a class="nav-link disabled" aria-current="page" href="#">Logout</a>
+                            </li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Body -->
+        <section class="vh-100 gradient-custom">
+            <div class="container py-5">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-10">
+                        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                            <div class="card-body p-4 text-center">
+                                
+                                <div class="mb-md-2 mt-md-4 pb-2">
+                                    <h2 class="fw-bold mb-5 text-uppercase" id="apartmentName">Appartamento</h2>
+
+                                    <h4 class="fw-bold mb-5 text-uppercase" id="apartmentAddress">Indirizzo</h4>
+
+                                    <div class="row d-flex justify-content-center align-items-center h-100">
+                                        <div class="col-10">
+                                            <div class="card bg-light text-dark" style="border-radius: 1rem;">
+                                                <div class="card-body p-4">
+                                                    
+                                                    <div class="mb-md-2 mt-md-4 pb-2" >
+                                                        <pre id="apartmentRules"></pre>
+                                                    </div>
+                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-outline-info btn-lg px-5 my-5" id="modifyBtn" type="button">Modifica</button>
+                                    <script>
+                                        var btn = document.getElementById("modifyBtn");
+                                        btn.addEventListener('click', function(){
+                                            document.location = "manageApartment.html";
+                                        })
+                                    </script>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

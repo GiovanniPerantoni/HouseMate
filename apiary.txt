@@ -24,7 +24,7 @@ HOST: https://polls.apiblueprint.org/
 
 + Response 401 (application/json)
 
-    This will be the response if the correct attributes are provided but they are incorrect
+    This will be the response if the correct parameters are provided but they are incorrect
 
     + Body
 
@@ -34,14 +34,35 @@ HOST: https://polls.apiblueprint.org/
 
 + Response 400 (application/json)
 
-    This will be the response if some attributes are `missing`.
+    This will be the response if some parameters are `missing`
+
+    + Body
+
+            { 
+                "motivation": "Missing parameters in request." 
+            }
+            
+
++ Response 400 (application/json)
+
+    This will be the response if some parameters are present but they are not of the correct `type`
+
+    + Body
+
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
+
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
 
     + Body
 
             {
-                "motivation": "Missing parameters in request."
+                "motivation": "Unexpected error."
             }
-            
 
 ### Sign Up [POST /api/v1/signup]
 
@@ -72,19 +93,45 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "Email already used."
             }
 
+
+
+
 + Response 400 (application/json)
 
-    This will be the response if some attributes are `missing`
+    This will be the response if some parameters are `missing`
 
     + Body
 
             { 
                 "motivation": "Missing parameters in request." 
             }
+            
 
-## Expenses [/api/v1/appartment/expenses]
++ Response 400 (application/json)
 
-### View [POST /api/v1/appartment/expenses/view]
+    This will be the response if some parameters are present but they are not of the correct `type`
+
+    + Body
+
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
+
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
+
+    + Body
+
+            {
+                "motivation": "Unexpected error."
+            }
+
+
+## Expenses [/api/v1/apartment/expenses]
+
+### View [GET /api/v1/apartment/expenses/view]
 
 + Request (application/json)
     
@@ -100,7 +147,10 @@ HOST: https://polls.apiblueprint.org/
 
             { 
                 "totals" : [
-                    "[name of user]":"[euros spend in total]", 
+                    {
+                        "userID": "",
+                        "total": 0.0
+                    }
                     ...
                 ],
                 "expenses": [
@@ -108,13 +158,22 @@ HOST: https://polls.apiblueprint.org/
                         "expenseID": "",
                         "date": "",
                         "userID": "",
-                        "price": 0,
+                        "price": 0.0,
                         "product": ""
                     }
                     ... until limit
                 ]
             }
-            
+      
++ Response 400 (application/json)
+
+    This will be the response if the attribute limit is passed but it's less or equal to 0
+
+    + Body
+
+            {
+                "motivation": "Invalid limit."
+            }      
             
 + Response 403 (application/json)
 
@@ -135,9 +194,29 @@ HOST: https://polls.apiblueprint.org/
             {
                 "motivation": "Invalid or expired token."
             }
+            
++ Response 400 (application/json)
 
+    This will be the response if some parameters are present but they are not of the correct `type`
 
-### Add [POST /api/v1/appartment/expenses/add]
+    + Body
+
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
+            
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
+
+    + Body
+
+            {
+                "motivation": "Unexpected error."
+            }
+
+### Add [POST /api/v1/apartment/expenses/add]
 
 + Request (application/json)
 
@@ -146,14 +225,14 @@ HOST: https://polls.apiblueprint.org/
     
     + Attributes (object)
         + date (string) - date in the UTC format
-        + price (number)
+        + price (number) - price paid to buy the product (must be > 0)
         + product (string) - name of the product
         
 + Response 200 
         
 + Response 400 (application/json)
 
-    This will be the response if the attribute price is passed but it's less or equal to 0
+    This will be the response if the attribute price is less or equal to 0
 
     + Body
 
@@ -182,6 +261,26 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "A token is required for authentication."
             }
 
++ Response 400 (application/json)
+
+    This will be the response if the user tries to add an expense but it's `not in an apartment`
+
+    + Body
+
+            { 
+                "motivation": "Couldn't add expense." 
+            }
+
++ Response 400 (application/json)
+
+    This will be the response if some parameters are `missing`
+
+    + Body
+
+            { 
+                "motivation": "Missing parameters in request." 
+            }
+            
 + Response 401 (application/json)
 
     This will be the response if it hasn't been provided a `correct token`
@@ -192,19 +291,28 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "Invalid or expired token."
             }
 
++ Response 400 (application/json)
 
-+ Response 403 (application/json)
+    This will be the response if some parameters are present but they are not of the correct `type`
 
-    This will be the response if some attributes are `missing`.
+    + Body
+
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
+
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
 
     + Body
 
             {
-                "motivation": "Missing parameters in request."
+                "motivation": "Unexpected error."
             }
         
-
-### Modify [PATCH /api/v1/appartment/expenses/modify]
+### Modify [PATCH /api/v1/apartment/expenses/modify]
 
 + Request (application/json)
 
@@ -215,7 +323,7 @@ HOST: https://polls.apiblueprint.org/
     + Attributes (object)
         + date (optional, string) - date in the UTC format 
         + product (optional, string) - name of the product
-        + price (optional, number)
+        + price (optional, number) - price paid to buy the product (must be > 0)
         + expensesID (string)
    
     + Headers
@@ -223,6 +331,16 @@ HOST: https://polls.apiblueprint.org/
     
 
 + Response 200 
+
++ Response 400 (application/json)
+
+    This will be the response if the attribute price is passed but it's less or equal to 0
+
+    + Body
+
+            {
+                "motivation": "Invalid price."
+            }
 
 + Response 400 (application/json)
 
@@ -244,6 +362,7 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "A token is required for authentication."
             }
 
+
 + Response 401 (application/json)
 
     This will be the response if it hasn't been provided a `correct token`
@@ -254,19 +373,49 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "Invalid or expired token."
             }
 
++ Response 400 (application/json)
 
-+ Response 403 (application/json)
+    This will be the expense asked for `doesn't exist` or if the user doesn't have the `permission` to modify it
 
-    This will be the response if some attributes are `missing` (in this case expenseID).
+    + Body
+
+            { 
+                "motivation": "Can't access expense." 
+            }
+
++ Response 400 (application/json)
+
+    This will be the response if some parameters are `missing`
+
+    + Body
+
+            { 
+                "motivation": "Missing parameters in request." 
+            }
+            
+
++ Response 400 (application/json)
+
+    This will be the response if some parameters are present but they are not of the correct `type`
+
+    + Body
+
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
+
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
 
     + Body
 
             {
-                "motivation": "Missing parameters in request."
+                "motivation": "Unexpected error."
             }
-    
 
-### Delete [DELETE /api/v1/appartment/expenses/delete]
+### Delete [DELETE /api/v1/apartment/expenses/delete]
 
 + Request (application/json)
 
@@ -302,25 +451,56 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "Invalid or expired token."
             }
 
++ Response 400 (application/json)
 
-+ Response 403 (application/json)
+    This will be the expense asked for `doesn't exist` or if the user doesn't have the `permission` to delete it
 
-    This will be the response if some attributes are `missing`.
+    + Body
+
+            { 
+                "motivation": "Can't access expense." 
+            }
+
++ Response 400 (application/json)
+
+    This will be the response if some parameters are `missing`
+
+    + Body
+
+            { 
+                "motivation": "Missing parameters in request." 
+            }
+            
+
++ Response 400 (application/json)
+
+    This will be the response if some parameters are present but they are not of the correct `type`
+
+    + Body
+
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
+
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
 
     + Body
 
             {
-                "motivation": "Missing parameters in request."
+                "motivation": "Unexpected error."
             }
 
 
-## Apparment Managment [/api/v1/appartment/manage/]
+## Apartment Managment [/api/v1/apartment/manage/]
 
-### View [GET /api/v1/appartment/manage/info]
+### View [GET /api/v1/apartment/manage/info]
 
 + Request (application/json)
 
-    This request is used to view the info of the appartment, usefull to know them before entering
+    This request is used to view the info of the apartment, usefull to know them before entering
     
     + Headers
         token: token used to authenticate the user for a day
@@ -329,8 +509,8 @@ HOST: https://polls.apiblueprint.org/
 + Response 200 (application/json)
         
     + Attributes (object)
-        + rules (string) - list of rules to be accepted before entering the appartment
-        + name (string) - name of the appartment
+        + rules (string) - list of rules to be accepted before entering the apartment
+        + name (string) - name of the apartment
         + address (string)
 
 + Response 403 (application/json)
@@ -352,22 +532,31 @@ HOST: https://polls.apiblueprint.org/
             {
                 "motivation": "Invalid or expired token."
             }
-    
 
-    
-### Add or Modify [PATCH /api/v1/appartment/manage/info]
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
+
+    + Body
+
+            {
+                "motivation": "Unexpected error."
+            }
+
+### Add or Modify [PATCH /api/v1/apartment/manage/info]
 
 + Request (application/json)
 
-    This request is used to add or modify an existing info of the appartment
-    When the appartment is created this method can be used by settings all the attributes
+    This request is used to add or modify an existing info of the apartment
+    When the apartment is created this method can be used by settings all the parameters
     
     + Headers
         token: token used to authenticate the owner for a day
         
     + Attributes (object)
-        + rules (optional, string) - list of rules to be accepted before entering the appartment
-        + name (optional, string) - name of the appartment
+        + rules (optional, string) - list of rules to be accepted before entering the apartment
+        + name (optional, string) - name of the apartment
         + address (optional, string)
     
 
@@ -395,17 +584,34 @@ HOST: https://polls.apiblueprint.org/
                 "motivation": "Invalid or expired token."
             }
 
++ Response 400 (application/json)
 
+    This will be the response if some parameters are present but they are not of the correct `type`
 
+    + Body
 
+            { 
+                "motivation": "Invalid parameters in request."" 
+            }
 
-## Apparment Users [/api/v1/appartment/users/]
++ Response 500 (application/json)
 
-### View [PATCH /api/v1/appartment/users]
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
+
+    + Body
+
+            {
+                "motivation": "Unexpected error."
+            }
+
+## Aparment Users [/api/v1/apartment/users/]
+
+### View [GET /api/v1/apartment/users]
 
 + Request (application/json)
 
-    This request is used to retrieve the `list of users` in the appartment in which the user that requested it is in.
+    This request is used to retrieve the `list of users` in the apartment in which the user that requested it is in.
     
     + Headers
         token: token used to authenticate the user for a day
@@ -417,6 +623,14 @@ HOST: https://polls.apiblueprint.org/
         + last_name (string) - user's last name (surname)
         + color (string) - the color associated with the user (in hex format)
 
+    + Body
+            [
+                {
+                    "first_name": "",
+                    "last_name": "",
+                    "color": "#FFFFFF",
+                }
+            ]
             
 + Response 403 (application/json)
 
@@ -436,4 +650,15 @@ HOST: https://polls.apiblueprint.org/
 
             {
                 "motivation": "Invalid or expired token."
+            }
+
++ Response 500 (application/json)
+
+    This will be the response if there is some `unexpected error` generated from the server.
+    It's advised to `resend the request`.
+
+    + Body
+
+            {
+                "motivation": "Unexpected error."
             }

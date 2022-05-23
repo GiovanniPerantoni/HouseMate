@@ -1,0 +1,765 @@
+openapi: 3.0.0
+info:
+  title: HouseMate
+  description: ''
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://polls.apiblueprint.org/
+  variables: {}
+paths:
+  /api/v1/login:
+    post:
+      summary: Login
+      description: ''
+      operationId: Login
+      parameters: []
+      requestBody:
+        description: This request is used to request a new `token` by giving the correct user `credentials`.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Loginrequest'
+            example:
+              email: 'user@example.com'
+              pass: 'password'
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loginresponse'
+              example:
+                token: ''
+        '400':
+          description: This will be the response if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loginresponse1'
+              example:
+                motivation: Invalid parameters in request.
+        '401':
+          description: This will be the response if the correct parameters are provided but they're not valid credentials.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loginresponse1'
+              example:
+                motivation: Invalid credentials.
+        '500':
+          description: This will be the response if there is some `unexpected error` generated from the server. It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loginresponse1'
+              example:
+                motivation: Unexpected error.
+  /api/v1/signup:
+    post:
+      summary: Sign Up
+      description: ''
+      operationId: SignUp
+      parameters: []
+      requestBody:
+        description: This request is used to request the creation of a `new account` and, if successful, an authentication `token` will be returned.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUprequest'
+            example:
+              first_name: 'John'
+              last_name: 'Smith'
+              email: 'john.smith@example.com'
+              pass: 'password'
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpresponse'
+              example:
+                token: ''
+        '400':
+          description: This will be the response if the email is already, or if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpresponse1'
+              example:
+                motivation: Email already used.
+        '500':
+          description: This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpresponse1'
+              example:
+                motivation: Unexpected error.
+  /api/v1/apartment/expenses/view:
+    get:
+      summary: View Expenses
+      description: ''
+      operationId: View
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the user for a day
+          type: string
+          example: token used to authenticate the user for a day
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    totals:
+                        type: array
+                        items:
+                            type: object
+                            properties:
+                                userID:
+                                    type: string
+                                total:
+                                    type: integer
+                    expenses:
+                        type: array
+                        items:
+                            type: object
+                            properties:
+                                expenseID:
+                                    type: string
+                                userID:
+                                    type: string
+                                date:
+                                    type: string
+                                price:
+                                    type: number
+                                product:
+                                    type: string
+        '400':
+          description: This will be the response if the limit is less or equal to zero or if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Invalid limit.
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Invalid or expired token.
+        '500':
+          description: >-
+            This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Unexpected error.
+  /api/v1/apartment/expenses/add:
+    post:
+      summary: Add
+      description: ''
+      operationId: Add
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the user for a day
+          type: string
+          example: token used to authenticate the user for a day
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Addrequest'
+            example:
+              date: ''
+              price: 0
+              product: ''
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expenseID:
+                        type: string
+        '400':
+          description: This will be the response if the price is less or equal to zero or if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Addresponse'
+              example:
+                motivation: Invalid price.
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Addresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Addresponse'
+              example:
+                motivation: Invalid or expired token.
+        '500':
+          description: This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Addresponse'
+              example:
+                motivation: Unexpected error.
+  /api/v1/apartment/expenses/modify:
+    patch:
+      summary: Modify
+      description: ''
+      operationId: Modify
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the user for a day
+          type: string
+          example: token used to authenticate the user for a day
+      requestBody:
+        description: This request is used to modify an existing expense created by the user that is submitting this request
+
+
+          The user need to specify only the data that want to be modified
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Modifyrequest'
+            example:
+              expensesID: ''
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content: {}
+        '400':
+          description: This will be the response if the price is less or equal to zero or if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Invalid price.
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Modifyresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Modifyresponse'
+              example:
+                motivation: Invalid or expired token.
+        '500':
+          description: >-
+            This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Modifyresponse'
+              example:
+                motivation: Unexpected error.
+  /api/v1/apartment/expenses/delete:
+    delete:
+      summary: Delete Expenses
+      description: ''
+      operationId: DeleteExpenses
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the user for a day
+          type: string
+          example: token used to authenticate the user for a day
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content: {}
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteExpensesresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteExpensesresponse'
+              example:
+                motivation: Invalid or expired token.
+        '400':
+          description: This will be the response if the expense referenced doesn't exist or isn't accessible (happens when the user isn't the creator of the expense or the owner of the apartment) or if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteExpensesresponse'
+              example:
+                motivation: Can't access expense.
+        '500':
+          description: >-
+            This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteExpensesresponse'
+              example:
+                motivation: Unexpected error.
+  /api/v1/apartment/manage/info:
+    get:
+      summary: View apartment
+      description: ''
+      operationId: View1
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the user for a day
+          type: string
+          example: token used to authenticate the user for a day
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse4'
+              example:
+                rules: '...'
+                name: 'apartment name'
+                address: 'address'
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Invalid or expired token.
+        '500':
+          description: >-
+            This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Unexpected error.
+    patch:
+      summary: Add or Modify Apartment
+      description: ''
+      operationId: AddorModify
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the owner for a day
+          type: string
+          example: token used to authenticate the owner for a day
+      requestBody:
+        description: >-
+          This request is used to add or modify an existing info of the apartment
+
+          When the apartment is created this method can be used by settings all the parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddorModifyrequest'
+            example: {}
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content: {}
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddorModifyresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddorModifyresponse'
+              example:
+                motivation: Invalid or expired token.
+        '400':
+          description: This will be the response if the required parameters are absent or if the present parameters are not of the correct `type`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loginresponse1'
+              example:
+                motivation: Invalid parameters in request.
+        '500':
+          description: >-
+            This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddorModifyresponse'
+              example:
+                motivation: Unexpected error.
+  /api/v1/apartment/users:
+    get:
+      summary: View apartment users
+      description: ''
+      operationId: View2
+      parameters:
+      - name: token
+        in: header
+        description: ''
+        schema:
+          enum:
+          - token used to authenticate the user for a day
+          type: string
+          example: token used to authenticate the user for a day
+      responses:
+        '200':
+          description: 'Everything went smoothly.'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse8'
+        '403':
+          description: This will be the response if it hasn't been provided a `token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: A token is required for authentication.
+        '401':
+          description: This will be the response if it hasn't been provided a `correct token`
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Invalid or expired token.
+        '500':
+          description: >-
+            This will be the response if there is some `unexpected error` generated from the server.
+
+            It's advised to `resend the request`.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewresponse'
+              example:
+                motivation: Unexpected error.
+components:
+  schemas:
+    Loginrequest:
+      title: Loginrequest
+      type: object
+      required:
+        - email
+        - pass
+      properties:
+        email:
+          type: string
+          description: user's email (can be used only for 1 account)
+        pass:
+          type: string
+          description: user's password (clear)
+    Loginresponse:
+      title: Loginresponse
+      type: object
+      properties:
+        token:
+          type: string
+          description: token used to authenticate the user for a day.
+    Loginresponse1:
+      title: Loginresponse1
+      required:
+        - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: Invalid credentials.
+    SignUprequest:
+      title: SignUprequest
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+        - pass
+      properties:
+        first_name:
+          type: string
+          description: user's first name (name)
+        last_name:
+          type: string
+          description: user's last name (surname)
+        email:
+          type: string
+          description: user's email (can be used only for 1 account)
+        pass:
+          type: string
+          description: user's password (clear)
+    SignUpresponse:
+      title: SignUpresponse
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: token used to authenticate the user for a day
+    SignUpresponse1:
+      title: SignUpresponse1
+      required:
+        - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: Email already used.
+    Viewresponse:
+      title: Viewresponse
+      required:
+      - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: Invalid limit.
+    Addrequest:
+      title: Addrequest
+      type: object
+      properties:
+        date:
+          type: string
+          description: date in the UTC format
+        price:
+          type: number
+          description: price paid to buy the product (must be > 0)
+        product:
+          type: string
+          description: name of the product
+    Addresponse:
+      title: Addresponse
+      required:
+      - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: Invalid price.
+    Modifyrequest:
+      title: Modifyrequest
+      type: object
+      properties:
+        date:
+          type: string
+          description: date in the UTC format
+        product:
+          type: string
+          description: name of the product
+        price:
+          type: number
+          description: price paid to buy the product (must be > 0)
+        expensesID:
+          type: string
+    Modifyresponse:
+      title: Modifyresponse
+      required:
+      - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: Invalid price.
+    DeleteExpensesrequest:
+      title: DeleteExpensesrequest
+      type: object
+      required:
+        - expenseID
+      properties:
+        expenseID:
+          type: string
+    DeleteExpensesresponse:
+      title: DeleteExpensesresponse
+      required:
+      - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: A token is required for authentication.
+    Viewresponse4:
+      title: Viewresponse4
+      type: object
+      properties:
+        rules:
+          type: string
+          description: list of rules to be accepted before entering the apartment
+        name:
+          type: string
+          description: name of the apartment
+        address:
+          type: string
+    AddorModifyrequest:
+      title: AddorModifyrequest
+      type: object
+      properties:
+        rules:
+          type: string
+          description: list of rules to be accepted before entering the apartment
+        name:
+          type: string
+          description: name of the apartment
+        address:
+          type: string
+    AddorModifyresponse:
+      title: AddorModifyresponse
+      required:
+      - motivation
+      type: object
+      properties:
+        motivation:
+          type: string
+      example:
+        motivation: A token is required for authentication.
+    Viewresponse8:
+      title: Viewresponse8
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: user's first name (name)
+        last_name:
+          type: string
+          description: user's last name (surname)
+        color:
+          type: string
+          description: the color associated with the user (in hex format)
