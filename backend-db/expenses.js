@@ -39,7 +39,7 @@ async function updateTotal(user) {
 		group({ _id: '$userID', total: { $sum: "$price" }});
 	const apartment = await apt.getApartment(user);
 	const totals = apartment.totals;
-	const total = agg[0].total;
+	const total = (agg[0]) ? agg[0].total : 0;
 
 	//rigenero i valori totali per l'utente
 	for (const t in totals) {
