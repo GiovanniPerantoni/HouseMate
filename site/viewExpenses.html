@@ -48,7 +48,7 @@
                 //$(async function() {
                     await $.ajax({
                         url: "http://127.0.0.1:3000/api/v1/apartment/users",
-                        type: "post",
+                        type: "get",
                         contentType: "application/json",
                         headers: {'x-access-token' : userID},
                         success: function(data, textStatus, jqXHR) {
@@ -104,7 +104,7 @@
                 $(function() {
                     $.ajax({
                         url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
-                        type: "post",
+                        type: "get",
                         contentType: "application/json",
                         headers: {'x-access-token' : usrToken},
                         success: function(data, textStatus, jqXHR) {
