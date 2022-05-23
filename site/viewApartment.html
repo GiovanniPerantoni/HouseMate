@@ -29,59 +29,32 @@
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
 
-            function modifyApartment() {
-                errElement = document.getElementById("errMsg");
-                let name = document.getElementById("typeApNameX").value;
-                let addr = document.getElementById("typeApAddressX").value;
-                let rules = document.getElementById("typeApRulesX").value;
-                let text = '{';
-                if (name != '') {
-                    text += '"name":"'+name+'"';
-                    if (addr != '') {
-                        text += ', "address":"'+addr+'"';
-                    }
-                    if (rules != '') {
-                        if (rules != '') {
-                            text += ', "rules":"'+rules+'"';
-                        }
-                    }
-                } else {
-                    if (addr != '') {
-                        text += '"address":"'+addr+'"';
-                        if (rules != '') {
-                            text += ', "rules":"'+rules+'"';
-                        }
-                    } else {
-                        if (rules != '') {
-                            text += '"rules":"'+rules+'"';
-                        }
-                    }
-                }
-                text += '}';
-                console.log(text);
-                
+            function viewApartment() {
                 $(function() {
                     $.ajax({
                         url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
-                        type: "patch",
+                        type: "get",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
-                        data: text,
                         success: function(data, textStatus, jqXHR) {
-                            console.log("SUCCESS in modifyApartment");
-                            window.location = "viewApartment.html";
+                            document.getElementById("apartmentName").innerHTML = data.name;
+                            document.getElementById("apartmentAddress").innerHTML = data.address;
+                            document.getElementById("apartmentRules").innerHTML = data.rules;
+                            console.log("SUCCESS in viewApartment");
                         },
-                        failure: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in modifyApartment");
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log("FAILURE in viewExpenses");
                         }
                     })
                 })
-
-                return true;
             }
         </script>
     </head>
     <body>
+
+        <script>
+            viewApartment();
+        </script>
 
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -125,51 +98,40 @@
         </nav>
 
         <!-- Body -->
-        <section class="vh-200 gradient-custom">
-            <div class="container py-5 h-100">
+        <section class="vh-100 gradient-custom">
+            <div class="container py-5">
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-10">
                         <div class="card bg-dark text-white" style="border-radius: 1rem;">
                             <div class="card-body p-4 text-center">
                                 
                                 <div class="mb-md-2 mt-md-4 pb-2">
+                                    <h2 class="fw-bold mb-5 text-uppercase" id="apartmentName">Appartamento</h2>
 
-                                    <!--Retrive Appartment Data -->
+                                    <h4 class="fw-bold mb-5 text-uppercase" id="apartmentAddress">Indirizzo</h4>
 
-                                    <h2 class="fw-bold mb-5 text-uppercase">Gestione Appartamento</h2>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <input type="text" id="typeApNameX" class="form-control" />
-                                                <label class="form-label" for="typeApNameX">Nome Appartamento</label>
+                                    <div class="row d-flex justify-content-center align-items-center h-100">
+                                        <div class="col-10">
+                                            <div class="card bg-light text-dark" style="border-radius: 1rem;">
+                                                <div class="card-body p-4">
+                                                    
+                                                    <div class="mb-md-2 mt-md-4 pb-2" id="apartmentRules">
+                                                        asd
+                                                    </div>
+                    
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <input type="text" id="typeApAddressX" class="form-control" />
-                                                <label class="form-label" for="typeApAddressX">Indirizzo Appartamento</label>
-                                            </div>
-                                        </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="typeApRulesX">Regolamento:</label>
-                                        <textarea class="form-control" rows="7" id="typeApRulesX"></textarea>
-                                    </div>
-
-                                    <div>
-                                        <p class="mt-4 text-danger" id="errMsg"></p>
-                                    </div>
-
-                                    <div class="mt-5 pt-4">
-                                        <button class="btn btn-outline-light btn-lg px-5" id="confirmBtn" type="submit">Conferma</button>
-                                        <script>
-                                            var btn = document.getElementById("confirmBtn");
-                                            btn.addEventListener("click", modifyApartment);
-                                        </script>
-                                    </div>
-
+                                    <button class="btn btn-outline-info btn-lg px-5 my-5" id="modifyBtn" type="button">Modifica</button>
+                                    <script>
+                                        var btn = document.getElementById("modifyBtn");
+                                        btn.addEventListener('click', function(){
+                                            console.log("fdfd");
+                                            document.location = "manageApartment.html";
+                                        })
+                                    </script>
                                 </div>
 
                             </div>
