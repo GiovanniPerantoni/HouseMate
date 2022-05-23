@@ -35,7 +35,7 @@ async function updateTotal(user) {
 
 	//seleziono tutte le spese create dall'utente
 	const agg = await Expense.aggregate().
-		match({ userID: { $eq: mongoose.Types.ObjectId(user.userID) } }).
+		match({ userID: mongoose.Types.ObjectId(user.userID) }).
 		group({ _id: '$userID', total: { $sum: "$price" }});
 	const apartment = await apt.getApartment(user);
 	const totals = apartment.totals;
