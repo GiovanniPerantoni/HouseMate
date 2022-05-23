@@ -74,12 +74,12 @@
             }
 
             // Function used to insert a new expense on the html
-            function insertLine(productID, person, product, price, date) {
+            function insertLine(productID, person, product, price, date, color) {
                 document.getElementById("expensesList").innerHTML += 
                 '<div>'+
                 '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
                 '<li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">'+
-                '<p class="lead fw-normal mb-0 text-white">'+person+' ha comprato '+product+' (€ '+price+')</p>'+
+                '<p class="lead fw-normal mb-0 text-white"><span style="color: '+color+'">'+person+'</span> ha comprato '+product+' (€ '+price+')</p>'+
                 '</li>'+
                 '<li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">'+
                 '<div class="d-flex flex-row justify-content-end mb-1">'+
@@ -113,13 +113,13 @@
                             users = data.totals;
                             for (let i in users) {
                                 let infos = getUser(users[i].userID);
-                                let str = '<h4 class="mb-4" style="color: orange">' + infos.first_name + ' ha contribuito con: ' + users[i].total + '</p>';
+                                let str = '<h4 class="mb-4" style="color: '+infos.color+'">' + infos.first_name + ' ha contribuito con: ' + users[i].total + '</p>';
                                 contributiElem.innerHTML += str
                             }
                             expenses = data.expenses;
                             for (let i in expenses) {
                                 let infos = getUser(expenses[i].userID);
-                                insertLine(expenses[i].expenseID, infos.first_name, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10));
+                                insertLine(expenses[i].expenseID, infos.first_name, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10), infos.color);
                             }
                             console.log("SUCCESS in viewExpenses");
                         },
@@ -390,7 +390,7 @@
                             var btn = document.getElementById("modifyBtn");
                             btn.addEventListener('click', modifyExpense);
                         </script>
-                        
+
                     </div>
                 </div>
             </div>
