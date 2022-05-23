@@ -28,7 +28,7 @@ async function manageInfo (req, res) {
 	try {
 		const { name, rules, address } = req.body;
 
-		if(!com.checkOptionalParameters([name, rules, address], ["string", "string", "string"]))
+		if(!com.checkOptionalParameters(res, [name, rules, address], ["string", "string", "string"]))
 			return;
 
 		const apartment = {};
@@ -47,8 +47,4 @@ async function manageInfo (req, res) {
 	}
 }
 
-<<<<<<< HEAD
 module.exports = { users, manageView, manageInfo };
-=======
-module.exports = { users, manageInfoPOST, manageInfoPATCH };
->>>>>>> 79bcd6533401c3a469533d59613458e4bf762235
