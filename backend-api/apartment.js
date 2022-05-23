@@ -1,47 +1,50 @@
-const apt = require("./backend-db/apartment");
+const apt = require("../backend-db/apartment");
+const com = require("./common");
 
+//  /apartment/users
 async function users (req, res) {
 	try {
-		const users = await apt.getUsers(req.user);
-		res.status(200).json(users);
+		const users = await apt.getUsers(req.user);		//il parametro user viene messo in authentication/verifyToken prima di passare a questa funzione
+		res.status(200).json(com.cleanObjectDataArray(users, ["first_name", "last_name", "color"]));
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
 		console.log(err);
 	}
 }
 
-async function manageInfoPOST (req, res) {
+//  /apartment/manage/info GET
+async function manageView (req, res) {
 	try {
-		const info = await apt.getInfo(req.user);
-		res.status(200).send(info);
+		const apartmentInfo = await apt.getInfo(req.user);		//il parametro user viene messo in authentication/verifyToken prima di passare a questa funzione
+		res.status(200).send(com.cleanObjectData(apartmentInfo, ["rules", "name", "address"]));
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
 		console.log(err);
 	}
 }
-async function manageInfoPATCH (req, res) {
+
+//  /apartment/manage/info PATCH
+async function manageInfo (req, res) {
 	try {
 		const { name, rules, address } = req.body;
-		if ((name && (typeof name != "string")) ||
-			(rules && (typeof rules != "string")) ||
-			(address && (typeof address != "string"))) {
-			res.status(400).send({ "motivation": "Invalid parameters in request." });
+
+		if(!com.checkOptionalParameters([name, rules, address], ["string", "string", "string"]))
 			return;
-		}
+
 		const apartment = {};
 		if (name) apartment.name = name;
 		if (rules) apartment.rules = rules;
 		if (address) apartment.address = address;
 		
 		const result = await apt.createOrUpdate(req.user, apartment);
-		if (result)
-			res.status(200).json("");
-		else
+		if (!result)
 			res.status(400).send({ "motivation": "Couldn't add or modify apartment." });
+		else
+			res.status(200).send();
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
 		console.log(err);
 	}
 }
 
-module.exports = { users, manageInfoPOST, manageInfoPATCH };
+module.exports = { users, manageView, manageInfo };

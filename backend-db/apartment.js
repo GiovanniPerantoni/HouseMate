@@ -1,9 +1,7 @@
 const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
-const db = require('./database.js');
 const auth = require('./authentication.js');
 
-// TODO: complete the schema with all the necessary fields
 const apartmentSchema = new mongoose.Schema({
 	name: { type: String, default: null },
 	rules: { type: String, default: null},
@@ -27,6 +25,7 @@ async function getApartment(user) {
 	return apartment;
 }
 
+//prendo le info dell'appartamento in cui l'utente si trova
 async function getInfo(user) {
 	const apartment = await Apartment.findOne({
 		users: user.userID
@@ -49,11 +48,14 @@ async function isOwner(user) {
 	return await Apartment.find({ "owners" : user.userID}).count() > 0;
 }
 
-async function createOrUpdate(user, apartment) {
+
+//!!! funzionalità temporanea dello sprint 1 da cambiare con l'implementazione del sistema di inviti
+//se l'utente non fa parte di un appartamento viene creato, se invece ne fa parte ed è l'owner vigono modificate le info
+async function createOrUpdate(user, apartmentInfo) {
 	const apt = await getApartment(user);
 	if (apt) {
 		if (await isOwner(user)) {
-			await Apartment.updateOne({ owners: user.userID }, apartment);
+			await Apartment.updateOne({ owners: user.userID }, apartmentInfo);
 			return true;
 		} else {
 			return false;
@@ -62,9 +64,9 @@ async function createOrUpdate(user, apartment) {
 		await Apartment.create({
 			owners: [user.userID],
 			users: [user.userID],
-			name: apartment.name,
-			rules: apartment.rules,
-			address: apartment.address,
+			name: apartmentInfo.name,
+			rules: apartmentInfo.rules,
+			address: apartmentInfo.address,
 			totals: [{userID: user.userID, total: 0}]
 		});
 		return true;
