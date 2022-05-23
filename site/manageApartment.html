@@ -34,31 +34,17 @@
                 let name = document.getElementById("typeApNameX").value;
                 let addr = document.getElementById("typeApAddressX").value;
                 let rules = document.getElementById("typeApRulesX").value;
-                let text = '{';
+                let aptInfo = {};
                 if (name != '') {
-                    text += '"name":"'+name+'"';
-                    if (addr != '') {
-                        text += ', "address":"'+addr+'"';
-                    }
-                    if (rules != '') {
-                        if (rules != '') {
-                            text += ', "rules":"'+rules+'"';
-                        }
-                    }
-                } else {
-                    if (addr != '') {
-                        text += '"address":"'+addr+'"';
-                        if (rules != '') {
-                            text += ', "rules":"'+rules+'"';
-                        }
-                    } else {
-                        if (rules != '') {
-                            text += '"rules":"'+rules+'"';
-                        }
-                    }
+                    aptInfo.name = name;
                 }
-                text += '}';
-                console.log(text);
+                if (addr != '') {
+                    aptInfo.address = addr;
+                }
+                if (rules != '') {
+                    aptInfo.rules = rules;
+                }
+                console.log(JSON.stringify(aptInfo));
                 
                 $(function() {
                     $.ajax({
@@ -66,7 +52,7 @@
                         type: "patch",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
-                        data: text,
+                        data: JSON.stringify(aptInfo),
                         success: function(data, textStatus, jqXHR) {
                             console.log("SUCCESS in modifyApartment");
                             window.location = "viewApartment.html";
