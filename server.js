@@ -12,7 +12,7 @@ require('./databaseConnection');	//usata per creare e manterene la connessione a
 
 
 const PREFIX = process.env.PREFIX;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 const app = express()
 app.use(bodyparser.json());
