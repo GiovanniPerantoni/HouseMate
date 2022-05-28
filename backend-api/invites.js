@@ -4,21 +4,6 @@ const apt = require("../backend-db/apartment")
 const auth = require("../backend-db/authentication");
 const invites = require("../backend-db/invites");
 
-/*
-- PATCH /apartment/invite/new 
-  req: { "users": ["id1", "id2", ...] }
-  res: { "invite": "2ef34..." }
-- POST /apartment/invite/accept
-  req: { "invite" : "2ef34..." }
-  res: "" 
-*/
-
-/*
-apt.isOwner(user)
-auth.exists(user)
-invites._new(owner, users)
-*/
-
 async function _new(req, res) {
     try {
         let owner = req.user;
@@ -28,7 +13,11 @@ async function _new(req, res) {
             com.returnErrorMessage(res, 403, "User is not an administrator");
             return;
         }
-        // com.checkObligatoryParameters ??
+
+        if (!com.checkObligatoryParameters(res, [users], ["array-string"])) {
+            return;
+        }
+
         for (let i=0; i<users.lenght; i++) {
             if (!auth.exists(users[i])) {
                 com.returnErrorMessage(res, 400, "User does not exist");
@@ -48,11 +37,6 @@ async function _new(req, res) {
         console.log(err);
     }
 }
-
-/*
-invites.getUsers(invite)
-invites.accept(invite)
-*/
 
 async function accept(req, res) {
     try {
