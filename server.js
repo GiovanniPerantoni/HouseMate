@@ -49,14 +49,15 @@ const swaggerDefinition = {
   components: {},
   info: {
     title: 'HouseMate',
+    description: 'This API allows users residing in the same apartment to share expenses and see their contributions.',
     version: '1.0.0',
   },
   servers: [
     {
-      url: 'http://localhost:3000',
+      url: 'http://localhost:3000' + PREFIX,
       description: 'Development server',
     }
-  ]
+  ],
 };
 
 const options = {
