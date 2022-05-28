@@ -133,6 +133,8 @@ async function login(req, res) {
  *         description: user's password (clear text)
  *       example:
  *        email: 'user@example.com'
+ *        first_name: 'John'
+ *        last_name: 'Doe'
  *        pass: 'password'
  *   responses:
  *    '200':
