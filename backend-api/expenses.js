@@ -404,7 +404,7 @@ async function modify (req, res) {
  *      description: 'Everything went smoothly.'
  *    '400':
  *      description: >-
- *       This response is sent if the price is negative, if the expense either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *       This response is sent if the expense either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
  *      content:
  *       application/json:
  *        schema:
