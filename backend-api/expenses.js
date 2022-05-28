@@ -276,8 +276,17 @@ async function add (req, res) {
  *        properties:
  *         expenseID:
  *          type: string
+ *         date:
+ *          type: date
+ *         price:
+ *          type: number
+ *         product:
+ *           type: string
  *       example:
  *        expenseID: '4e5dcba29...'
+ *        date: '2022-01-02T13:45'
+ *        price: 5
+ *        product: 'Table spoons'
  *   responses:
  *    '200':
  *      description: 'Everything went smoothly.'
@@ -388,17 +397,8 @@ async function modify (req, res) {
  *        properties:
  *         expenseID:
  *          type: string
- *         date:
- *          type: date
- *         price:
- *          type: number
- *         product:
- *           type: string
  *       example:
  *        expenseID: '4e5dcba29...'
- *        date: '2022-01-02T13:45'
- *        price: 5
- *        product: 'Table spoons'
  *   responses:
  *    '200':
  *      description: 'Everything went smoothly.'
