@@ -14,7 +14,8 @@ const apartmentSchema = new mongoose.Schema({
 			userID: { type: mongoose.Schema.Types.ObjectId },
 			total: Number
 		}
-	]}
+	]},
+	invite: { type: String, default: null }
 });
 const Apartment = mongoose.model("apartment", apartmentSchema);
 

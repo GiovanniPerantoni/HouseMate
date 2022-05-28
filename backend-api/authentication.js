@@ -41,12 +41,6 @@ async function signup(req, res)
 			res.status(400).send({ "motivation": "Email already used." });
 		else
 		{
-			//!!! WIP solo per lo sprint 1, creo ed inserisco in automatico l'utente in un appartamento
-			await apt.createOrUpdate(user, {
-				name: "apartment 1",
-				rules: "be quiet",
-				address: "NA"
-			})
 			res.status(200).json(com.cleanObjectData(user, ["token"]));
 		}
 

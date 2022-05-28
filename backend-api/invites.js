@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const com = require("./common");
 const apt = require("../backend-db/apartment")
 const auth = require("../backend-db/authentication");
@@ -10,7 +9,7 @@ async function _new(req, res) {
         let { users } = req.body;
 
         if (!apt.isOwner(owner)) {
-            com.returnErrorMessage(res, 403, "User is not an administrator");
+            com.returnErrorMessage(res, 403, "User isn't the owner of the apartment.");
             return;
         }
 
@@ -18,19 +17,16 @@ async function _new(req, res) {
             return;
         }
 
-        for (let i=0; i<users.lenght; i++) {
+        for (let i = 0; i < users.lenght; i++) {
             if (!auth.exists(users[i])) {
-                com.returnErrorMessage(res, 400, "User does not exist");
+                com.returnErrorMessage(res, 400, "Invalid invited list.");
                 return;
             }
         }
         
-        let token = invites._new(owner, users);
+        let token = await invites._new(owner, users);
 
-        let toRet = {
-            "invite": token
-        };
-        res.status(200).json(toRet);
+        res.status(200).json({ "invite" : token });
 
     } catch (err) {
         com.returnErrorMessage(res, 500, "Unexpected error");
@@ -48,17 +44,26 @@ async function accept(req, res) {
             return;
         }
 
-        for (let i=0; i<users.lenght; i++) {
-            if (user == users[i]) {
-                invites.accept(invite, user);
-                res.status(200).send();
-                return;
+        if (await apt.getApartment(user)) {
+            com.returnErrorMessage(res, 400, "The user is already assigned to an apartment.");
+            return;
+        }
+
+        for (let i = 0; i < users.length; i++) {
+            if (users[i] == user.userID) {
+                if (await invites.accept(invite, user)) {
+                    res.status(200).send();
+                    return;
+                } else {
+                    com.returnErrorMessage(res, 403, "Invalid or expired invite.");
+                    return;
+                }
             }
         }
-        com.returnErrorMessage(res, 400, "Uninvited user");
+        com.returnErrorMessage(res, 400, "The user is uninvited.");
 
     } catch (err) {
-        com.returnErrorMessage(res, 500, "Unexpected error");
+        com.returnErrorMessage(res, 500, "Unexpected error.");
         console.log(err);
     }
 }
