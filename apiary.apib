@@ -1,664 +1,787 @@
-FORMAT: 1A
-HOST: https://polls.apiblueprint.org/
-
-# HouseMate 
-
-## Registration [/api/v1/]
-
-### Login [POST /api/v1/login]
-
-+ Request (application/json)
-    
-    This request is used to request a new `token` to the server by giving the correct `credential` to be identified.
-    
-    + Attributes (object)
-        + email (string) - user's email (can be used only for 1 account)
-        + pass (string) - user's password (clear)
-
-
-+ Response 200 (application/json)
-
-    + Attributes (object)
-        + token (string) - token used to authenticate the user for a day.
-
-
-+ Response 401 (application/json)
-
-    This will be the response if the correct parameters are provided but they are incorrect
-
-    + Body
-
-            {
-                "motivation": "Invalid credentials."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are `missing`
-
-    + Body
-
-            { 
-                "motivation": "Missing parameters in request." 
-            }
-            
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-### Sign Up [POST /api/v1/signup]
-
-+ Request (application/json)
-    
-    This request is used to request the creation of a `new account` and, if successfull, a new `token` to be used in this session.
-    
-    + Attributes (object)
-        + first_name (string) - user's first name (name)
-        + last_name (string) - user's last name (surname)
-        + email (string) - user's email (can be used only for 1 account)
-        + pass (string) - user's password (clear)
-
-
-+ Response 200 (application/json)
-
-    + Attributes (object)
-        + token (string) - token used to authenticate the user for a day
-
-
-+ Response 400 (application/json)
-
-    This will be the response if the user ask to create an account with an `email` already in use in another account.
-
-    + Body
-
-            { 
-                "motivation": "Email already used."
-            }
-
-
-
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are `missing`
-
-    + Body
-
-            { 
-                "motivation": "Missing parameters in request." 
-            }
-            
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-
-## Expenses [/api/v1/apartment/expenses]
-
-### View [GET /api/v1/apartment/expenses/view]
-
-+ Request (application/json)
-    
-    + Attributes (object)
-        + limit (optional, number) - override the default number of expenses to be return (default: 20)
-    
-    + Headers
-        token: token used to authenticate the user for a day
-
-+ Response 200 (application/json)
-
-    + Body
-
-            { 
-                "totals" : [
-                    {
-                        "userID": "",
-                        "total": 0.0
-                    }
-                    ...
-                ],
-                "expenses": [
-                    {
-                        "expenseID": "",
-                        "date": "",
-                        "userID": "",
-                        "price": 0.0,
-                        "product": ""
-                    }
-                    ... until limit
-                ]
-            }
-      
-+ Response 400 (application/json)
-
-    This will be the response if the attribute limit is passed but it's less or equal to 0
-
-    + Body
-
-            {
-                "motivation": "Invalid limit."
-            }      
-            
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-            
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-            
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-### Add [POST /api/v1/apartment/expenses/add]
-
-+ Request (application/json)
-
-    + Headers
-        token: token used to authenticate the user for a day
-    
-    + Attributes (object)
-        + date (string) - date in the UTC format
-        + price (number) - price paid to buy the product (must be > 0)
-        + product (string) - name of the product
-        
-+ Response 200 
-        
-+ Response 400 (application/json)
-
-    This will be the response if the attribute price is less or equal to 0
-
-    + Body
-
-            {
-                "motivation": "Invalid price."
-            }
-            
-
-+ Response 400 (application/json)
-
-    This will be the response if there is a generic error.
-
-    + Body
-
-            {
-                "motivation": "Couldn't add expense."
-            }
-            
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if the user tries to add an expense but it's `not in an apartment`
-
-    + Body
-
-            { 
-                "motivation": "Couldn't add expense." 
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are `missing`
-
-    + Body
-
-            { 
-                "motivation": "Missing parameters in request." 
-            }
-            
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-        
-### Modify [PATCH /api/v1/apartment/expenses/modify]
-
-+ Request (application/json)
-
-    This request is used to modify an existing expense created by the user that is submitting this request
-
-    The user need to specify only the data that want to be modified
-
-    + Attributes (object)
-        + date (optional, string) - date in the UTC format 
-        + product (optional, string) - name of the product
-        + price (optional, number) - price paid to buy the product (must be > 0)
-        + expensesID (string)
-   
-    + Headers
-        token: token used to authenticate the user for a day
-    
-
-+ Response 200 
-
-+ Response 400 (application/json)
-
-    This will be the response if the attribute price is passed but it's less or equal to 0
-
-    + Body
-
-            {
-                "motivation": "Invalid price."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if there is a generic error.
-
-    + Body
-
-            {
-                "motivation": "Couldn't add expense."
-            }
-            
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the expense asked for `doesn't exist` or if the user doesn't have the `permission` to modify it
-
-    + Body
-
-            { 
-                "motivation": "Can't access expense." 
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are `missing`
-
-    + Body
-
-            { 
-                "motivation": "Missing parameters in request." 
-            }
-            
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-### Delete [DELETE /api/v1/apartment/expenses/delete]
-
-+ Request (application/json)
-
-    This request is used to modify an existing expense created by the user that is submitting this request
-    
-    + Attributes (object)
-        + expensesID (string)
-   
-    + Headers
-        token: token used to authenticate the user for a day
-    
-
-+ Response 200
-
-            
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the expense asked for `doesn't exist` or if the user doesn't have the `permission` to delete it
-
-    + Body
-
-            { 
-                "motivation": "Can't access expense." 
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are `missing`
-
-    + Body
-
-            { 
-                "motivation": "Missing parameters in request." 
-            }
-            
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-
-## Apartment Managment [/api/v1/apartment/manage/]
-
-### View [GET /api/v1/apartment/manage/info]
-
-+ Request (application/json)
-
-    This request is used to view the info of the apartment, usefull to know them before entering
-    
-    + Headers
-        token: token used to authenticate the user for a day
-        
-
-+ Response 200 (application/json)
-        
-    + Attributes (object)
-        + rules (string) - list of rules to be accepted before entering the apartment
-        + name (string) - name of the apartment
-        + address (string)
-
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-### Add or Modify [PATCH /api/v1/apartment/manage/info]
-
-+ Request (application/json)
-
-    This request is used to add or modify an existing info of the apartment
-    When the apartment is created this method can be used by settings all the parameters
-    
-    + Headers
-        token: token used to authenticate the owner for a day
-        
-    + Attributes (object)
-        + rules (optional, string) - list of rules to be accepted before entering the apartment
-        + name (optional, string) - name of the apartment
-        + address (optional, string)
-    
-
-+ Response 200
-            
-    + Body
-
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-
-+ Response 400 (application/json)
-
-    This will be the response if some parameters are present but they are not of the correct `type`
-
-    + Body
-
-            { 
-                "motivation": "Invalid parameters in request."" 
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
-
-## Aparment Users [/api/v1/apartment/users/]
-
-### View [GET /api/v1/apartment/users]
-
-+ Request (application/json)
-
-    This request is used to retrieve the `list of users` in the apartment in which the user that requested it is in.
-    
-    + Headers
-        token: token used to authenticate the user for a day
-        
-+ Response 200 (application/json)
-
-    + Attributes (object)
-        + first_name (string) - user's first name (name)
-        + last_name (string) - user's last name (surname)
-        + color (string) - the color associated with the user (in hex format)
-
-    + Body
-            [
-                {
-                    "first_name": "",
-                    "last_name": "",
-                    "color": "#FFFFFF",
-                }
-            ]
-            
-+ Response 403 (application/json)
-
-    This will be the response if it hasn't been provided a `token`
-
-    + Body
-
-            {
-                "motivation": "A token is required for authentication."
-            }
-
-+ Response 401 (application/json)
-
-    This will be the response if it hasn't been provided a `correct token`
-
-    + Body
-
-            {
-                "motivation": "Invalid or expired token."
-            }
-
-+ Response 500 (application/json)
-
-    This will be the response if there is some `unexpected error` generated from the server.
-    It's advised to `resend the request`.
-
-    + Body
-
-            {
-                "motivation": "Unexpected error."
-            }
+openapi: 3.0.0
+info:
+  title: HouseMate
+  description: >-
+    This API allows users residing in the same apartment to share expenses and
+    see their contributions.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3000/api/v1'
+    description: Development server
+paths:
+  /apartment/users:
+    get:
+      summary: Get apartment users
+      description: >-
+        This method is used to get all the public information related to the
+        users residing in the same apartment as the user.
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      responses:
+        '200':
+          description: Everything went smoothly.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - userID
+                    - first_name
+                    - last_name
+                    - color
+                  properties:
+                    userID:
+                      type: string
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    color:
+                      type: color
+              example:
+                - userID: 6290ec70f...
+                  first_name: John
+                  last_name: Doe
+                  color: '#ffffff'
+                - userID: 2df0a1f9a...
+                  first_name: Alice
+                  last_name: Smith
+                  color: '#a01eff'
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /apartment/manage/info:
+    get:
+      summary: Get apartment information
+      description: >-
+        This method is used to get all the **general information** (name,
+        address and rules) of the apartment where the user resides.
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      responses:
+        '200':
+          description: Everything went smoothly.
+          content:
+            application/json:
+              schema:
+                required:
+                  - name
+                  - address
+                  - rules
+                properties:
+                  name:
+                    type: string
+                  address:
+                    type: string
+                  rules:
+                    type: string
+              example:
+                name: Johns Apartment
+                address: Via Dante Alighieri 12 Roma 00100
+                rules: '- NO overnight guests, NO loud music at night.'
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+    patch:
+      summary: Add a new apartment or change apartment information
+      description: >-
+        This method is used to create or modify the **general information**
+        (name, address and rules) of the apartment where the user is owner.
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                rules:
+                  type: string
+            example:
+              name: Johns&Alices Apartment
+              address: Via Dante Alighieri 12 Roma 00100
+              rules: '- NO overnight guests, NO loud music at night, NO pets.'
+      responses:
+        '200':
+          description: Everything went smoothly.
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /login:
+    post:
+      summary: Login
+      description: >-
+        This method is used to generate a new authentication `token` by giving
+        the correct **user credentials**.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - pass
+              properties:
+                email:
+                  type: string
+                  description: user's email (can be used only for 1 account)
+                pass:
+                  type: string
+                  description: user's password (clear text)
+              example:
+                email: user@example.com
+                pass: password
+      responses:
+        '200':
+          description: Everything went smoothly.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - token
+                properties:
+                  token:
+                    type: string
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+        '400':
+          description: >-
+            This response is sent when the body parameters are of the **wrong
+            type** or if any body parameter is **missing**.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid parameters in request.
+        '401':
+          description: This response is sent in case of **invalid credentials**.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid credentials.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /signup:
+    post:
+      summary: Sign Up
+      description: >-
+        This method is used to create a new account by giving the required
+        information and, if successful, retrieve a new authentication `token`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - first_name
+                - last_name
+                - pass
+              properties:
+                email:
+                  type: string
+                  description: user's email (can be used only for 1 account)
+                first_name:
+                  type: string
+                  description: user's fist name(s).
+                last_name:
+                  type: string
+                  description: user's last name(s).
+                pass:
+                  type: string
+                  description: user's password (clear text)
+              example:
+                email: user@example.com
+                first_name: John
+                last_name: Doe
+                pass: password
+      responses:
+        '200':
+          description: Everything went smoothly.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - token
+                properties:
+                  token:
+                    type: string
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+        '400':
+          description: >-
+            This response is sent if the email is already used or when the body
+            parameters are of the **wrong type** or if any body parameter is
+            **missing**.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid parameters in request.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /apartment/expenses/view:
+    get:
+      summary: Get shared expenses
+      description: >-
+        This method is used to get the **shared expenses** of the users residing
+        in the same apartment and the **total amount** of money spent by each.
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      responses:
+        '200':
+          description: Everything went smoothly.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userID:
+                          type: string
+                        total:
+                          type: number
+                  expenses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userID:
+                          type: string
+                        expenseID:
+                          type: string
+                        date:
+                          type: date
+                        price:
+                          type: number
+                        product:
+                          type: string
+              example:
+                totals:
+                  - userID: 6290ec70f...
+                    total: 25
+                  - userID: 2df0a1f9a...
+                    total: 50.5
+                expenses:
+                  - userID: 6290ec70f...
+                    expenseID: 13a0fd10a...
+                    price: 25
+                    product: Small chair
+                  - userID: 2df0a1f9a...
+                    expenseID: 4e5dcba29...
+                    price: 45
+                    product: Weekly groceries
+                  - userID: 2df0a1f9a...
+                    expenseID: 9fe1731ad...
+                    price: 5.5
+                    product: Beverages
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /apartment/expenses/add:
+    post:
+      summary: Add a new expense
+      description: This method is used to add **shared expenses**
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - date
+                - price
+                - product
+              properties:
+                date:
+                  type: date
+                price:
+                  type: number
+                product:
+                  type: string
+            example:
+              date: '2022-01-01T12:00'
+              price: 10
+              product: Hamburger
+      responses:
+        '200':
+          description: Everything went smoothly.
+        '400':
+          description: >-
+            This response is sent if the price is negative, if the user doesn't
+            reside in an apartment or when the body parameters are of the
+            **wrong type** or if any body parameter is **missing**.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid price.
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /apartment/expenses/modify:
+    patch:
+      summary: Modify an expense
+      description: >-
+        This method is used to change one of the **shared expenses** which
+        either has to belong to the current user if the user isn't the owner or
+        doesn't have to, if the user is the owner.
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - expenseID
+              properties:
+                expenseID:
+                  type: string
+                date:
+                  type: date
+                price:
+                  type: number
+                product:
+                  type: string
+            example:
+              expenseID: 4e5dcba29...
+              date: '2022-01-02T13:45'
+              price: 5
+              product: Table spoons
+      responses:
+        '200':
+          description: Everything went smoothly.
+        '400':
+          description: >-
+            This response is sent if the price is negative, if the expense
+            either doesn't exist or isn't modifiable by the user, or when the
+            body parameters are of the **wrong type** or if any body parameter
+            is **missing**.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Can't access expense.
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+  /apartment/expenses/delete:
+    patch:
+      summary: Delete an expense
+      description: >-
+        This method is used to delete one of the **shared expenses** which
+        either has to belong to the current user if the user isn't the owner or
+        doesn't have to, if the user is the owner.
+      parameters:
+        - name: x-access-token
+          in: header
+          description: Authentication token required for access.
+          required: true
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - expenseID
+              properties:
+                expenseID:
+                  type: string
+            example:
+              expenseID: 4e5dcba29...
+      responses:
+        '200':
+          description: Everything went smoothly.
+        '400':
+          description: >-
+            This response is sent if the expense either doesn't exist or isn't
+            modifiable by the user, or when the body parameters are of the
+            **wrong type** or if any body parameter is **missing**.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Can't access expense.
+        '401':
+          description: >-
+            This response is sent if the provided authentication `token` is
+            invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Invalid or expired token.
+        '403':
+          description: This response is sent if no authentication `token` is provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: A token is required for authentication.
+        '500':
+          description: >-
+            This response is sent if some **unexpected internal error** occurs
+            during execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - motivation
+                properties:
+                  motivation:
+                    type: string
+              example:
+                motivation: Unexpected error.
+components: {}
+tags: []

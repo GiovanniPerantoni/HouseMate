@@ -15,9 +15,6 @@ userSchema.virtual('userID').get(function(){ return this._id.toHexString(); });
 userSchema.set('toJSON', { virtuals: true });
 const User = mongoose.model("User", userSchema);
 
-
-
-
 async function login(email, password) {
 	const user = await User.findOne({email});	//cerco se trovo un utente con l'email datami
 	if (user && user.password == password) {	//controllo che l'hash della password sia corretto
