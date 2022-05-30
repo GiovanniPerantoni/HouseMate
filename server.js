@@ -8,6 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const {login, signup} = require("./backend-api/authentication");
 const apartment = require("./backend-api/apartment");
 const expenses = require("./backend-api/expenses");
+const invites = require("./backend-api/invites");
 
 const auth = require("./backend-db/authentication");
 require('./databaseConnection');	//usata per creare e manterene la connessione al mongodb
@@ -36,8 +37,12 @@ app.delete(PREFIX + "/apartment/expenses/delete", auth.verifyToken, expenses._de
 app.get  (PREFIX + "/apartment/manage/info", auth.verifyToken, apartment.manageView );
 app.patch(PREFIX + "/apartment/manage/info", auth.verifyToken, apartment.manageInfo );
 
-//Apartment Users
+// Apartment Users
 app.get  (PREFIX + "/apartment/users"      , auth.verifyToken, apartment.users      );
+
+// Invites
+app.patch(PREFIX + "/apartment/invites/new"   , auth.verifyToken, invites._new     );
+app.post (PREFIX + "/apartment/invites/accept", auth.verifyToken, invites.accept   );
 
 //---------------------WEBSITE SECTION---------------------\\
 app.use('/', express.static(__dirname + '/site'));

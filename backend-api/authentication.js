@@ -187,13 +187,8 @@ async function signup(req, res) {
 		const user = await auth.createAccount(first_name, last_name, email, sha256(pass));
 		if (user == null)
 			res.status(400).send({ "motivation": "Email already used." });
-		else {
-			//!!! WIP solo per lo sprint 1, creo ed inserisco in automatico l'utente in un appartamento
-			await apt.createOrUpdate(user, {
-				name: "apartment 1",
-				rules: "be quiet",
-				address: "NA"
-			})
+		else
+		{
 			res.status(200).json(com.cleanObjectData(user, ["token"]));
 		}
 
