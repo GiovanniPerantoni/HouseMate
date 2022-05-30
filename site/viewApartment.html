@@ -32,7 +32,7 @@
             function viewApartment() {
                 $(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+                        url: API_URI+"/apartment/manage/info",
                         type: "get",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},

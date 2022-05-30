@@ -47,7 +47,7 @@
             async function retriveUserInfo(userID) {
                 //$(async function() {
                     await $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/users",
+                        url: API_URI+"/apartment/users",
                         type: "get",
                         contentType: "application/json",
                         headers: {'x-access-token' : userID},
@@ -103,7 +103,7 @@
                 usrToken = getCookie("token");
                 $(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
+                        url: API_URI+"/apartment/expenses/view",
                         type: "get",
                         contentType: "application/json",
                         headers: {'x-access-token' : usrToken},
@@ -149,7 +149,7 @@
                 if (product != '' && price != '') {
                     $(function() {
                         $.ajax({
-                            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
+                            url: API_URI+"/apartment/expenses/add",
                             type: "post",
                             contentType: "application/json",
                             headers: {'x-access-token' : getCookie("token")},
@@ -186,7 +186,7 @@
 
                 $(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/modify",
+                        url: API_URI+"/apartment/expenses/modify",
                         type: "patch",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
@@ -208,7 +208,7 @@
                 let text = '{"expenseID":"'+globalProductID+'"}';
                 $(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/delete",
+                        url: API_URI+"/apartment/expenses/delete",
                         type: "delete",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
