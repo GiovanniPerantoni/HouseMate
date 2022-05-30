@@ -3,6 +3,7 @@ const apt = require("../backend-db/apartment")
 const auth = require("../backend-db/authentication");
 const invites = require("../backend-db/invites");
 
+// /apartment/invites/new
 async function _new(req, res) {
     try {
         let owner = req.user;
@@ -34,6 +35,7 @@ async function _new(req, res) {
     }
 }
 
+// /apartment/invites/accept
 async function accept(req, res) {
     try {
         let { invite } = req.body;
