@@ -11,6 +11,7 @@ const exp = require("../backend-db/expenses")
 beforeAll(async () => {
 	await mongoose.connect(process.env.MONGO_URI);
 
+	//TODO fare direttamente il signup e che l'utente sia invitato in un appartamento normalmente
 	let user = await auth.login(global.email, sha256(global.pass))
 	global.validToken = user.token;
 	
