@@ -9,23 +9,26 @@ async function _new(req, res) {
         let owner = req.user;
         let { users } = req.body;
 
-        if (!apt.isOwner(owner)) {
+        if (!com.checkObligatoryParameters(res, [users], ["array-email"])) {
+            return;
+        }
+
+        if (!await apt.isOwner(owner)) {
             com.returnErrorMessage(res, 403, "User isn't the owner of the apartment.");
             return;
         }
 
-        if (!com.checkObligatoryParameters(res, [users], ["array-string"])) {
-            return;
-        }
-
-        for (let i = 0; i < users.lenght; i++) {
-            if (!auth.exists(users[i])) {
+        var usersIDs = [];
+        for (let i = 0; i < users.length; i++) {
+            let user = await auth.getUserByEmail(users[i]);
+            if (!user) {
                 com.returnErrorMessage(res, 400, "Invalid invited list.");
                 return;
             }
+            usersIDs[i] = user.userID;
         }
         
-        let token = await invites._new(owner, users);
+        let token = await invites._new(owner, usersIDs);
 
         res.status(200).json({ "invite" : token });
 
