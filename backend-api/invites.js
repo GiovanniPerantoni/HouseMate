@@ -5,33 +5,33 @@ const invites = require("../backend-db/invites");
 
 /**
  * @swagger
- * /apartment/invites/add:
- *  get:
+ * /apartment/invites/new:
+ *  patch:
  *   summary: Create new invite
  *   description: 'This method is used to create the **invitation token** required to join an apartment.'
  *   parameters:
- *    - name: x-access-token
- *      in: header
- *      description: Authentication token required for access.
- *      required: true
- *      example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   - name: x-access-token
+ *     in: header
+ *     description: Authentication token required for access.
+ *     required: true
+ *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
  *   requestBody:
  *     content:
  *      application/json:
  *       schema:
  *        required:
- *         - users
+ *        - users
  *        properties:
  *         users:
- *         type: array
- *         items:
- *           type: email
+ *          type: array
+ *          items:
+ *           type: string
  *       example:
- *        users: 
+ *        users:
  *         - test@email.com
  *         - test2@email.com
- *     responses:
- *     '200':
+ *   responses:
+ *    '200':
  *      description: 'Everything went smoothly.'
  *      content:
  *       application/json:
@@ -42,12 +42,25 @@ const invites = require("../backend-db/invites");
  *         properties:
  *          invite:
  *           type: string
- *         example:
- *           token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
- *     '400':
+ *        example:
+ *         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *    '400':
  *      description: 'This response is sent if a mail is not present in the database, if the body parameters are of the **wrong type** or if any body parameter is **missing**.'
  *      content:
  *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: 'Invalid invites list.'
+ *    '401':
+ *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
+ *     content:
+ *      application/json:
  *       schema:
  *        type: object
  *        required:
@@ -56,47 +69,33 @@ const invites = require("../backend-db/invites");
  *         motivation:
  *          type: string
  *       example:
- *        motivation: 'Invalid parameters in request.'
- *     '401':
- *      description: 'This response is sent if the provided authentication `token` is invalid or expired.'
- *      content:
- *       application/json:
- *        schema:
- *         type: object
- *         required:
- *         - motivation
- *         properties:
- *          motivation:
- *           type: string
- *        example:
- *         motivation: 'Invalid or expired token.'
- *     '403':
- *      description: 'This response is sent if no authentication `token` is provided or if the user is not the owner of the apartment.'
- *      content:
- *       application/json:
- *        schema:
- *         type: object
- *         required:
- *         - motivation
- *         properties:
- *          motivation:
- *           type: string
- *        example:
- *         motivation: >-
- *          User isn't the owner of the apartment.
- *     '500':
- *      description: 'This response is sent if some **unexpected internal error** occurs during execution.'
- *      content:
- *       application/json:
- *        schema:
- *         type: object
- *         required:
- *         - motivation
- *         properties:
- *          motivation:
- *           type: string
- *        example:
- *         motivation: 'Unexpected error.'
+ *        motivation: 'Invalid or expired token.'
+ *    '403':
+ *     description: 'This response is sent if no authentication `token` is provided or if the user is not the owner of the apartment.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: User is not the owner of the apartment.
+ *    '500':
+ *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Unexpected error.'
  */
 async function _new(req, res) {
     try {
@@ -132,7 +131,74 @@ async function _new(req, res) {
     }
 }
 
-// /apartment/invites/accept
+/**
+ * @swagger
+ * /apartment/invites/accept:
+ *  post:
+ *   summary: Accept invitation
+ *   description: 'This method is used to **accept an invitation** sent by the apartment owner'
+ *   parameters:
+ *   - name: x-access-token
+ *     in: header
+ *     description: Authentication token required for access.
+ *     required: true
+ *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   responses:
+ *    '200':
+ *      description: 'Everything went smoothly.'
+ *    '400':
+ *      description: 'This response is sent if the link is used by an uninvited user, if the user using the link is already in an apartment, if the body parameters are of the **wrong type** or if any body parameter is **missing**.'
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: 'The user is uninvited.'
+ *    '401':
+ *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Invalid or expired token.'
+ *    '403':
+ *     description: 'This response is sent if no authentication `token` is provided or if the invite is invalid or expired.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: Invalid or expired invite.
+ *    '500':
+ *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Unexpected error.'
+ */
 async function accept(req, res) {
     try {
         let { invite } = req.body;
