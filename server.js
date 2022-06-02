@@ -9,7 +9,7 @@ const {login, signup} = require("./backend-api/authentication");
 const apartment = require("./backend-api/apartment");
 const expenses = require("./backend-api/expenses");
 const invites = require("./backend-api/invites");
-const list = require("./backend-api/list");
+//const list = require("./backend-api/list");
 
 const auth = require("./backend-db/authentication");
 require('./databaseConnection');	//usata per creare e manterene la connessione al mongodb
@@ -46,8 +46,8 @@ app.patch(PREFIX + "/apartment/invites/new"   , auth.verifyToken, invites._new  
 app.post (PREFIX + "/apartment/invites/accept", auth.verifyToken, invites.accept   );
 
 // Shopping List
-app.post  (PREFIX + "/apartment/list/add"   , auth.verifyToken, list.add    );
-app.patch (PREFIX + "/apartment/list/modify", auth.verifyToken, list.modify );
+//app.post  (PREFIX + "/apartment/list/add"   , auth.verifyToken, list.add    );
+//app.patch (PREFIX + "/apartment/list/modify", auth.verifyToken, list.modify );
 
 //---------------------WEBSITE SECTION---------------------\\
 app.use('/', express.static(__dirname + '/site'));
