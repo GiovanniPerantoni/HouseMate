@@ -2,6 +2,95 @@ const list = require("../backend-db/list");
 const com = require("./common");
 
 // /apartment/list/add
+
+/**
+ * @swagger
+ * /apartment/list/add:
+ *  post:
+ *   summary: Add a new expense
+ *   description: 'This method is used to add **shared expenses**'
+ *   parameters:
+ *   - name: x-access-token
+ *     in: header
+ *     description: Authentication token required for access.
+ *     required: true
+ *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        required:
+ *        - date
+ *        - price
+ *        - product
+ *        properties:
+ *         date:
+ *          type: date
+ *         price:
+ *          type: number
+ *         product:
+ *           type: string
+ *       example:
+ *        date: '2022-01-01T12:00'
+ *        price: 10
+ *        product: 'Hamburger'
+ *   responses:
+ *    '200':
+ *      description: 'Everything went smoothly.'
+ *    '400':
+ *      description: >-
+ *       This response is sent if the price is negative, if the user doesn't reside in an apartment or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: 'Invalid price.'
+ *    '401':
+ *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Invalid or expired token.'
+ *    '403':
+ *     description: 'This response is sent if no authentication `token` is provided.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'A token is required for authentication.'
+ *    '500':
+ *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Unexpected error.'
+ */
 async function add(req, res) {
     try {
         const { product, date } = req.body;
