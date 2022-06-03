@@ -9,7 +9,7 @@ async function add(req, res) {
         if(!com.checkObligatoryParameters(res, [product, date], ["string", "date"])) {
             return;
         }
-        
+
         const exp = await list.createProduct(req.user,
             {
                 userID: req.user.userID,
