@@ -132,9 +132,9 @@ async function add(req, res) {
  *      application/json:
  *       schema:
  *        required:
- *        - itemID
+ *        - productID
  *        properties:
- *         itemID:
+ *         productID:
  *          type: string
  *         product:
  *          type: string
@@ -143,7 +143,7 @@ async function add(req, res) {
  *         lastBougth:
  *          type: date
  *       example:
- *        itemID: '4e5dcba29...'
+ *        productID: '4e5dcba29...'
  *        product: 'Pasta'
  *        Buyer: 'Polnareff'
  *        date: '2022-01-02T13:45'
@@ -207,9 +207,9 @@ async function add(req, res) {
  */
 async function modify(req, res) {
     try {
-        const { itemID, product, buyer, lastBought } = req.body;
-        // tipo itemID
-        if(!com.checkObligatoryParameters(res, [itemID], ["mongooseObjectID"])) {
+        const { productID, product, buyer, lastBought } = req.body;
+        // tipo productID
+        if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
             return;
         }
         if(!com.checkOptionalParameters(res, [product, buyer, lastBought], ["string", "string", "date"])) {
@@ -217,7 +217,7 @@ async function modify(req, res) {
         }
         // controllo last bougth
 
-        const listElem = { _id: itemID };
+        const listElem = { _id: productID };
         if (product) { listElem.product = product; }
         if (buyer) { listElem.buyer = buyer; }
         if (lastBought) { listElem.lastBought = lastBought; }
