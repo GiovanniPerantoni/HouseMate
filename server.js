@@ -48,6 +48,7 @@ app.post (PREFIX + "/apartment/invites/accept", auth.verifyToken, invites.accept
 // Shopping List
 app.post  (PREFIX + "/apartment/list/add"   , auth.verifyToken, list.add    );
 app.patch (PREFIX + "/apartment/list/modify", auth.verifyToken, list.modify );
+app.delete(PREFIX + "/apartment/list/delete", auth.verifyToken, list._delete);
 
 //---------------------WEBSITE SECTION---------------------\\
 app.use('/', express.static(__dirname + '/site'));

@@ -60,4 +60,24 @@ async function modify(req, res) {
     }
 }
 
-module.exports = {add, modify}
+// /apartment/list/delete
+async function _delete(req, res) {
+    try {
+        const { productID } = req.body;
+        if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
+            return;
+        }
+
+        const result = await list.deleteProduct(req.user, { _id: productID });
+        if (!result) {
+            com.returnErrorMessage(res, 400, "Can't access list element.");
+        } else {
+            res.status(200).send();
+        }
+    } catch (err) {
+        com.returnErrorMessage(res, 500, "Unexpected error.");
+        console.log(err);
+    }
+}
+
+module.exports = {add, modify, _delete}
