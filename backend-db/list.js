@@ -6,7 +6,7 @@ const itemSchema = new mongoose.Schema({
 	product: String,
 	date: Date,
 });
-itemSchema.virtual('itemID').get(function(){
+itemSchema.virtual('productID').get(function(){
 	return this._id.toHexString();
 });
 itemSchema.set('toJSON', {
