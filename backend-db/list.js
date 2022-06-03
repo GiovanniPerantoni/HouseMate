@@ -18,16 +18,36 @@ async function createProduct(user, item) {
 	const apartment = await apt.getApartment(user);
 	if (!apartment) return false;			//se l'utente non fa parte di nessun appartamento non cotinuo
 
-	const newItem = await Item.create(item);
+	const itm = await Item.create(item);
 	await apt.Apartment.updateOne(
 		{ users: user.userID },
-		{ $push: { list: newItem._id } }
+		{ $push: { list: itm._id } }
 	);
 	return true;
 }
 
 async function modifyProduct(user, item) {
-	return false;
+	const itm = await Item.findOne({ _id: item._id });
+	if (!itm) return false;
+
+	await Item.updateOne(
+		{ _id: item._id },
+		item
+	);
+	return await Item.findOne({ _id: item._id });
 }
 
-module.exports = { Item, createProduct, modifyProduct }
+async function deleteProduct(user, item) {
+	const itm = await Item.findOne({ _id: item._id });
+	if (!itm) return false;
+	await Item.deleteOne({ _id: item._id });
+	await apt.Apartment.updateOne(
+		{ users: user.userID },
+		{ $pull: { list: itm._id } }
+	);
+	return true;
+}
+
+
+
+module.exports = { Item, createProduct, modifyProduct, deleteProduct }

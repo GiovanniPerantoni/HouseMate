@@ -33,26 +33,25 @@ async function add(req, res) {
 // /apartment/list/modify
 async function modify(req, res) {
     try {
-        const { itemID, product, buyer, lastBought } = req.body;
+        const { itemID, product, lastBought } = req.body;
         // tipo itemID
         if(!com.checkObligatoryParameters(res, [itemID], ["mongooseObjectID"])) {
             return;
         }
-        if(!com.checkOptionalParameters(res, [product, buyer, lastBought], ["string", "string", "date"])) {
+        if(!com.checkOptionalParameters(res, [product, lastBought], ["string", "date"])) {
             return;
         }
         // controllo last bougth
 
-        const listElem = { _id: itemID };
+        const listElem = { _id: itemID, userID: req.user.userID };
         if (product) { listElem.product = product; }
-        if (buyer) { listElem.buyer = buyer; }
         if (lastBought) { listElem.lastBought = lastBought; }
 
         const result = await list.modifyProduct(req.user, listElem);
         if (!result) {
             com.returnErrorMessage(res, 400, "Can't access list element");
         } else {
-            res.status.send();
+            res.status(200).send();
         }
     } catch (err) {
         com.returnErrorMessage(res, 500, "Unexpected error");
@@ -63,12 +62,12 @@ async function modify(req, res) {
 // /apartment/list/delete
 async function _delete(req, res) {
     try {
-        const { productID } = req.body;
-        if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
+        const { itemID } = req.body;
+        if(!com.checkObligatoryParameters(res, [itemID], ["mongooseObjectID"])) {
             return;
         }
 
-        const result = await list.deleteProduct(req.user, { _id: productID });
+        const result = await list.deleteProduct(req.user, { _id: itemID });
         if (!result) {
             com.returnErrorMessage(res, 400, "Can't access list element.");
         } else {
