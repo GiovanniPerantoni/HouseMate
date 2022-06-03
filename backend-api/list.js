@@ -234,7 +234,88 @@ async function modify(req, res) {
     }
 }
 
-// /apartment/list/delete
+/**
+ * @swagger
+ * /apartment/list/delete:
+ *  patch:
+ *   summary: Delete an entry of the shopping list
+ *   description: >-
+ *    This method is used to delete one of the **entries of the shpping list** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
+ *   parameters:
+ *   - name: x-access-token
+ *     in: header
+ *     description: Authentication token required for access.
+ *     required: true
+ *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        required:
+ *        - ProductID
+ *        properties:
+ *         ProductID:
+ *          type: string
+ *       example:
+ *        ProductID: '4e5dcba29...'
+ *   responses:
+ *    '200':
+ *      description: 'Everything went smoothly.'
+ *    '400':
+ *      description: >-
+ *       This response is sent if the shopping list element either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: >-
+ *          Can't access list element.
+ *    '401':
+ *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Invalid or expired token.'
+ *    '403':
+ *     description: 'This response is sent if no authentication `token` is provided.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'A token is required for authentication.'
+ *    '500':
+ *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Unexpected error.'
+ */
 async function _delete(req, res) {
     try {
         const { productID } = req.body;
