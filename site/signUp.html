@@ -67,7 +67,7 @@
                                document.cookie = "token="+data.token+"; "+expires+"; path=/";
                                //console.log(document.cookie);
                                //console.log("SUCCESS!");
-                               window.location = "/viewExpenses.html";
+                               window.location = "/manageApartment.html";
                            },
                            error: function (jqXHR, textStatus, errorThrown) {
                                document.getElementById('errMsg').innerHTML = "La mail è già in uso.";
