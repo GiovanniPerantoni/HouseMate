@@ -64,6 +64,20 @@ const com = require("./common");
  *           expenseID: '9fe1731ad...'
  *           price: 5.5
  *           product: 'Beverages'
+ *    '400':
+ *      description: >-
+ *       This response is sent if the limit is not valid or if the body parameters are of the **wrong type**.
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: 'Invalid limit.'
  *    '401':
  *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
  *     content:

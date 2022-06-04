@@ -1,6 +1,110 @@
 const list = require("../backend-db/list");
 const com = require("./common");
 
+// Tipo buyer
+// Refactor product into elem
+
+/**
+ * @swagger
+ * /apartment/list/view:
+ *  get:
+ *   summary: Get the elements of the shopping list
+ *   description: 'This method is used to get the **entries of the shopping list** of the users residing in the same apartment.'
+ *   parameters:
+ *   - name: x-access-token
+ *     in: header
+ *     description: Authentication token required for access.
+ *     required: true
+ *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   responses:
+ *    '200':
+ *     description: 'Everything went smoothly.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         products:
+ *          type: array
+ *          items:
+ *           type: object
+ *           properties:
+ *            productID:
+ *             type: string
+ *            product:
+ *             type: string
+ *            buyer:
+ *             type: string
+ *            date:
+ *             type: date
+ *       example:
+ *        products:
+ *         - itemID: '6290ec70f...'
+ *           product: 'Earl Grey tea'
+ *           buyer: 'Jonathan'
+ *           date: '2022-01-01T12:00'
+ *         - itemID: '2df0a1f9a...'
+ *           product: 'Coca Cola'
+ *           buyer: 'Joseph'
+ *           date: '2022-01-01T12:00'
+ *         - itemID: '3cdf90d8a...'
+ *           product: 'Matcha Tea'
+ *           buyer: 'Jotaro'
+ *           date: '2022-01-01T12:00'
+ *    '400':
+ *      description: >-
+ *       This response is sent if the limit is not valid or if the body parameters are of the **wrong type**.
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: 'Invalid limit.'
+ *    '401':
+ *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Invalid or expired token.'
+ *    '403':
+ *     description: 'This response is sent if no authentication `token` is provided.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'A token is required for authentication.'
+ *    '500':
+ *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Unexpected error.'
+ */
 async function view(req, res) {
     try {
         var { limit } = req.body;
@@ -240,7 +344,7 @@ async function modify(req, res) {
         if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
             return;
         }
-        if(!com.checkOptionalParameters(res, [product, lastBought], ["string", "date"])) {
+        if(!com.checkOptionalParameters(res, [product, buyer, lastBought], ["string", "string", "date"])) {
             return;
         }
         // controllo last bougth
