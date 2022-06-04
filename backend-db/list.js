@@ -9,10 +9,23 @@ const itemSchema = new mongoose.Schema({
 itemSchema.virtual('productID').get(function(){
 	return this._id.toHexString();
 });
+itemSchema.virtual('buyer').get(function(){
+	return this.userID.toHexString();
+});
 itemSchema.set('toJSON', {
 	virtuals: true
 });
 const Item = mongoose.model("item", itemSchema);
+
+async function getProducts(user, limit) {
+	const apartment = await apt.getApartment(user);
+	const items = await Item.find({
+		_id: { $in: apartment.list }
+	}).
+	select('productID userID product lastBought').
+	limit(limit);
+	return items;
+}
 
 async function createProduct(user, item) {
 	const apartment = await apt.getApartment(user);
@@ -50,4 +63,4 @@ async function deleteProduct(user, item) {
 
 
 
-module.exports = { Item, createProduct, modifyProduct, deleteProduct }
+module.exports = { Item, getProducts, createProduct, modifyProduct, deleteProduct }

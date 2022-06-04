@@ -122,7 +122,7 @@ async function view(req, res) {
         
         products = [];
         for (let i=0; i<shoppingList.length; i++) {
-            products.push(com.cleanObjectData(shoppingList[i], ["itemID", "product", "buyer", "lastBought"]));
+            products.push(com.cleanObjectData(shoppingList[i], ["productID", "product", "buyer", "lastBought"]));
         }
 
         res.status(200).json({ "products" : products});
