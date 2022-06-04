@@ -1,6 +1,34 @@
 const list = require("../backend-db/list");
 const com = require("./common");
 
+async function view(req, res) {
+    try {
+        var { limit } = req.body;
+        if (!limit) {
+            limit = 20;
+        }
+        if(!com.checkOptionalParameters(res, [limit], ["int"])) {
+            return;
+        }
+        if (limit < 1) {
+            com.returnErrorMessage(res, 400, "Invalid limit.");
+        }
+
+        const shoppingList = await list.getProducts(req.user, limit);
+        
+        products = [];
+        for (let i=0; i<shoppingList.length; i++) {
+            products.push(com.cleanObjectData(shoppingList[i], ["itemID", "product", "buyer", "lastBought"]));
+        }
+
+        res.status(200).json({ "products" : products});
+        
+    } catch (err) {
+        com.returnErrorMessage(res, 500, "Unexpected error");
+        console.log(err);
+    }
+}
+
 /**
  * @swagger
  * /apartment/list/add:
@@ -335,4 +363,4 @@ async function _delete(req, res) {
     }
 }
 
-module.exports = {add, modify, _delete}
+module.exports = {view, add, modify, _delete}
