@@ -224,6 +224,10 @@
                 })
             }
 
+            function deleteCookie(name) {
+                console.log("logout");
+                document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            }
         </script>
     </head>
     <body>
@@ -263,7 +267,7 @@
                             </li>
                             <!-- Logout -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link disabled" aria-current="page" href="#">Logout</a>
+                                <a class="nav-link" aria-current="page" href="signIn.html" onclick="deleteCookie(getCookie('token'))">Logout</a>
                             </li>
                         </ul>
                     </span>
