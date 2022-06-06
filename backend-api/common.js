@@ -26,12 +26,12 @@ function checkParameterType(parameter, parameterType)
 			return typeof parameter == "string" && emailPattern.test(String(parameter).toLowerCase());
 		case "mongooseObjectID":
 			return mongoose.isValidObjectId(parameter);
-		case "array-string":
+		case "array-email":
 			if (typeof parameter != "object") {
 				return false;
 			}
 			for (let i=0; i<parameter.length; i++) {
-				if (typeof parameter[i] != "string") {
+				if ((typeof parameter[i] != "string") || (!emailPattern.test(String(parameter).toLowerCase()))) {
 					return false;
 				}
 			}
