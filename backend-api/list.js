@@ -1,7 +1,7 @@
 const list = require("../backend-db/list");
 const com = require("./common");
 
-// Tipo buyer
+// Tipo userID
 // Refactor product into elem
 
 /**
@@ -33,7 +33,7 @@ const com = require("./common");
  *             type: string
  *            product:
  *             type: string
- *            buyer:
+ *            userID:
  *             type: string
  *            date:
  *             type: date
@@ -41,15 +41,15 @@ const com = require("./common");
  *        products:
  *         - itemID: '6290ec70f...'
  *           product: 'Earl Grey tea'
- *           buyer: 'Jonathan'
+ *           userID: 'Jonathan'
  *           date: '2022-01-01T12:00'
  *         - itemID: '2df0a1f9a...'
  *           product: 'Coca Cola'
- *           buyer: 'Joseph'
+ *           userID: 'Joseph'
  *           date: '2022-01-01T12:00'
  *         - itemID: '3cdf90d8a...'
  *           product: 'Matcha Tea'
- *           buyer: 'Jotaro'
+ *           userID: 'Jotaro'
  *           date: '2022-01-01T12:00'
  *    '400':
  *      description: >-
@@ -122,7 +122,7 @@ async function view(req, res) {
         
         products = [];
         for (let i=0; i<shoppingList.length; i++) {
-            products.push(com.cleanObjectData(shoppingList[i], ["productID", "product", "buyer", "lastBought"]));
+            products.push(com.cleanObjectData(shoppingList[i], ["productID", "product", "userID", "date"]));
         }
 
         res.status(200).json({ "products" : products});
@@ -270,14 +270,14 @@ async function add(req, res) {
  *          type: string
  *         product:
  *          type: string
- *         buyer:
+ *         userID:
  *          type: string
  *         lastBougth:
  *          type: date
  *       example:
  *        productID: '4e5dcba29...'
  *        product: 'Pasta'
- *        Buyer: 'Polnareff'
+ *        userID: 'Polnareff'
  *        date: '2022-01-02T13:45'
  *   responses:
  *    '200':
@@ -339,20 +339,20 @@ async function add(req, res) {
  */
 async function modify(req, res) {
     try {
-        const { productID, product, buyer, lastBought } = req.body;
+        const { productID, product, userID, date } = req.body;
         // tipo productID
         if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
             return;
         }
-        if(!com.checkOptionalParameters(res, [product, buyer, lastBought], ["string", "string", "date"])) {
+        if(!com.checkOptionalParameters(res, [product, userID, date], ["string", "string", "date"])) {
             return;
         }
         // controllo last bougth
 
         const listElem = { _id: productID };
         if (product) { listElem.product = product; }
-        if (lastBought) { listElem.lastBought = lastBought; }
-        if (buyer) { listElem.userID = buyer; }
+        if (date) { listElem.date = date; }
+        if (userID) { listElem.userID = userID; }
 
         const result = await list.modifyProduct(req.user, listElem);
         if (!result) {
