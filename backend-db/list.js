@@ -22,7 +22,7 @@ async function getProducts(user, limit) {
 	const items = await Item.find({
 		_id: { $in: apartment.list }
 	}).
-	select('productID userID product lastBought').
+	select('productID userID product date').
 	limit(limit);
 	return items;
 }
