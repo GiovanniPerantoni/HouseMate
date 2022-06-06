@@ -167,13 +167,17 @@
             function modifyProduct() {
                 let product = document.getElementById("modifyProductX").value;
                 let date = document.getElementById("modifyDateX").value;
-                
+                let userID = document.getElementById("modifyUserX").value;
+
                 let text = '{"productID":"'+globalProductID+'"';
                 if (product != '') {
                     text += ', "product":"'+product+'"';
                 }
                 if (date != '') {
                     text += ', "date":"'+date+'"';
+                }
+                if (userID != '') {
+                    text += ', "userID":"'+userID+'"';
                 }
                 text += '}';
 
