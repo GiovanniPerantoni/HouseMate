@@ -177,7 +177,7 @@ async function view(req, res) {
  *           type: string
  *        example:
  *         motivation: >-
- *          Couldn't add expense.
+ *          Couldn't add list element.
  *    '401':
  *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
  *     content:
@@ -235,7 +235,7 @@ async function add(req, res) {
         );
 
         if (!exp) {
-            com.returnErrorMessage(res, 400, "Couldn't add expense.");
+            com.returnErrorMessage(res, 400, "Couldn't add list element.");
         } else {
             res.status(200).send();
         }
