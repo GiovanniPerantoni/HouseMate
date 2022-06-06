@@ -41,12 +41,12 @@
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
                         success: function(data, textStatus, jqXHR) {
-                            defaultName = data.name;
-                            defaultAddress = data.address;
-                            defaultRules = data.rules;
+                            defaultName = (typeof data.name !== 'undefined') ? data.name : defaultName;
+                            defaultAddress = (typeof data.address !== 'undefined') ? data.address : defaultAddress;
+                            defaultRules = (typeof data.rules !== 'undefined') ? data.rules : defaultRules;
                             document.getElementById("typeApNameX").value = defaultName;
-                            document.getElementById("typeApAddressX").value = data.address;
-                            document.getElementById("typeApRulesX").value = data.rules;
+                            document.getElementById("typeApAddressX").value = defaultAddress;
+                            document.getElementById("typeApRulesX").value = defaultRules;
                             console.log("SUCCESS in viewApartment");
                         },
                         error: function(jqXHR, textStatus, errorThrown) {

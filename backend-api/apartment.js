@@ -171,7 +171,10 @@ async function users (req, res) {
 async function manageView (req, res) {
 	try {
 		const apartmentInfo = await apt.getInfo(req.user);		//il parametro user viene messo in authentication/verifyToken prima di passare a questa funzione
-		res.status(200).send(com.cleanObjectData(apartmentInfo, ["rules", "name", "address"]));
+		if (apartmentInfo)
+			res.status(200).send(com.cleanObjectData(apartmentInfo, ["rules", "name", "address"]));
+		else
+			res.status(200).send();
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
 		console.log(err);
