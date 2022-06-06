@@ -5,9 +5,5 @@ module.exports = {
 		"<rootDir>/.jest/setup.js"
 	],
 	verbose: true,
-	collectCoverage: true,
-	globals: {
-		email: "admin@admin.com",
-		pass: "admin"
-	}
+	collectCoverage: true
 }

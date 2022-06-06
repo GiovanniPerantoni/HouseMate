@@ -18,7 +18,7 @@ test("controllare l'api /api/v1/apartment/manage/info risponda", async () => {
 
 // test: 7.1
 test("controllare l'api /api/v1/apartment/manage/info funzioni", async () => {
-	return request(app).get('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validToken).send({})
+	return request(app).get('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({})
 	.then((res) => {
 		expect(res.status).toBe(200);
 	});
@@ -44,7 +44,7 @@ test("controllare che l'api /api/v1/apartment/manage/info richieda il all'utente
 
 // test: 7.7
 test("controllare che l'api /api/v1/apartment/manage/info restituisca solo i parametri descritti nella documentazione", async () => {
-	return request(app).get('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validToken).send({})
+	return request(app).get('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({})
 	.then((res) => {
 		expect(res.status).toBe(200);
 		com.expectArguments(res, ["rules", "name", "address"]);
@@ -65,7 +65,7 @@ test("controllare l'api /api/v1/apartment/manage/info risponda", async () => {
 
 // test: 8.1
 test("controllare l'api /api/v1/apartment/manage/info funzioni", async () => {
-	return request(app).patch('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validToken).send({
+	return request(app).patch('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({
 		name: "nuovo nome appartamento",
 		rules: "nuove regole",
 		address: "nuovo indirizzo"
@@ -76,7 +76,7 @@ test("controllare l'api /api/v1/apartment/manage/info funzioni", async () => {
 
 // test: 8.3
 test("controllare tipo di parametri per l'api /api/v1/apartment/manage/info", async () => {
-	return request(app).patch('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validToken).send({
+	return request(app).patch('/api/v1/apartment/manage/info').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({
 		name: 456,
 		rules: "nuove regole",
 		address: "nuovo indirizzo"
@@ -124,7 +124,7 @@ test("controllare l'api /api/v1/apartment/users risponda", async () => {
 
 // test: 9.1
 test("controllare l'api /api/v1/apartment/users funzioni", async () => {
-	return request(app).get('/api/v1/apartment/users').set(commonOptions).set('x-access-token', global.validToken).send({})
+	return request(app).get('/api/v1/apartment/users').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({})
 	.then((res) => {
 		expect(res.status).toBe(200);
 	});
@@ -150,7 +150,7 @@ test("controllare che l'api /api/v1/apartment/users richieda il all'utente di av
 
 // test: 9.7
 test("controllare che l'api /api/v1/apartment/users restituisca solo i parametri descritti nella documentazione", async () => {
-	return request(app).get('/api/v1/apartment/users').set(commonOptions).set('x-access-token', global.validToken).send({})
+	return request(app).get('/api/v1/apartment/users').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({})
 	.then((res) => {
 		expect(res.status).toBe(200);
 		com.expectArgumentsArray(res, ["userID", "first_name", "last_name", "color"]);
