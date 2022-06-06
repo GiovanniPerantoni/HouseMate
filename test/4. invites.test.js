@@ -3,23 +3,24 @@ const {app} = require('../app')
 const request = require('supertest');
 const com = require('./common');
 
+const PREFIX = process.env.PREFIX;
+
 commonOptions = {
 	'Accept': 'application/json'
 }
 
-
 //#region /apartment/invites/new [PATCH]
 // test: 10
-test("controllare l'api /api/v1/apartment/invites/new risponda", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions)
+test(`controllare l'api ${PREFIX}/apartment/invites/new risponda`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions)
 	.then((res) => {
 		expect(res.status).toBeLessThan(500);
 	});
 });
 
 // test: 10.1
-test("controllare l'api /api/v1/apartment/invites/new funzioni", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({
+test(`controllare l'api ${PREFIX}/apartment/invites/new funzioni`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({
 		users: [global.validInvitedUsers[0].email]
 	})
 	.then((res) => {
@@ -28,8 +29,8 @@ test("controllare l'api /api/v1/apartment/invites/new funzioni", async () => {
 });
 
 // test: 10.2
-test("controllare parametri mancanti per /api/v1/apartment/invites/new", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({})
+test(`controllare parametri mancanti per ${PREFIX}/apartment/invites/new`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "Missing parameters in the request."});
@@ -37,8 +38,8 @@ test("controllare parametri mancanti per /api/v1/apartment/invites/new", async (
 });
 
 // test: 10.3
-test("controllare tipo di parametri per l'api /api/v1/apartment/invites/new", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({
+test(`controllare tipo di parametri per l'api ${PREFIX}/apartment/invites/new`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[0].token).send({
 		users: "tante emails"
 	})
 	.then((res) => {
@@ -48,8 +49,8 @@ test("controllare tipo di parametri per l'api /api/v1/apartment/invites/new", as
 });
 
 // test: 10.4
-test("controllare che l'api /api/v1/apartment/invites/new richieda il token di autenticazione", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).send({
+test(`controllare che l'api ${PREFIX}/apartment/invites/new richieda il token di autenticazione`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).send({
 		users: [global.validInvitedUsers[0].email]
 	})
 	.then((res) => {
@@ -59,8 +60,8 @@ test("controllare che l'api /api/v1/apartment/invites/new richieda il token di a
 });
 
 // test: 10.5
-test("controllare che l'api /api/v1/apartment/invites/new richieda il all'utente di avere i permessi necessari per compiere l'azione", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).set('x-access-token', com.generateValue("string", 60)).send({
+test(`controllare che l'api ${PREFIX}/apartment/invites/new richieda il all'utente di avere i permessi necessari per compiere l'azione`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', com.generateValue("string", 60)).send({
 		users: [global.validInvitedUsers[0].email]
 	})
 	.then((res) => {
@@ -73,8 +74,8 @@ test("controllare che l'api /api/v1/apartment/invites/new richieda il all'utente
 /*
 TODO investigare perchè da 200
 // test: 10.6
-test("controllare che l'api /api/v1/apartment/invites/new richieda che l'utente entri in un appartamento", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).set('x-access-token', global.validNewUsers[0].token).send({
+test(`controllare che l'api ${PREFIX}/apartment/invites/new richieda che l'utente entri in un appartamento`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validNewUsers[0].token).send({
 		users: [global.validInvitedUsers[0].email]
 	})
 	.then((res) => {
@@ -85,8 +86,8 @@ test("controllare che l'api /api/v1/apartment/invites/new richieda che l'utente 
 */
 
 // test: 10.7
-test("controllare che l'api /api/v1/apartment/invites/new restituisca solo i parametri descritti nella documentazione", async () => {
-	return request(app).patch('/api/v1/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[1].token).send({
+test(`controllare che l'api ${PREFIX}/apartment/invites/new restituisca solo i parametri descritti nella documentazione`, async () => {
+	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[1].token).send({
 		users: [global.validInvitedUsers[1].email]
 	})
 	.then((res) => {
@@ -100,16 +101,16 @@ test("controllare che l'api /api/v1/apartment/invites/new restituisca solo i par
 
 //#region /apartment/invites/accept [POST]
 // test: 11
-test("controllare l'api /api/v1/apartment/invites/accept risponda", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions)
+test(`controllare l'api ${PREFIX}/apartment/invites/accept risponda`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions)
 	.then((res) => {
 		expect(res.status).toBeLessThan(500);
 	});
 });
 
 // test: 11.1
-test("controllare l'api /api/v1/apartment/invites/accept funzioni", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).set('x-access-token', global.validInvitedUsers[0].token).send({
+test(`controllare l'api ${PREFIX}/apartment/invites/accept funzioni`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).set('x-access-token', global.validInvitedUsers[0].token).send({
 		invite: global.inviteToken
 	})
 	.then((res) => {
@@ -118,8 +119,8 @@ test("controllare l'api /api/v1/apartment/invites/accept funzioni", async () => 
 });
 
 // test: 11.2
-test("controllare parametri mancanti per /api/v1/apartment/invites/accept", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).set('x-access-token', global.validInvitedUsers[1].token).send({})
+test(`controllare parametri mancanti per ${PREFIX}/apartment/invites/accept`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).set('x-access-token', global.validInvitedUsers[1].token).send({})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "Missing parameters in the request."});
@@ -127,8 +128,8 @@ test("controllare parametri mancanti per /api/v1/apartment/invites/accept", asyn
 });
 
 // test: 11.3
-test("controllare tipo di parametri per l'api /api/v1/apartment/invites/accept", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).set('x-access-token', global.validInvitedUsers[2].token).send({
+test(`controllare tipo di parametri per l'api ${PREFIX}/apartment/invites/accept`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).set('x-access-token', global.validInvitedUsers[2].token).send({
 		invite: 123
 	})
 	.then((res) => {
@@ -138,8 +139,8 @@ test("controllare tipo di parametri per l'api /api/v1/apartment/invites/accept",
 });
 
 // test: 11.4
-test("controllare che l'api /api/v1/apartment/invites/accept richieda il token di autenticazione", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).send({
+test(`controllare che l'api ${PREFIX}/apartment/invites/accept richieda il token di autenticazione`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({
 		invite: global.inviteToken
 	})
 	.then((res) => {
@@ -149,8 +150,8 @@ test("controllare che l'api /api/v1/apartment/invites/accept richieda il token d
 });
 
 // test: 11.5
-test("controllare che l'api /api/v1/apartment/invites/accept richieda il all'utente di avere i permessi necessari per compiere l'azione", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).set('x-access-token', com.generateValue("string", 60)).send({
+test(`controllare che l'api ${PREFIX}/apartment/invites/accept richieda il all'utente di avere i permessi necessari per compiere l'azione`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).set('x-access-token', com.generateValue("string", 60)).send({
 		invite: global.inviteToken
 	})
 	.then((res) => {
@@ -161,8 +162,8 @@ test("controllare che l'api /api/v1/apartment/invites/accept richieda il all'ute
 
 /*
 // test: 11.6.1
-test("controllare che l'api /api/v1/apartment/invites/accept TODO", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).send({TODO})
+test(`controllare che l'api ${PREFIX}/apartment/invites/accept TODO`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({TODO})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "TODO"});
@@ -170,8 +171,8 @@ test("controllare che l'api /api/v1/apartment/invites/accept TODO", async () => 
 });
 
 // test: 11.6.2
-test("controllare che l'api /api/v1/apartment/invites/accept TODO", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).send({TODO})
+test(`controllare che l'api ${PREFIX}/apartment/invites/accept TODO`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({TODO})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "TODO"});
@@ -179,8 +180,8 @@ test("controllare che l'api /api/v1/apartment/invites/accept TODO", async () => 
 });
 
 // test: 11.6.3
-test("controllare che l'api /api/v1/apartment/invites/accept TODO", async () => {
-	return request(app).post('/api/v1/apartment/invites/accept').set(commonOptions).send({TODO})
+test(`controllare che l'api ${PREFIX}/apartment/invites/accept TODO`, async () => {
+	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({TODO})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "TODO"});
