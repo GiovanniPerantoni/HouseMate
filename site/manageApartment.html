@@ -24,11 +24,11 @@
         <script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
-
+<!--
         <script>
             manageApartment();
         </script>
-
+-->
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
@@ -39,27 +39,21 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse mx-5" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="sxNavbar">
                         <!-- Spese -->
                         <li class="nav-item mx-2">
                             <a class="nav-link" aria-current="page" href="viewExpenses.html">Spese</a>
                         </li>
                         <!-- Lista -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link disabled" href="#">Lista</a>
+                            <a class="nav-link" href="viewList.html">Lista</a>
                         </li>
-                        <!-- Mansioni -->
-                        <li class="nav-item mx-2">
-                            <a class="nav-link disabled" href="#">Mansioni</a>
-                        </li>
+                        <!-- inviti -->
                     </ul>
                     <!-- Bottoni Dx -->
                     <span class="navbar-text">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <!-- Profilo -->
-                            <li class="nav-item mx-3">
-                                <a class="nav-link disabled" aria-current="page" href="#">Profilo</a>
-                            </li>
+                            <!-- Appartamento -->
                             <li class="nav-item mx-3">
                                 <a class="nav-link active" aria-current="page" href="viewApartment.html">Appartamento</a>
                             </li>
@@ -72,6 +66,10 @@
                 </div>
             </div>
         </nav>
+        <script>
+            showInvitesButton();
+            manageApartment();
+        </script>
 
         <!-- Body -->
         <section class="vh-100 gradient-custom">

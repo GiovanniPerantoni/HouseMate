@@ -40,6 +40,17 @@ function getUser(userID) {
     return "failure";
 }
 
+async function showInvitesButton() {
+    await retriveUserInfo(getCookie("token"));
+    let usr = getUser("token");
+    if (usr.role == 'owner') {
+        document.getElementById("sxNavbar").innerHTML += 
+            '<li class="nav-item mx-2">' +
+            '<a class="nav-link" href="invitesNew.html">Inviti</a>' +
+            '</li>';
+    }
+}
+
 // Function used to delete a cookie
 function deleteCookie(name) {
     console.log("logout");
@@ -606,8 +617,4 @@ function sendInviteRequest() {
             }
         })
     })
-}
-
-function invites() {
-    
 }
