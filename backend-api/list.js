@@ -271,7 +271,7 @@ async function add(req, res) {
  *          type: string
  *         userID:
  *          type: string
- *         lastBougth:
+ *         date:
  *          type: date
  *       example:
  *        productID: '4e5dcba29...'
@@ -339,14 +339,12 @@ async function add(req, res) {
 async function modify(req, res) {
     try {
         const { productID, product, userID, date } = req.body;
-        // tipo productID
         if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
             return;
         }
         if(!com.checkOptionalParameters(res, [product, userID, date], ["string", "string", "date"])) {
             return;
         }
-        // controllo last bougth
 
         const listElem = { _id: productID };
         if (product) { listElem.product = product; }
