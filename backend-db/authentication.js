@@ -33,29 +33,30 @@ async function login(email, password) {
 }
 
 async function createAccount(first_name, last_name, email, password) {
-	// Checks if the user already exist
-	const existingUser = await User.findOne({email});
-	if (existingUser)													//se esiste un utente con la stessa email mi viene ritornato e se quindi e se questo dovesse accedere allora l'email è già stata utilizzata
-		return null;
+    // Checks if the user already exist
+    const existingUser = await User.findOne({email});
+    if (existingUser)                                                    //se esiste un utente con la stessa email mi viene ritornato e se quindi e se questo dovesse accedere allora l'email è già stata utilizzata
+        return null;
 
-	const user = await User.create({
-		first_name,
-		last_name,
-		email: email.toLowerCase(),
-		password: password,
-		color: "#" + Math.floor(Math.random()*0xFFFFFF).toString(16)		//genero un numero tra 0 e FFFFFF e lo traduco a stringa in base 16 (per generare l'hex del colore)
-	});
+    let user = await User.create({
+        first_name,
+        last_name,
+        email: email.toLowerCase(),
+        password: password,
+        color: "#" + Math.floor(Math.random()*0xFFFFFF).toString(16)        //genero un numero tra 0 e FFFFFF e lo traduco a stringa in base 16 (per generare l'hex del colore)
+    });
 
-	const token = jwt.sign(
-		{ userID: user._id, email },
-		process.env.TOKEN_KEY,
-		{
-			expiresIn: "1d",
-		}
-	);
-	user.token = token;
-
-	return await User.findOne({email});
+    const token = jwt.sign(
+        { userID: user._id, email },
+        process.env.TOKEN_KEY,
+        {
+            expiresIn: "1d",
+        }
+    );
+    user = await User.findOne({email})
+    user.token = token;
+    
+    return user;
 }
 
 async function exists(user) {
