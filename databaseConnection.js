@@ -1,6 +1,8 @@
 //this file is used to create and mantain the connect with the mongo db database (local or remote)
 
-const dotenv = require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const mongoose = require('mongoose');
 
 main().catch(err => console.log(err));

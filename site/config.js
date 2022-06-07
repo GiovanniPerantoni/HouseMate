@@ -1,1 +1,1 @@
-const API_URI = "http://127.0.0.1:3000/api/v1";
+const API_URI = "https://ingsoft2-housemate.herokuapp.com/api/v2";

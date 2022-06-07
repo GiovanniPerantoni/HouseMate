@@ -1,6 +1,8 @@
 //queste funzioni chiamate prima di aprire un files
 
-const dotenv = require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const mongoose = require('mongoose');
 const sha256 = require('js-sha256').sha256;
 
