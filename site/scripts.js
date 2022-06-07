@@ -1,5 +1,4 @@
-const config = require('config.js');
-const API_URI = config.API_URI;
+//const API_URI = config.API_URI_URI;
 usrInfo = "";
 globalProductID = "";
 
@@ -32,7 +31,7 @@ async function retriveUserInfo(userID) {
     //});
 }
 
-// Function used to get user info from cookie
+// Function used to get user info from token
 function getUser(userID) {
     for (let u=0; u<usrInfo.length; u++) {
         if (usrInfo[u].userID == userID) {
@@ -42,10 +41,23 @@ function getUser(userID) {
     return "failure";
 }
 
+// Function used to get user info from email
+function getUserByEmail(email) {
+    for (let u=0; u<usrInfo.length; u++) {
+        if (usrInfo[u].email == email) {
+            return usrInfo[u];
+        }
+    }
+    return "failure";
+}
+
+// Function used to show the invites button
 async function showInvitesButton() {
     await retriveUserInfo(getCookie("token"));
-    let usr = getUser("token");
+    let usr = getUserByEmail(getCookie("email"));
+    console.log(usr)
     if (usr.role == 'owner') {
+        console.log("fue");
         document.getElementById("sxNavbar").innerHTML += 
             '<li class="nav-item mx-2">' +
             '<a class="nav-link" href="invitesNew.html">Inviti</a>' +
@@ -108,6 +120,7 @@ function sendData() {
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
+                   document.cookie = "email="+data.email+"; "+expires+"; path=/";
                    //console.log(document.cookie);
                    //console.log("SUCCESS!");
                    window.location = "choosing.html";
@@ -147,6 +160,7 @@ function signIn() {
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
+                   document.cookie = "email="+data.email+"; "+expires+"; path=/";
                    let appInfo;
                    // TODO: testing
                    $.ajax({
@@ -552,8 +566,7 @@ function modifyApartment() {
             data: JSON.stringify(aptInfo),
             success: function(data, textStatus, jqXHR) {
                 console.log("SUCCESS in modifyApartment");
-                //window.location = "viewApartment.html";       //TODO fare il redirect solo quando si crea un appartamento
-                window.location = "/invitesNew.html";
+                window.location = "viewApartment.html";
             },
             failure: function(jqXHR, textStatus, errorThrown) {
                 console.log("FAILURE in modifyApartment");
