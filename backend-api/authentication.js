@@ -10,7 +10,7 @@ const apt = require('../backend-db/apartment');
  * /login:
  *  post:
  *   summary: Login
- *   description: 'This method is used to generate a new authentication `token` by giving the correct **user credentials**.'
+ *   description: 'This method is used to generate a new authentication `token` by giving the correct **user credentials**, it also returns the user ID and if the user is in an apartment.'
  *   requestBody:
  *    content:
  *     application/json:
@@ -39,11 +39,18 @@ const apt = require('../backend-db/apartment');
  *        required:
  *        - token
  *        - userID
+ *        - isInApartment
  *        properties:
  *         token:
  *          type: string
+ *         userID:
+ *          type: string
+ *         isInApartment:
+ *          type: boolean
  *       example:
  *        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *        userID: '6290ec70f...'
+ *        isInApartment: true
  *    '400':
  *     description: 'This response is sent when the body parameters are of the **wrong type** or if any body parameter is **missing**.'
  *     content:
@@ -111,7 +118,7 @@ const apt = require('../backend-db/apartment');
  * /signup:
  *  post:
  *   summary: Sign Up
- *   description: 'This method is used to create a new account by giving the required information and, if successful, retrieve a new authentication `token`.'
+ *   description: 'This method is used to create a new account by giving the required information and, if successful, to retrieve a new authentication `token` and the user ID.'
  *   requestBody:
  *    content:
  *     application/json:
@@ -149,13 +156,15 @@ const apt = require('../backend-db/apartment');
  *        type: object
  *        required:
  *        - token
+ *        - userID
  *        properties:
  *         token:
  *          type: string
  *       example:
  *        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *        userID: '6290ec70f...'
  *    '400':
- *     description: 'This response is sent if the email is already used or when the body parameters are of the **wrong type** or if any body parameter is **missing**.'
+ *     description: 'This response is sent if the **email is already used** or when the body parameters are of the **wrong type** or if any body parameter is **missing**.'
  *     content:
  *      application/json:
  *       schema:

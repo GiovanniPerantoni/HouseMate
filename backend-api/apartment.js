@@ -181,7 +181,7 @@ async function users (req, res) {
 async function manageView (req, res) {
 	try {
 		const apartmentInfo = await apt.getInfo(req.user);		//il parametro user viene messo in authentication/verifyToken prima di passare a questa funzione
-    if (!apartmentInfo) res.status(200).send("");
+    	if (!apartmentInfo) res.status(200).send("");
 		else res.status(200).send(com.cleanObjectData(apartmentInfo, ["rules", "name", "address"]));
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
@@ -194,7 +194,7 @@ async function manageView (req, res) {
  * /apartment/manage/info:
  *  patch:
  *   summary: Add a new apartment or change apartment information
- *   description: 'This method is used to create or modify the **general information** (name, address and rules) of the apartment where the user is owner.'
+ *   description: 'This method is used to create or modify the **general information** (name, address and rules) of the apartment where the user is the owner.'
  *   parameters:
  *   - name: x-access-token
  *     in: header
@@ -219,6 +219,20 @@ async function manageView (req, res) {
  *   responses:
  *    '200':
  *     description: 'Everything went smoothly.'
+ *    '400':
+ *     description: 'This response is sent if the user cannot create or modify an apartment, which happens when it is already residing in one but not as the owner.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: >-
+ *          Couldn't add or modify apartment.
  *    '401':
  *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
  *     content:

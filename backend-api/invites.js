@@ -45,7 +45,7 @@ const invites = require("../backend-db/invites");
  *        example:
  *         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
  *    '400':
- *      description: 'This response is sent if a mail is not present in the database, if the body parameters are of the **wrong type** or if any body parameter is **missing**.'
+ *      description: 'This response is sent if one of the emails is not present in the database, if the body parameters are of the **wrong type** or if any body parameter is **missing**.'
  *      content:
  *       application/json:
  *        schema:
@@ -136,18 +136,29 @@ async function _new(req, res) {
  * /apartment/invites/accept:
  *  post:
  *   summary: Accept invitation
- *   description: 'This method is used to **accept an invitation** sent by the apartment owner'
+ *   description: 'This method is used to **accept an invitation** sent by the apartment owner.'
  *   parameters:
  *   - name: x-access-token
  *     in: header
  *     description: Authentication token required for access.
  *     required: true
  *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        required:
+ *        - invite
+ *        properties:
+ *         invite:
+ *          type: string
+ *       example:
+ *        invite: '6f51cba29...'
  *   responses:
  *    '200':
  *      description: 'Everything went smoothly.'
  *    '400':
- *      description: 'This response is sent if the link is used by an uninvited user, if the user using the link is already in an apartment, if the body parameters are of the **wrong type** or if any body parameter is **missing**.'
+ *      description: 'This response is sent if the token is used by an uninvited user, if the user using the token is already in an apartment, if the body parameters are of the **wrong type** or if any body parameter is **missing**.'
  *      content:
  *       application/json:
  *        schema:

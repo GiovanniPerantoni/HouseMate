@@ -6,13 +6,22 @@ const com = require("./common");
  * /apartment/expenses/view:
  *  get:
  *   summary: Get shared expenses
- *   description: 'This method is used to get the **shared expenses** of the users residing in the same apartment and the **total amount** of money spent by each.'
+ *   description: 'This method is used to get the **shared expenses** of the users residing in the same apartment and the **total amount** of money spent by each, it is possible to specify a limit of expenses to fetch.'
  *   parameters:
  *   - name: x-access-token
  *     in: header
  *     description: Authentication token required for access.
  *     required: true
  *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        properties:
+ *         limit:
+ *          type: number
+ *       example:
+ *        limit: 10
  *   responses:
  *    '200':
  *     description: 'Everything went smoothly.'
@@ -20,11 +29,17 @@ const com = require("./common");
  *      application/json:
  *       schema:
  *        type: object
+ *        required:
+ *        - totals
+ *        - expenses
  *        properties:
  *         totals:
  *          type: array
  *          items:
  *           type: object
+ *           required:
+ *           - userID
+ *           - total
  *           properties:
  *            userID:
  *             type: string
@@ -34,6 +49,12 @@ const com = require("./common");
  *          type: array
  *          items:
  *           type: object
+ *           required:
+ *           - userID
+ *           - expenseID
+ *           - date
+ *           - price
+ *           - product
  *           properties:
  *            userID:
  *             type: string
@@ -153,7 +174,7 @@ async function view (req, res) {
  * @swagger
  * /apartment/expenses/add:
  *  post:
- *   summary: Add a new expense
+ *   summary: Add a new expense.
  *   description: 'This method is used to add **shared expenses**'
  *   parameters:
  *   - name: x-access-token
@@ -306,7 +327,7 @@ async function add (req, res) {
  *      description: 'Everything went smoothly.'
  *    '400':
  *      description: >-
- *       This response is sent if the price is negative, if the expense either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *       This response is sent if the price is negative, if the expense either isn't specified, doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type**.
  *      content:
  *       application/json:
  *        schema:
@@ -418,7 +439,7 @@ async function modify (req, res) {
  *      description: 'Everything went smoothly.'
  *    '400':
  *      description: >-
- *       This response is sent if the expense either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *       This response is sent if the expense either isn't specified, doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type**.
  *      content:
  *       application/json:
  *        schema:

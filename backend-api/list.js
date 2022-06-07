@@ -5,7 +5,7 @@ const com = require("./common");
  * @swagger
  * /apartment/list/view:
  *  get:
- *   summary: Get the elements of the shopping list
+ *   summary: Get the elements of the shopping list.
  *   description: 'This method is used to get the **entries of the shopping list** of the users residing in the same apartment.'
  *   parameters:
  *   - name: x-access-token
@@ -13,6 +13,15 @@ const com = require("./common");
  *     description: Authentication token required for access.
  *     required: true
  *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        properties:
+ *         limit:
+ *          type: number
+ *       example:
+ *        limit: 20
  *   responses:
  *    '200':
  *     description: 'Everything went smoothly.'
@@ -20,11 +29,18 @@ const com = require("./common");
  *      application/json:
  *       schema:
  *        type: object
+ *        required:
+ *        - products
  *        properties:
  *         products:
  *          type: array
  *          items:
  *           type: object
+ *           required:
+ *           - productID
+ *           - product
+ *           - userID
+ *           - date
  *           properties:
  *            productID:
  *             type: string
@@ -36,15 +52,15 @@ const com = require("./common");
  *             type: date
  *       example:
  *        products:
- *         - itemID: '6290ec70f...'
+ *         - productID: '6290ec70f...'
  *           product: 'Earl Grey tea'
  *           userID: 'Jonathan'
  *           date: '2022-01-01T12:00'
- *         - itemID: '2df0a1f9a...'
+ *         - productID: '2df0a1f9a...'
  *           product: 'Coca Cola'
  *           userID: 'Joseph'
  *           date: '2022-01-01T12:00'
- *         - itemID: '3cdf90d8a...'
+ *         - productID: '3cdf90d8a...'
  *           product: 'Matcha Tea'
  *           userID: 'Jotaro'
  *           date: '2022-01-01T12:00'
@@ -136,7 +152,7 @@ async function view(req, res) {
  * @swagger
  * /apartment/list/add:
  *  post:
- *   summary: Add a new element to the shopping list
+ *   summary: Add a new element to the shopping list.
  *   description: 'This method is used to add a **new element** to the shopping list'
  *   parameters:
  *   - name: x-access-token
@@ -249,7 +265,7 @@ async function add(req, res) {
  * @swagger
  * /apartment/list/modify:
  *  patch:
- *   summary: Modify an entry of the shopping list
+ *   summary: Modify an entry of the shopping list.
  *   description: >-
  *    This method is used to change one of the **entries of the shopping list** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
  *   parameters:
@@ -283,7 +299,7 @@ async function add(req, res) {
  *      description: 'Everything went smoothly.'
  *    '400':
  *      description: >-
- *       This response is sent if the expense either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *       This response is sent if the entry either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
  *      content:
  *       application/json:
  *        schema:
@@ -369,7 +385,7 @@ async function modify(req, res) {
  *  patch:
  *   summary: Delete an entry of the shopping list
  *   description: >-
- *    This method is used to delete one of the **entries of the shpping list** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
+ *    This method is used to delete one of the **entries of the shopping list** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
  *   parameters:
  *   - name: x-access-token
  *     in: header
@@ -381,12 +397,12 @@ async function modify(req, res) {
  *      application/json:
  *       schema:
  *        required:
- *        - ProductID
+ *        - productID
  *        properties:
- *         ProductID:
+ *         productID:
  *          type: string
  *       example:
- *        ProductID: '4e5dcba29...'
+ *        productID: '4e5dcba29...'
  *   responses:
  *    '200':
  *      description: 'Everything went smoothly.'
