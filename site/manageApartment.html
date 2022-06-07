@@ -22,6 +22,7 @@
 
             }
         </style>
+        <script type="text/javascript" src="config.js"></script>
         <script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
@@ -43,11 +44,11 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="sxNavbar">
                         <!-- Spese -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link" aria-current="page" href="viewExpenses.html">Spese</a>
+                            <a class="nav-link" aria-current="page" href="viewExpenses">Spese</a>
                         </li>
                         <!-- Lista -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link" href="viewList.html">Lista</a>
+                            <a class="nav-link" href="viewList">Lista</a>
                         </li>
                         <!-- inviti -->
                     </ul>
@@ -56,17 +57,18 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <!-- Appartamento -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link active" aria-current="page" href="viewApartment.html">Appartamento</a>
+                                <a class="nav-link active" aria-current="page" href="viewApartment">Appartamento</a>
                             </li>
                             <!-- Logout -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link" aria-current="page" href="signIn.html" onclick="deleteCookie(getCookie('token'))">Logout</a>
+                                <a class="nav-link" aria-current="page" href="signIn" onclick=logout()>Logout</a>
                             </li>
                         </ul>
                     </span>
                 </div>
             </div>
         </nav>
+        
         <script>
             showInvitesButton();
             manageApartment();

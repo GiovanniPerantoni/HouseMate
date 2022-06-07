@@ -179,7 +179,7 @@ test(`controllare l'api ${PREFIX}/apartment/list/modify funzioni`, async () => {
 	return request(app).patch(PREFIX + '/apartment/list/modify').set(commonOptions).set('x-access-token', global.validOwners[2].token).send({
 		productID: global.validProductId[0],
 		product: "banana",
-		lastBought: "2022-12-12T08:50:12+02:00"
+		date: "2022-12-12T08:50:12+02:00"
 	})
 	.then((res) => {
 		expect(res.status).toBe(200);
@@ -190,7 +190,8 @@ test(`controllare l'api ${PREFIX}/apartment/list/modify funzioni`, async () => {
 test(`controllare parametri mancanti per ${PREFIX}/apartment/list/modify`, async () => {
 	return request(app).patch(PREFIX + '/apartment/list/modify').set(commonOptions).set('x-access-token', global.validOwners[2].token).send({
 		product: "banana",
-		lastBought: "2022-12-12T08:50:12+02:00"})
+		date: "2022-12-12T08:50:12+02:00"
+	})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "Missing parameters in the request."});
@@ -202,7 +203,8 @@ test(`controllare tipo di parametri per l'api ${PREFIX}/apartment/list/modify`, 
 	return request(app).patch(PREFIX + '/apartment/list/modify').set(commonOptions).set('x-access-token', global.validOwners[2].token).send({
 		productID: "123",
 		product: "banana",
-		lastBought: "2022-12-12T08:50:12+02:00"})
+		date: "2022-12-12T08:50:12+02:00"
+	})
 	.then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "Invalid parameters in request."});
@@ -214,7 +216,8 @@ test(`controllare che l'api ${PREFIX}/apartment/list/modify richieda il token di
 	return request(app).patch(PREFIX + '/apartment/list/modify').set(commonOptions).send({
 		productID: global.validProductId[0],
 		product: "banana",
-		lastBought: "2022-12-12T08:50:12+02:00"})
+		date: "2022-12-12T08:50:12+02:00"
+	})
 	.then((res) => {
 		expect(res.status).toBe(403);
 		expect(res.body).toStrictEqual({"motivation": "A token is required for authentication."});
@@ -226,7 +229,8 @@ test(`controllare che l'api ${PREFIX}/apartment/list/modify richieda il all'uten
 	return request(app).patch(PREFIX + '/apartment/list/modify').set(commonOptions).set('x-access-token', com.generateValue("string", 60)).send({
 		productID: global.validProductId[0],
 		product: "banana",
-		lastBought: "2022-12-12T08:50:12+02:00"})
+		date: "2022-12-12T08:50:12+02:00"
+	})
 	.then((res) => {
 		expect(res.status).toBe(401);
 		expect(res.body).toStrictEqual({"motivation": "Invalid or expired token."});

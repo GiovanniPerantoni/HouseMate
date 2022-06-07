@@ -9,8 +9,8 @@ const PORT = process.env.PORT;
 const PREFIX = process.env.PREFIX;
 
 //---------------------WEBSITE SECTION---------------------\\
-app.use('/', express.static(__dirname + '/site'));
-app.use(     express.static(__dirname + '/site'));
+app.use('/', express.static(__dirname + '/site', { extensions: ['html'] }));
+app.use(     express.static(__dirname + '/site', { extensions: ['html'] }));
 
 //-------------------DOCUMENTATION SECTION------------------\\
 const swaggerDefinition = {
@@ -18,8 +18,8 @@ const swaggerDefinition = {
   components: {},
   info: {
     title: 'HouseMate',
-    description: 'This API allows users residing in the same apartment to share expenses and see their contributions.',
-    version: '1.0.0',
+    description: 'This API allows users residing in the same apartment to share expenses, see their contributions and keep an updated shopping list.',
+    version: '2.0.0'
   },
   servers: [
     {

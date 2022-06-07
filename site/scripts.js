@@ -1,3 +1,4 @@
+//const API_URI = config.API_URI_URI;
 usrInfo = "";
 globalProductID = "";
 
@@ -10,27 +11,27 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-// Function used to retrive all users from api
-async function retriveUserInfo(userID) {
+// Function used to retrieve all users from api
+async function retrieveUserInfo(userID) {
     //$(async function() {
         await $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/users",
+            url: API_URI + "/apartment/users",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : userID},
             success: function(data, textStatus, jqXHR) {
                 usrInfo = data;
-                console.log("SUCCESS in retrive User Info");
+                console.log("SUCCESS in retrieve User Info");
             },
             failure: function(jqXHR, textStatus, errorThrown) {
-                console.log("FAILURE in retrive user info");
+                console.log("FAILURE in retrieve user info");
                 //return ["", "", ""];
             }
         });
     //});
 }
 
-// Function used to get user info from cookie
+// Function used to get user info from token
 function getUser(userID) {
     for (let u=0; u<usrInfo.length; u++) {
         if (usrInfo[u].userID == userID) {
@@ -40,13 +41,16 @@ function getUser(userID) {
     return "failure";
 }
 
+
+// Function used to show the invites button
 async function showInvitesButton() {
-    await retriveUserInfo(getCookie("token"));
-    let usr = getUser("token");
+    await retrieveUserInfo(getCookie("token"));
+    let usr = getUser(getCookie("userID"));
+    console.log(usr)
     if (usr.role == 'owner') {
         document.getElementById("sxNavbar").innerHTML += 
             '<li class="nav-item mx-2">' +
-            '<a class="nav-link" href="invitesNew.html">Inviti</a>' +
+            '<a class="nav-link" href="invitesNew">Inviti</a>' +
             '</li>';
     }
 }
@@ -55,6 +59,11 @@ async function showInvitesButton() {
 function deleteCookie(name) {
     console.log("logout");
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function logout() {
+    deleteCookie("token");
+    deleteCookie("userID");
 }
 
 // ======= SIGNUP =======
@@ -97,7 +106,7 @@ function sendData() {
     if (res) {
        $(function() {
            $.ajax({
-               url: "http://127.0.0.1:3000/api/v1/signup",
+               url: API_URI + "/signup",
                type: "POST",
                contentType: "application/json",
                data: text,
@@ -106,9 +115,10 @@ function sendData() {
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
+                   document.cookie = "userID="+data.userID+"; "+expires+"; path=/";
                    //console.log(document.cookie);
                    //console.log("SUCCESS!");
-                   window.location = "choosing.html";
+                   window.location = "choosing";
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    document.getElementById('errMsg').innerHTML = "La mail è già in uso.";
@@ -117,7 +127,7 @@ function sendData() {
            })
        });
     }
-};
+}
 
 // ======= SIGNIN =======
 
@@ -134,9 +144,8 @@ function signIn() {
 
     text = '{"email":"'+email+'", "pass":"'+password+'"}';
     
-    $(function() {
            $.ajax({
-               url: "http://127.0.0.1:3000/api/v1/login",
+               url: API_URI + "/login",
                type: "POST",
                contentType: "application/json",
                data: text,
@@ -145,29 +154,20 @@ function signIn() {
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                   let appInfo;
-                   // TODO: testing
-                   $.ajax({
-                       url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
-                       type: "GET",
-                       contentType: "application/json",
-                       data: text,
-                       success: function (data, textStatus, jqXHR) {
-                           appInfo == data;
-                       },
-                       error: function (jqXHR, textStatus, errorThrown) {}
-                   });
-                   if (appInfo == "") {
-                       window.location = "choosing.html";
+                   document.cookie = "userID="+data.userID+"; "+expires+"; path=/";
+                   //console.log(data.isInApartment);
+                   if (data.isInApartment==false) {
+                       //console.log("choosing")
+                       window.location = "choosing";
                    } else {
-                       window.location = "/viewExpenses.html";
+                       //console.log("view")
+                       window.location = "/viewExpenses";
                    }
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    errElement.innerHTML = "Email o Password incorrette";
                }
-           })
-       });
+           });
 
 }
 
@@ -202,7 +202,7 @@ function viewExpenses() {
     usrToken = getCookie("token");
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
+            url: API_URI + "/apartment/expenses/view",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : usrToken},
@@ -212,7 +212,7 @@ function viewExpenses() {
                 users = data.totals;
                 for (let i in users) {
                     let infos = getUser(users[i].userID);
-                    let str = '<h4 class="mb-4" style="color: '+infos.color+'">' + infos.first_name + ' ha contribuito con: ' + users[i].total + '</p>';
+                    let str = '<h4 class="mb-4" style="color: '+infos.color+'">' + infos.first_name + ' ha contribuito con: € ' + users[i].total + '</p>';
                     contributiElem.innerHTML += str
                 }
                 expenses = data.expenses;
@@ -231,7 +231,7 @@ function viewExpenses() {
 
 // Wrapper function used for the setup of the page
 async function setUpExpensePage() {
-    await retriveUserInfo(getCookie("token"));
+    await retrieveUserInfo(getCookie("token"));
     viewExpenses();
 }
 
@@ -245,7 +245,7 @@ function addExpense() {
     if (product != '' && price != '') {
         $(function() {
             $.ajax({
-                url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
+                url: API_URI + "/apartment/expenses/add",
                 type: "post",
                 contentType: "application/json",
                 headers: {'x-access-token' : getCookie("token")},
@@ -281,7 +281,7 @@ function modifyExpense() {
     text += '}';
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/modify",
+            url: API_URI + "/apartment/expenses/modify",
             type: "patch",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -302,7 +302,7 @@ function deleteExpense() {
     let text = '{"expenseID":"'+globalProductID+'"}';
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/delete",
+            url: API_URI + "/apartment/expenses/delete",
             type: "delete",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -358,7 +358,7 @@ function viewList() {
     console.log(usrInfo)
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/list/view",
+            url: API_URI + "/apartment/list/view",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : usrToken},
@@ -395,7 +395,7 @@ function addProduct() {
     if (product != '' && date !='') {
         $(function() {
             $.ajax({
-                url: "http://127.0.0.1:3000/api/v1/apartment/list/add",
+                url: API_URI + "/apartment/list/add",
                 type: "post",
                 contentType: "application/json",
                 headers: {'x-access-token' : getCookie("token")},
@@ -432,7 +432,7 @@ function modifyProduct() {
 
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/list/modify",
+            url: API_URI + "/apartment/list/modify",
             type: "patch",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -454,7 +454,7 @@ function deleteProduct() {
     let text = '{"productID":"'+globalProductID+'"}';
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/list/delete",
+            url: API_URI + "/apartment/list/delete",
             type: "delete",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -472,11 +472,24 @@ function deleteProduct() {
 
 // ======= VIEW =======
 
+// Function used to show the modify apartment button if the user is an owner
+async function showModifyButton() {
+    console.log("1");
+    await retrieveUserInfo(getCookie("token"));
+    let usr = getUser(getCookie("userID"));
+    console.log(usr)
+    if (usr.role != 'owner') {
+        console.log("2");
+        document.getElementById("modifyBtn").classList.add('invisible'); 
+    }
+    console.log("3");
+}
+
 // Function used to show the apartment info
 function viewApartment() {
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+            url: API_URI + "/apartment/manage/info",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -499,11 +512,11 @@ defaultName = "";       //valori di default se per caso la richiesta get dovesse
 defaultAddress = "";
 defaultRules = "";
 
-// Function used to retrive the current infos about the apartment
+// Function used to retrieve the current infos about the apartment
 function manageApartment() {
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+            url: API_URI + "/apartment/manage/info",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -543,15 +556,14 @@ function modifyApartment() {
     
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+            url: API_URI + "/apartment/manage/info",
             type: "patch",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
             data: JSON.stringify(aptInfo),
             success: function(data, textStatus, jqXHR) {
                 console.log("SUCCESS in modifyApartment");
-                //window.location = "viewApartment.html";       //TODO fare il redirect solo quando si crea un appartamento
-                window.location = "/invitesNew.html";
+                window.location = "viewApartment";
             },
             failure: function(jqXHR, textStatus, errorThrown) {
                 console.log("FAILURE in modifyApartment");
@@ -566,7 +578,7 @@ function modifyApartment() {
 
 function sendInviteRequest() {
     const listaEmailsEl = document.getElementById("emailsUsersX");
-    const invitoGeneratoEl = document.getElementById("typeInviteLinkX");
+    const invitoGeneratoEl = document.getElementById("typeInviteCodeX");
     const errEl = document.getElementById("errMsg");
     if (listaEmailsEl.value == "") {
         errEl.innerHTML = "Inserire almeno 1 email"
@@ -577,7 +589,7 @@ function sendInviteRequest() {
 
     $(function () {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/invites/new",
+            url: API_URI + "/apartment/invites/new",
             type: "patch",
             contentType: "application/json",
             headers: { 'x-access-token': getCookie("token") },
@@ -597,8 +609,8 @@ function sendInviteRequest() {
 
 // ======= INVITES CONFIRM =======
 
-function sendInviteRequest() {
-    const inviteCodeEl = document.getElementById("inviteCodeX");
+function acceptInviteRequest() {
+    const inviteCodeEl = document.getElementById("typeInviteCodeX");
     const errEl = document.getElementById("errMsg");
 
     console.log(inviteCodeEl.value)
@@ -609,18 +621,18 @@ function sendInviteRequest() {
 
     $(function () {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/invites/accept",
+            url: API_URI + "/apartment/invites/accept",
             type: "post",
             contentType: "application/json",
             headers: { 'x-access-token': getCookie("token") },
             data: '{"invite":\"' + inviteCodeEl.value + '\"}',
             success: function (data, textStatus, jqXHR) {
-                errEl.className = "mt-4 text-success"
-                errEl.value = "Invito valido, stai per essere renderizzato nella pagina dell'appartamento";
+                document.getElementById("errMsg").className = "mt-4 text-success"
+                document.getElementById("errMsg").innerHTML = "Invito valido, stai per essere renderizzato nella pagina dell'appartamento";
                 console.log("SUCCESS in invites");
 
                 setTimeout(() => {
-                    //window.location = "/viewExpenses.html"
+                    window.location = "/viewExpenses"
                 }, 2000);
             },
             error: function (jqXHR, textStatus, errorThrown) {
