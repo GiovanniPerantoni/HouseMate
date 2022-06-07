@@ -63,7 +63,7 @@ function deleteCookie(name) {
 
 function logout() {
     deleteCookie("token");
-    deleteCookie("email");
+    deleteCookie("userID");
 }
 
 // ======= SIGNUP =======
@@ -127,7 +127,7 @@ function sendData() {
            })
        });
     }
-};
+}
 
 // ======= SIGNIN =======
 
@@ -144,7 +144,6 @@ function signIn() {
 
     text = '{"email":"'+email+'", "pass":"'+password+'"}';
     
-    $(function() {
            $.ajax({
                url: API_URI + "/login",
                type: "POST",
@@ -156,29 +155,19 @@ function signIn() {
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
                    document.cookie = "userID="+data.userID+"; "+expires+"; path=/";
-                   let appInfo;
-                   // TODO: testing
-                   $.ajax({
-                       url: API_URI + "/apartment/manage/info",
-                       type: "GET",
-                       contentType: "application/json",
-                       data: text,
-                       success: function (data, textStatus, jqXHR) {
-                           appInfo == data;
-                       },
-                       error: function (jqXHR, textStatus, errorThrown) {}
-                   });
-                   if (appInfo == "") {
+                   //console.log(data.isInApartment);
+                   if (data.isInApartment==false) {
+                       //console.log("choosing")
                        window.location = "choosing";
                    } else {
+                       //console.log("view")
                        window.location = "/viewExpenses";
                    }
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    errElement.innerHTML = "Email o Password incorrette";
                }
-           })
-       });
+           });
 
 }
 
@@ -576,7 +565,7 @@ function modifyApartment() {
 
 function sendInviteRequest() {
     const listaEmailsEl = document.getElementById("emailsUsersX");
-    const invitoGeneratoEl = document.getElementById("typeInviteLinkX");
+    const invitoGeneratoEl = document.getElementById("typeInviteCodeX");
     const errEl = document.getElementById("errMsg");
     if (listaEmailsEl.value == "") {
         errEl.innerHTML = "Inserire almeno 1 email"
@@ -607,7 +596,7 @@ function sendInviteRequest() {
 
 // ======= INVITES CONFIRM =======
 
-function sendInviteRequest() {
+function acceptInviteRequest() {
     const inviteCodeEl = document.getElementById("typeInviteCodeX");
     const errEl = document.getElementById("errMsg");
 
@@ -630,7 +619,7 @@ function sendInviteRequest() {
                 console.log("SUCCESS in invites");
 
                 setTimeout(() => {
-                    //window.location = "/viewExpenses"
+                    window.location = "/viewExpenses"
                 }, 2000);
             },
             error: function (jqXHR, textStatus, errorThrown) {

@@ -84,23 +84,26 @@ const apt = require('../backend-db/apartment');
  *       example:
  *        motivation: 'Unexpected error.'
  */
-async function login(req, res) {
-	try {
-		const { email, pass } = req.body;
+ async function login(req, res) {
+    try {
+        const { email, pass } = req.body;
 
-		if (!com.checkObligatoryParameters(res, [email, pass], ["string", "string"]))
-			return;
+        if (!com.checkObligatoryParameters(res, [email, pass], ["string", "string"]))
+            return;
 
-		const user = await auth.login(email, sha256(pass));
-		if (user == null)
-			res.status(401).send({ "motivation": "Invalid credentials." });
-		else
-			res.status(200).json(com.cleanObjectData(user, ["token", "userID"]));
+        const user = await auth.login(email, sha256(pass));
+        if (user == null) {
+            res.status(401).send({ "motivation": "Invalid credentials." });
+        } else {
+            const apartment = await apt.getApartment(user);
+            user.isInApartment = (apartment) ? true : false;
+            res.status(200).json(com.cleanObjectData(user, ["token", "userID", "isInApartment"]));
+        }
 
-	} catch (err) {
-		res.status(500).send({ "motivation": "Unexpected error." })
-		console.log(err);
-	}
+    } catch (err) {
+        res.status(500).send({ "motivation": "Unexpected error." })
+        console.log(err);
+    }
 }
 
 /**
