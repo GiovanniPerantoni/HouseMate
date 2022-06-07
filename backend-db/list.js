@@ -29,14 +29,14 @@ async function getProducts(user, limit) {
 
 async function createProduct(user, item) {
 	const apartment = await apt.getApartment(user);
-	if (!apartment) return false;			//se l'utente non fa parte di nessun appartamento non cotinuo
+	if (!apartment) return null;			//se l'utente non fa parte di nessun appartamento non cotinuo
 
 	const itm = await Item.create(item);
 	await apt.Apartment.updateOne(
 		{ users: user.userID },
 		{ $push: { list: itm._id } }
 	);
-	return true;
+	return itm;
 }
 
 async function modifyProduct(user, item) {

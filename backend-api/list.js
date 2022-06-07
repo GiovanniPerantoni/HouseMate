@@ -1,9 +1,6 @@
 const list = require("../backend-db/list");
 const com = require("./common");
 
-// Tipo userID
-// Refactor product into elem
-
 /**
  * @swagger
  * /apartment/list/view:
@@ -116,6 +113,7 @@ async function view(req, res) {
         }
         if (limit < 1) {
             com.returnErrorMessage(res, 400, "Invalid limit.");
+            return;
         }
 
         const shoppingList = await list.getProducts(req.user, limit);
@@ -128,6 +126,7 @@ async function view(req, res) {
         res.status(200).json({ "products" : products});
         
     } catch (err) {
+
         com.returnErrorMessage(res, 500, "Unexpected error");
         console.log(err);
     }
@@ -234,7 +233,7 @@ async function add(req, res) {
             }
         );
 
-        if (!exp) {
+        if (exp == null) {
             com.returnErrorMessage(res, 400, "Couldn't add list element.");
         } else {
             res.status(200).send();

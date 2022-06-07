@@ -2,7 +2,7 @@ const {app} = require('../app')
 const request = require('supertest');
 const com = require('./common');
 
-let {validToken} = require('./common');
+const PREFIX = process.env.PREFIX;
 
 commonOptions = {
 	'Accept': 'application/json'
@@ -10,16 +10,16 @@ commonOptions = {
 
 //#region /signup [POST]
 // test: 2
-test("controllare l'api /api/v1/signup risponda", async () => {
-	return request(app).post('/api/v1/signup').set(commonOptions)
+test(`controllare l'api ${PREFIX}/signup risponda`, async () => {
+	return request(app).post(PREFIX + '/signup').set(commonOptions)
 	.then((res) => {
 		expect(res.status).toBeLessThan(500);
 	});
 });
 
 // test: 2.1
-test("controllare l'api /api/v1/signup funzioni", async () => {
-	return request(app).post('/api/v1/signup').set(commonOptions).send({
+test(`controllare l'api ${PREFIX}/signup funzioni`, async () => {
+	return request(app).post(PREFIX + '/signup').set(commonOptions).send({
 		first_name: "test",
 		last_name: "test",
 		email: com.generateValue("email"),
@@ -31,8 +31,8 @@ test("controllare l'api /api/v1/signup funzioni", async () => {
 
 
 // test: 2.2
-test("controllare parametri mancanti per /api/v1/signup", async () => {
-	return request(app).post('/api/v1/signup').set(commonOptions).send({
+test(`controllare parametri mancanti per ${PREFIX}/signup`, async () => {
+	return request(app).post(PREFIX + '/signup').set(commonOptions).send({
 		first_name: "test",
 		email: "test@test.com",
 		pass: "admin"
@@ -43,8 +43,8 @@ test("controllare parametri mancanti per /api/v1/signup", async () => {
 });
 
 // test: 2.3
-test("controllare tipo di parametri per l'api /api/v1/signup", async () => {
-	return request(app).post('/api/v1/signup').set(commonOptions).send({
+test(`controllare tipo di parametri per l'api ${PREFIX}/signup`, async () => {
+	return request(app).post(PREFIX + '/signup').set(commonOptions).send({
 		first_name: "test",
 		last_name: "test",
 		email: "testtest.com",
@@ -57,8 +57,8 @@ test("controllare tipo di parametri per l'api /api/v1/signup", async () => {
 
 
 // test: 2.7
-test("controllare che l'api /api/v1/signup restituisca solo i parametri descritti nella documentazione", async () => {
-	return request(app).post('/api/v1/signup').set(commonOptions).send({
+test(`controllare che l'api ${PREFIX}/signup restituisca solo i parametri descritti nella documentazione`, async () => {
+	return request(app).post(PREFIX + '/signup').set(commonOptions).send({
 		first_name: "test",
 		last_name: "test",
 		email: com.generateValue("email"),
@@ -71,11 +71,11 @@ test("controllare che l'api /api/v1/signup restituisca solo i parametri descritt
 
 
 // test: 2.9
-test("controllare che l'api /api/v1/signup restituisca un errore se richiedo un nuovo account con un email già usata", async () => {
-	return request(app).post('/api/v1/signup').set(commonOptions).send({
+test(`controllare che l'api ${PREFIX}/signup restituisca un errore se richiedo un nuovo account con un email già usata`, async () => {
+	return request(app).post(PREFIX + '/signup').set(commonOptions).send({
 		first_name: "test",
 		last_name: "test",
-		email: global.email,
+		email: global.validOwners[0].email,
 		pass: "admin"
 	}).then((res) => {
 		expect(res.status).toBe(400);
@@ -89,27 +89,27 @@ test("controllare che l'api /api/v1/signup restituisca un errore se richiedo un 
 
 //#region /login [POST]
 // test: 1
-test("controllare l'api /api/v1/login risponda", async () => {
-	return request(app).post('/api/v1/login').set(commonOptions)
+test(`controllare l'api ${PREFIX}/login risponda`, async () => {
+	return request(app).post(PREFIX + '/login').set(commonOptions)
 	.then((res) => {
 		expect(res.status).toBeLessThan(500);
 	});
 });
 
 // test: 1.1
-test("controllare l'api /api/v1/login funzioni", async () => {
-	return request(app).post('/api/v1/login').set(commonOptions).send({
-		email: global.email,
-		pass: global.pass
+test(`controllare l'api ${PREFIX}/login funzioni`, async () => {
+	return request(app).post(PREFIX + '/login').set(commonOptions).send({
+		email: global.validOwners[0].email,
+		pass: global.validOwners[0].pass
 	}).then((res) => {
 		expect(res.status).toBe(200);
 	});
 });
 
 // test: 1.2
-test("controllare parametri mancanti per /api/v1/login", async () => {
-	return request(app).post('/api/v1/login').set(commonOptions).send({
-		email: global.email,
+test(`controllare parametri mancanti per ${PREFIX}/login`, async () => {
+	return request(app).post(PREFIX + '/login').set(commonOptions).send({
+		email: global.validOwners[0].email,
 	}).then((res) => {
 		expect(res.status).toBe(400);
 		expect(res.body).toStrictEqual({"motivation": "Missing parameters in the request."});
@@ -117,9 +117,9 @@ test("controllare parametri mancanti per /api/v1/login", async () => {
 });
 
 // test: 1.3
-test("controllare tipo di parametri per l'api /api/v1/login", async () => {
-	return request(app).post('/api/v1/login').set(commonOptions).send({
-		email: global.email,
+test(`controllare tipo di parametri per l'api ${PREFIX}/login`, async () => {
+	return request(app).post(PREFIX + '/login').set(commonOptions).send({
+		email: global.validOwners[0].email,
 		pass: 1234
 	}).then((res) => {
 		expect(res.status).toBe(400);
@@ -128,10 +128,10 @@ test("controllare tipo di parametri per l'api /api/v1/login", async () => {
 });
 
 // test: 1.7
-test("controllare che l'api /api/v1/login restituisca solo i parametri descritti nella documentazione", async () => {
-	return request(app).post('/api/v1/login').set(commonOptions).send({
-		email: global.email,
-		pass: global.pass
+test(`controllare che l'api ${PREFIX}/login restituisca solo i parametri descritti nella documentazione`, async () => {
+	return request(app).post(PREFIX + '/login').set(commonOptions).send({
+		email: global.validOwners[0].email,
+		pass: global.validOwners[0].pass
 	})
 	.then((res) => {
 		expect(res.status).toBe(200);
@@ -140,9 +140,9 @@ test("controllare che l'api /api/v1/login restituisca solo i parametri descritti
 });
 
 // test: 1.9
-test("controllare che l'api /api/v1/login restituisca un errore se l'utente prova ad utilizzare credenziali sbagliate", async () => {
-	return request(app).post('/api/v1/login').set(commonOptions).send({
-		email: global.email,
+test(`controllare che l'api ${PREFIX}/login restituisca un errore se l'utente prova ad utilizzare credenziali sbagliate`, async () => {
+	return request(app).post(PREFIX + '/login').set(commonOptions).send({
+		email: global.validOwners[0].email,
 		pass: "1234"
 	})
 	.then((res) => {
