@@ -63,6 +63,11 @@ async function exists(user) {
 	return await User.findOne({ userID: user.userID });
 }
 
+async function getUserByEmail(email) {
+	const user = await User.findOne({ email: email });
+	return user;
+}
+
 //questa funzione viene chiamata per controllare che l'utente che manda una richiesta abbia i
 function verifyToken(req, res, next) {
 	const token = req.body.token || req.query.token || req.headers["x-access-token"];
@@ -79,4 +84,4 @@ function verifyToken(req, res, next) {
 	return next();
 }
 
-module.exports = { User, login, createAccount, exists, verifyToken };
+module.exports = { User, login, createAccount, exists, verifyToken, getUserByEmail };

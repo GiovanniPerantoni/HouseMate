@@ -38,6 +38,7 @@ app.patch(PREFIX + "/apartment/manage/info", auth.verifyToken, apartment.manageI
 //Apartment Users
 app.get  (PREFIX + "/apartment/users"      , auth.verifyToken, apartment.users      );
 
+
 // Invites
 app.patch(PREFIX + "/apartment/invites/new"   , auth.verifyToken, invites._new     );
 app.post (PREFIX + "/apartment/invites/accept", auth.verifyToken, invites.accept   );
