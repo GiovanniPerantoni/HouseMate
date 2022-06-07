@@ -21,48 +21,7 @@
 
             }
         </style>
-
-		<script defer>
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-
-
-			function sendInviteRequest()
-			{
-                const listaEmailsEl = document.getElementById("emailsUsersX");
-                const invitoGeneratoEl = document.getElementById("typeInviteLinkX");
-                const errEl = document.getElementById("errMsg");
-                if(listaEmailsEl.value == "")
-                {
-                    errEl.innerHTML = "Inserire almeno 1 email"
-                    return;
-                }
-
-                listaEmails = listaEmailsEl.value.split('\n')
-
-				$(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/invites/new",
-                        type: "patch",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
-						data: '{"users":' + JSON.stringify(listaEmails) + '}',
-                        success: function(data, textStatus, jqXHR) {
-                            invitoGeneratoEl.value = data.invite;
-							errEl.innerHTML = "";
-                            console.log("SUCCESS in invites");
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-							errEl.innerHTML = jqXHR.responseJSON.motivation;
-                            console.log("FAILURE in invits");
-                        }
-                    })
-                })
-			}
-		</script>
+		<script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
 
@@ -76,33 +35,30 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse mx-5" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="sxNavbar">
                         <!-- Spese -->
                         <li class="nav-item mx-2">
                             <a class="nav-link" aria-current="page" href="viewExpenses.html">Spese</a>
                         </li>
                         <!-- Lista -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link disabled" href="#">Lista</a>
+                            <a class="nav-link" href="viewList.html">Lista</a>
                         </li>
-                        <!-- Mansioni -->
+                        <!-- inviti -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link disabled" href="#">Mansioni</a>
+                            <a class="nav-link active" href="invitesNew.html">Inviti</a>
                         </li>
                     </ul>
                     <!-- Bottoni Dx -->
                     <span class="navbar-text">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <!-- Profilo -->
+                            <!-- Appartamento -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link disabled" aria-current="page" href="#">Profilo</a>
-                            </li>
-                            <li class="nav-item mx-3">
-                                <a class="nav-link active" aria-current="page" href="viewApartment.html">Appartamento</a>
+                                <a class="nav-link" aria-current="page" href="viewApartment.html">Appartamento</a>
                             </li>
                             <!-- Logout -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link disabled" aria-current="page" href="#">Logout</a>
+                                <a class="nav-link" aria-current="page" href="signIn.html" onclick="deleteCookie(getCookie('token'))">Logout</a>
                             </li>
                         </ul>
                     </span>
