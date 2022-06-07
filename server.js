@@ -1,26 +1,12 @@
 const dotenv = require('dotenv').config();
 const express = require('express');
-const bodyparser = require('body-parser');
-const cors = require('cors');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-
-const {login, signup} = require("./backend-api/authentication");
-const apartment = require("./backend-api/apartment");
-const expenses = require("./backend-api/expenses");
-const invites = require("./backend-api/invites");
-const list = require("./backend-api/list");
-
 require('./databaseConnection');	//usata per creare e manterene la connessione al mongodb
 
 const {app} = require("./app")
 const PORT = process.env.PORT;
-
-// Shopping List
-app.get   (PREFIX + "/apartment/list/view"  , auth.verifyToken, list.view   );
-app.post  (PREFIX + "/apartment/list/add"   , auth.verifyToken, list.add    );
-app.patch (PREFIX + "/apartment/list/modify", auth.verifyToken, list.modify );
-app.delete(PREFIX + "/apartment/list/delete", auth.verifyToken, list._delete);
+const PREFIX = process.env.PREFIX;
 
 //---------------------WEBSITE SECTION---------------------\\
 app.use('/', express.static(__dirname + '/site'));
