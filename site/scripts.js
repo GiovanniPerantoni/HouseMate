@@ -1,3 +1,5 @@
+const config = require('config.js');
+const API_URI = config.API_URI;
 usrInfo = "";
 globalProductID = "";
 
@@ -14,7 +16,7 @@ function getCookie(name) {
 async function retriveUserInfo(userID) {
     //$(async function() {
         await $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/users",
+            url: API_URI + "/apartment/users",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : userID},
@@ -97,7 +99,7 @@ function sendData() {
     if (res) {
        $(function() {
            $.ajax({
-               url: "http://127.0.0.1:3000/api/v1/signup",
+               url: API_URI + "/signup",
                type: "POST",
                contentType: "application/json",
                data: text,
@@ -136,7 +138,7 @@ function signIn() {
     
     $(function() {
            $.ajax({
-               url: "http://127.0.0.1:3000/api/v1/login",
+               url: API_URI + "/login",
                type: "POST",
                contentType: "application/json",
                data: text,
@@ -148,7 +150,7 @@ function signIn() {
                    let appInfo;
                    // TODO: testing
                    $.ajax({
-                       url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+                       url: API_URI + "/apartment/manage/info",
                        type: "GET",
                        contentType: "application/json",
                        data: text,
@@ -202,7 +204,7 @@ function viewExpenses() {
     usrToken = getCookie("token");
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
+            url: API_URI + "/apartment/expenses/view",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : usrToken},
@@ -245,7 +247,7 @@ function addExpense() {
     if (product != '' && price != '') {
         $(function() {
             $.ajax({
-                url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
+                url: API_URI + "/apartment/expenses/add",
                 type: "post",
                 contentType: "application/json",
                 headers: {'x-access-token' : getCookie("token")},
@@ -281,7 +283,7 @@ function modifyExpense() {
     text += '}';
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/modify",
+            url: API_URI + "/apartment/expenses/modify",
             type: "patch",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -302,7 +304,7 @@ function deleteExpense() {
     let text = '{"expenseID":"'+globalProductID+'"}';
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/delete",
+            url: API_URI + "/apartment/expenses/delete",
             type: "delete",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -358,7 +360,7 @@ function viewList() {
     console.log(usrInfo)
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/list/view",
+            url: API_URI + "/apartment/list/view",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : usrToken},
@@ -395,7 +397,7 @@ function addProduct() {
     if (product != '' && date !='') {
         $(function() {
             $.ajax({
-                url: "http://127.0.0.1:3000/api/v1/apartment/list/add",
+                url: API_URI + "/apartment/list/add",
                 type: "post",
                 contentType: "application/json",
                 headers: {'x-access-token' : getCookie("token")},
@@ -432,7 +434,7 @@ function modifyProduct() {
 
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/list/modify",
+            url: API_URI + "/apartment/list/modify",
             type: "patch",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -454,7 +456,7 @@ function deleteProduct() {
     let text = '{"productID":"'+globalProductID+'"}';
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/list/delete",
+            url: API_URI + "/apartment/list/delete",
             type: "delete",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -476,7 +478,7 @@ function deleteProduct() {
 function viewApartment() {
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+            url: API_URI + "/apartment/manage/info",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -503,7 +505,7 @@ defaultRules = "";
 function manageApartment() {
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+            url: API_URI + "/apartment/manage/info",
             type: "get",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -543,7 +545,7 @@ function modifyApartment() {
     
     $(function() {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+            url: API_URI + "/apartment/manage/info",
             type: "patch",
             contentType: "application/json",
             headers: {'x-access-token' : getCookie("token")},
@@ -577,7 +579,7 @@ function sendInviteRequest() {
 
     $(function () {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/invites/new",
+            url: API_URI + "/apartment/invites/new",
             type: "patch",
             contentType: "application/json",
             headers: { 'x-access-token': getCookie("token") },
@@ -609,7 +611,7 @@ function sendInviteRequest() {
 
     $(function () {
         $.ajax({
-            url: "http://127.0.0.1:3000/api/v1/apartment/invites/accept",
+            url: API_URI + "/apartment/invites/accept",
             type: "post",
             contentType: "application/json",
             headers: { 'x-access-token': getCookie("token") },
