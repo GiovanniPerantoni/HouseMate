@@ -65,24 +65,21 @@
                             </li>
                             <!-- Logout -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link" aria-current="page" href="signIn" onclick="deleteCookie(getCookie('token'))">Logout</a>
+                                <a class="nav-link" aria-current="page" href="signIn" onclick=logout()>Logout</a>
                             </li>
                         </ul>
                     </span>
                 </div>
             </div>
         </nav>
+
         <script>
             showInvitesButton();
+            setUpListPage();
         </script>
 
         <!-- Body -->
         <div class="p-5 text-left gradient-custom">
-
-            <script>
-                setUpListPage();
-            </script>
-
             <!-- Lista -->
             <section class="vh-200">
                 <div class="container py-5 h-100">

@@ -48,7 +48,6 @@ async function showInvitesButton() {
     let usr = getUser(getCookie("userID"));
     console.log(usr)
     if (usr.role == 'owner') {
-        console.log("fue");
         document.getElementById("sxNavbar").innerHTML += 
             '<li class="nav-item mx-2">' +
             '<a class="nav-link" href="invitesNew">Inviti</a>' +
@@ -60,6 +59,11 @@ async function showInvitesButton() {
 function deleteCookie(name) {
     console.log("logout");
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function logout() {
+    deleteCookie("token");
+    deleteCookie("email");
 }
 
 // ======= SIGNUP =======
