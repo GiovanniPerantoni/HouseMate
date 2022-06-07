@@ -212,7 +212,7 @@ function viewExpenses() {
                 users = data.totals;
                 for (let i in users) {
                     let infos = getUser(users[i].userID);
-                    let str = '<h4 class="mb-4" style="color: '+infos.color+'">' + infos.first_name + ' ha contribuito con: ' + users[i].total + '</p>';
+                    let str = '<h4 class="mb-4" style="color: '+infos.color+'">' + infos.first_name + ' ha contribuito con: € ' + users[i].total + '</p>';
                     contributiElem.innerHTML += str
                 }
                 expenses = data.expenses;
@@ -472,6 +472,19 @@ function deleteProduct() {
 
 // ======= VIEW =======
 
+// Function used to show the modify apartment button if the user is an owner
+async function showModifyButton() {
+    console.log("1");
+    await retrieveUserInfo(getCookie("token"));
+    let usr = getUser(getCookie("userID"));
+    console.log(usr)
+    if (usr.role != 'owner') {
+        console.log("2");
+        document.getElementById("modifyBtn").classList.add('invisible'); 
+    }
+    console.log("3");
+}
+
 // Function used to show the apartment info
 function viewApartment() {
     $(function() {
@@ -614,8 +627,8 @@ function acceptInviteRequest() {
             headers: { 'x-access-token': getCookie("token") },
             data: '{"invite":\"' + inviteCodeEl.value + '\"}',
             success: function (data, textStatus, jqXHR) {
-                errEl.className = "mt-4 text-success"
-                errEl.value = "Invito valido, stai per essere renderizzato nella pagina dell'appartamento";
+                document.getElementById("errMsg").className = "mt-4 text-success"
+                document.getElementById("errMsg").innerHTML = "Invito valido, stai per essere renderizzato nella pagina dell'appartamento";
                 console.log("SUCCESS in invites");
 
                 setTimeout(() => {
