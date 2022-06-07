@@ -70,21 +70,6 @@ test(`controllare che l'api ${PREFIX}/apartment/invites/new richieda il all'uten
 	});
 });
 
-
-/*
-TODO investigare perchè da 200
-// test: 10.6
-test(`controllare che l'api ${PREFIX}/apartment/invites/new richieda che l'utente entri in un appartamento`, async () => {
-	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validNewUsers[0].token).send({
-		users: [global.validInvitedUsers[0].email]
-	})
-	.then((res) => {
-		expect(res.status).toBe(400);
-		expect(res.body).toStrictEqual({"motivation": "Invalid invited list."});
-	});
-});
-*/
-
 // test: 10.7
 test(`controllare che l'api ${PREFIX}/apartment/invites/new restituisca solo i parametri descritti nella documentazione`, async () => {
 	return request(app).patch(PREFIX + '/apartment/invites/new').set(commonOptions).set('x-access-token', global.validOwners[1].token).send({
@@ -159,34 +144,5 @@ test(`controllare che l'api ${PREFIX}/apartment/invites/accept richieda il all'u
 		expect(res.body).toStrictEqual({"motivation": "Invalid or expired token."});
 	});
 });
-
-/*
-// test: 11.6.1
-test(`controllare che l'api ${PREFIX}/apartment/invites/accept TODO`, async () => {
-	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({TODO})
-	.then((res) => {
-		expect(res.status).toBe(400);
-		expect(res.body).toStrictEqual({"motivation": "TODO"});
-	});
-});
-
-// test: 11.6.2
-test(`controllare che l'api ${PREFIX}/apartment/invites/accept TODO`, async () => {
-	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({TODO})
-	.then((res) => {
-		expect(res.status).toBe(400);
-		expect(res.body).toStrictEqual({"motivation": "TODO"});
-	});
-});
-
-// test: 11.6.3
-test(`controllare che l'api ${PREFIX}/apartment/invites/accept TODO`, async () => {
-	return request(app).post(PREFIX + '/apartment/invites/accept').set(commonOptions).send({TODO})
-	.then((res) => {
-		expect(res.status).toBe(400);
-		expect(res.body).toStrictEqual({"motivation": "TODO"});
-	});
-});
-*/
 
 //#endregion
