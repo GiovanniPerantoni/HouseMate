@@ -43,6 +43,8 @@ async function getUsers(user) {
 	const users = await auth.User.find({
 		_id: { $in : apartment.users }
 	}).select("userID first_name last_name color");
+	for (let u = 0; u < users.length; u++)
+		users[u].role = (apartment.owners.includes(users[u].userID)) ? "owner" : "user";
 	return users;
 }
 
