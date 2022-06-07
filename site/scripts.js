@@ -108,7 +108,7 @@ function sendData() {
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
                    //console.log(document.cookie);
                    //console.log("SUCCESS!");
-                   window.location = "/manageApartment.html";
+                   window.location = "choosing.html";
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    document.getElementById('errMsg').innerHTML = "La mail è già in uso.";
@@ -141,18 +141,30 @@ function signIn() {
                contentType: "application/json",
                data: text,
                success: function (data, textStatus, jqXHR) {
-                   //console.log(data.token);
                    const d = new Date();
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                   //console.log(document.cookie);
-                   //console.log("SUCCESS!");
-                   window.location = "/viewExpenses.html"
+                   let appInfo;
+                   // TODO: testing
+                   $.ajax({
+                       url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+                       type: "GET",
+                       contentType: "application/json",
+                       data: text,
+                       success: function (data, textStatus, jqXHR) {
+                           appInfo == data;
+                       },
+                       error: function (jqXHR, textStatus, errorThrown) {}
+                   });
+                   if (appInfo == "") {
+                       window.location = "choosing.html";
+                   } else {
+                       window.location = "/viewExpenses.html";
+                   }
                },
                error: function (jqXHR, textStatus, errorThrown) {
-                   errElement.innerHTML = "Email o Password incorrette"
-                   //console.log("FAILURE");
+                   errElement.innerHTML = "Email o Password incorrette";
                }
            })
        });
