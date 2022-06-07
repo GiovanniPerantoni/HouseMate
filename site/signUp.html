@@ -19,66 +19,7 @@
             }
         </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-        <script type="text/javascript">
-            function validateForm() {
-                const errElement = document.getElementById('errMsg');
-                let name = document.getElementById("typeNameX").value;
-                let surname = document.getElementById("typeSurnameX").value;
-                let email = document.getElementById("typeEmailX").value;
-                let pass1 = document.getElementById("typePasswordX").value;
-                let pass2 = document.getElementById("typePassword2X").value;
-
-                // If form not completely edited
-                if (name == '' || surname == '' || email == '' || pass1 == '' || pass2 == '') {
-                    errElement.innerHTML = "Riempi tutti i campi del form.";
-                    return false;
-                }
-
-                // If email isn't valid
-                if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-                    errElement.innerHTML = "Email non valida: inserisci una mail valida.";
-                    return false;
-                }
-
-                // If not same password return False else return True
-                if (pass1 != pass2) {
-                    errElement.innerHTML = "Le password non corrispondono: inseriscile di nuovo...";
-                    return false;
-                } else {
-                    errElement.innerHTML = "";
-                    text = '{"email":"'+email+'", "first_name":"'+name+'", "last_name":"'+surname+'", "pass":"'+pass1+'"}';
-                    return true;
-                }
-            }
-
-            function sendData() {
-                let res = validateForm();
-                if (res) {
-                   $(function() {
-                       $.ajax({
-                           url: "http://127.0.0.1:3000/api/v1/signup",
-                           type: "POST",
-                           contentType: "application/json",
-                           data: text,
-                           success: function (data, textStatus, jqXHR) {
-                               const d = new Date();
-                               d.setTime(d.getTime() + (24*60*60*1000));
-                               let expires = "expires="+d.toUTCString();
-                               document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                               //console.log(document.cookie);
-                               //console.log("SUCCESS!");
-                               window.location = "/manageApartment.html";
-                           },
-                           error: function (jqXHR, textStatus, errorThrown) {
-                               document.getElementById('errMsg').innerHTML = "La mail è già in uso.";
-                               //console.log("FAILURE");
-                           }
-                       })
-                   });
-                }
-            };
-
-        </script>
+        <script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
         <section class="vh-150 gradient-custom">

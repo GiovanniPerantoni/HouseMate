@@ -31,204 +31,7 @@
             }
         </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-        <script type="text/javascript">
-
-            usrInfo = "";
-            globalProductID = "";
-
-            // Function used to get cookies by name
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-
-            // Function used to retrive all users from api
-            async function retriveUserInfo(userID) {
-                //$(async function() {
-                    await $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/users",
-                        type: "get",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : userID},
-                        success: function(data, textStatus, jqXHR) {
-                            usrInfo = data;
-                            console.log("SUCCESS in retrive User Info");
-                        },
-                        failure: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in retrive user info");
-                            //return ["", "", ""];
-                        }
-                    });
-                //});
-            }
-
-            // Function used to get user info from cookie
-            function getUser(userID) {
-                for (let u=0; u<usrInfo.length; u++) {
-                    if (usrInfo[u].userID == userID) {
-                        return usrInfo[u];
-                    }
-                }
-                return "failure";
-            }
-
-            // Function used to insert a new expense on the html
-            function insertLine(productID, person, product, price, date, color) {
-                document.getElementById("expensesList").innerHTML += 
-                '<div>'+
-                '<ul class="list-group list-group-horizontal rounded-0 bg-transparent">'+
-                '<li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">'+
-                '<p class="lead fw-normal mb-0 text-white"><span style="color: '+color+'">'+person+'</span> ha comprato '+product+' (€ '+price+')</p>'+
-                '</li>'+
-                '<li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">'+
-                '<div class="d-flex flex-row justify-content-end mb-1">'+
-                '<button type="button" class="btn btn-outline-info mx-1 px-1" data-bs-toggle="modal" data-bs-target="#editExpense" onclick="globalProductID=\''+productID+'\'">'+
-                '<i class="bi bi-pencil mx-2"></i>'+
-                '</button>'+
-                '</div>'+
-                '<div class="text-end text-muted">'+
-                '<a href="#!" class="text-muted" data-mdb-toggle="tooltip" title="Created date">'+
-                '<p class="small mb-0"><i class="bi bi-info-circle-fill me-2"></i>'+date+'</p>'+
-                '</a>'+
-                '</div>'+
-                '</li>'+
-                '</ul>'+
-                '</div>';
-
-            }
-
-            // Function used to show the expenses
-            function viewExpenses() {
-                usrToken = getCookie("token");
-                $(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/view",
-                        type: "get",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : usrToken},
-                        success: function(data, textStatus, jqXHR) {
-                            console.log(usrInfo); 
-                            let contributiElem = document.getElementById('contribuenti');
-                            users = data.totals;
-                            for (let i in users) {
-                                let infos = getUser(users[i].userID);
-                                let str = '<h4 class="mb-4" style="color: '+infos.color+'">' + infos.first_name + ' ha contribuito con: ' + users[i].total + '</p>';
-                                contributiElem.innerHTML += str
-                            }
-                            expenses = data.expenses;
-                            for (let i in expenses) {
-                                let infos = getUser(expenses[i].userID);
-                                insertLine(expenses[i].expenseID, infos.first_name, expenses[i].product, expenses[i].price, (expenses[i].date).slice(0,10), infos.color);
-                            }
-                            console.log("SUCCESS in viewExpenses");
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in viewExpenses");
-                        }
-                    })
-                });
-            }
-
-            // Wrapper function used for the setup of the page
-            async function setUpPage() {
-                await retriveUserInfo(getCookie("token"));
-                viewExpenses();
-            }
-
-            // Function used to add an Expense
-            function addExpense() {
-                let product = document.getElementById("typeProductX").value;
-                let price = document.getElementById("typePriceX").value;
-
-                const date = new Date();
-                date.getUTCDate();
-
-                let text = '{"price":'+price+', "product":"'+product+'", "date":"'+date+'"}';
-
-                if (product != '' && price != '') {
-                    $(function() {
-                        $.ajax({
-                            url: "http://127.0.0.1:3000/api/v1/apartment/expenses/add",
-                            type: "post",
-                            contentType: "application/json",
-                            headers: {'x-access-token' : getCookie("token")},
-                            data: text,
-                            success: function (data, textStatus, jqXHR) {
-                                console.log("SUCCESS in addExpenses");
-                                window.location.reload();
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log("FAILURE in addExpenses");
-                            }
-                        })
-                    });
-                }
-            }
-
-            // Function used to modify an expense
-            function modifyExpense() {
-                let product = document.getElementById("modifyProductX").value;
-                let price = document.getElementById("modifyPriceX").value;
-                let date = document.getElementById("modifyDateX").value;
-                
-                let text = '{"expenseID":"'+globalProductID+'"';
-                if (product != '') {
-                    text += ', "product":"'+product+'"';
-                }
-                if (price != '') {
-                    text += ', "price":'+price;
-                }
-                if (date != '') {
-                    text += ', "date":"'+date+'"';
-                }
-                text += '}';
-
-                $(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/modify",
-                        type: "patch",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
-                        data: text,
-                        success: function(data, textStatus, jqXHR) {
-                            console.log("SUCESS in modifyExpense");
-                            window.location.reload();
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in modifyExpense");
-                        }
-                    })
-                });
-
-            }
-
-            // Function used to delete an expense
-            function deleteExpense() {
-                let text = '{"expenseID":"'+globalProductID+'"}';
-                $(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/expenses/delete",
-                        type: "delete",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
-                        data: text,
-                        success: function(data, textStatus, jqXHR) {
-                            console.log("SUCCESS in deleteExpense");
-                            window.location.reload();
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in deleteExpense");
-                        }
-                    })
-                })
-            }
-
-            function deleteCookie(name) {
-                console.log("logout");
-                document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-            }
-        </script>
+        <script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
         <!-- Navbar -->
@@ -248,7 +51,7 @@
                         </li>
                         <!-- Lista -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link disabled" href="#">Lista</a>
+                            <a class="nav-link" href="viewList.html">Lista</a>
                         </li>
                         <!-- Mansioni -->
                         <li class="nav-item mx-2">
@@ -260,7 +63,7 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <!-- Profilo -->
                             <li class="nav-item mx-3">
-                                <a class="nav-link disabled" aria-current="page" href="#">Profilo</a>
+                                <a class="nav-link" aria-current="page" href="javascript:dummy()">Inviti</a>
                             </li>
                             <li class="nav-item mx-3">
                                 <a class="nav-link" aria-current="page" href="viewApartment.html">Appartamento</a>
@@ -279,7 +82,7 @@
         <div class="p-5 text-left gradient-custom">
 
             <script>
-                setUpPage();
+                setUpExpensePage();
             </script>
 
             <!-- Contributi -->

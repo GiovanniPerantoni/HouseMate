@@ -21,84 +21,12 @@
 
             }
         </style>
-        <script>
-            defaultName = "";       //valori di default se per caso la richiesta get dovesse fallire
-            defaultAddress = "";
-            defaultRules = "";
-
-            // Function used to get cookies by name
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-
-            function viewApartment() {
-                $(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
-                        type: "get",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
-                        success: function(data, textStatus, jqXHR) {
-                            defaultName = (typeof data.name !== 'undefined') ? data.name : defaultName;
-                            defaultAddress = (typeof data.address !== 'undefined') ? data.address : defaultAddress;
-                            defaultRules = (typeof data.rules !== 'undefined') ? data.rules : defaultRules;
-                            document.getElementById("typeApNameX").value = defaultName;
-                            document.getElementById("typeApAddressX").value = defaultAddress;
-                            document.getElementById("typeApRulesX").value = defaultRules;
-                            console.log("SUCCESS in viewApartment");
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in viewExpenses");
-                        }
-                    })
-                })
-            }
-
-            function modifyApartment() {
-                errElement = document.getElementById("errMsg");
-                let name = document.getElementById("typeApNameX").value;
-                let addr = document.getElementById("typeApAddressX").value;
-                let rules = document.getElementById("typeApRulesX").value;
-                let aptInfo = {};
-                if (name != '' && name != defaultName) {
-                    aptInfo.name = name;
-                }
-                if (addr != '' && addr != defaultAddress) {
-                    aptInfo.address = addr;
-                }
-                if (rules != '' && rules != defaultRules) {
-                    aptInfo.rules = rules;
-                }
-                console.log(JSON.stringify(aptInfo));
-                
-                $(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
-                        type: "patch",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
-                        data: JSON.stringify(aptInfo),
-                        success: function(data, textStatus, jqXHR) {
-                            console.log("SUCCESS in modifyApartment");
-                            //window.location = "viewApartment.html";       //TODO fare il redirect solo quando si crea un appartamento
-                            window.location = "/invitesNew.html";
-                        },
-                        failure: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in modifyApartment");
-                        }
-                    })
-                })
-
-                return true;
-            }
-        </script>
+        <script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
 
         <script>
-            viewApartment();
+            manageApartment();
         </script>
 
         <!-- Navbar -->

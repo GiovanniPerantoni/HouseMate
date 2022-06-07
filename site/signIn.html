@@ -20,44 +20,7 @@
             }
         </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-        <script type="text/javascript">
-            function checkValidity() {
-                const errElement = document.getElementById('errMsg');
-                let email = document.getElementById("typeEmailX").value;
-                let password = document.getElementById("typePasswordX").value;
-
-                if (email == '' || password == '') {
-                    errElement.innerHTML = "Riempire entrambi i campi";
-                    return false;
-                }
-
-                text = '{"email":"'+email+'", "pass":"'+password+'"}';
-                
-                $(function() {
-                       $.ajax({
-                           url: "http://127.0.0.1:3000/api/v1/login",
-                           type: "POST",
-                           contentType: "application/json",
-                           data: text,
-                           success: function (data, textStatus, jqXHR) {
-                               //console.log(data.token);
-                               const d = new Date();
-                               d.setTime(d.getTime() + (24*60*60*1000));
-                               let expires = "expires="+d.toUTCString();
-                               document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                               //console.log(document.cookie);
-                               //console.log("SUCCESS!");
-                               window.location = "/viewExpenses.html"
-                           },
-                           error: function (jqXHR, textStatus, errorThrown) {
-                               errElement.innerHTML = "Email o Password incorrette"
-                               //console.log("FAILURE");
-                           }
-                       })
-                   });
-
-            }
-        </script>
+        <script type="text/javascript" src="scripts.js"></script>
     </head>
     <body>
         <section class="vh-100 gradient-custom">
@@ -90,7 +53,7 @@
                                     <button class="btn btn-outline-light btn-lg px-5" id="submitBtn" type="submit">Sign In</button>
                                     <script>
                                         var btn = document.getElementById("submitBtn");
-                                        btn.addEventListener("click", checkValidity);
+                                        btn.addEventListener("click", signIn);
                                     </script>
 
                                     <!-- Error message (hidden by default) -->
