@@ -257,7 +257,7 @@ async function add (req, res) {
 			}
 		);
 
-		if (!exp)
+		if (exp == null)
 			res.status(400).send({ "motivation": "Couldn't add expense." });
 		else
 			res.status(200).send();

@@ -21,85 +21,50 @@
 
             }
         </style>
-        <script>
-            defaultName = "";       //valori di default se per caso la richiesta get dovesse fallire
-            defaultAddress = "";
-            defaultRules = "";
 
-            // Function used to get cookies by name
+		<script defer>
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
 
-            function viewApartment() {
-                $(function() {
-                    $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
-                        type: "get",
-                        contentType: "application/json",
-                        headers: {'x-access-token' : getCookie("token")},
-                        success: function(data, textStatus, jqXHR) {
-                            defaultName = (typeof data.name !== 'undefined') ? data.name : defaultName;
-                            defaultAddress = (typeof data.address !== 'undefined') ? data.address : defaultAddress;
-                            defaultRules = (typeof data.rules !== 'undefined') ? data.rules : defaultRules;
-                            document.getElementById("typeApNameX").value = defaultName;
-                            document.getElementById("typeApAddressX").value = defaultAddress;
-                            document.getElementById("typeApRulesX").value = defaultRules;
-                            console.log("SUCCESS in viewApartment");
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in viewExpenses");
-                        }
-                    })
-                })
-            }
 
-            function modifyApartment() {
-                errElement = document.getElementById("errMsg");
-                let name = document.getElementById("typeApNameX").value;
-                let addr = document.getElementById("typeApAddressX").value;
-                let rules = document.getElementById("typeApRulesX").value;
-                let aptInfo = {};
-                if (name != '' && name != defaultName) {
-                    aptInfo.name = name;
+			function sendInviteRequest()
+			{
+                const listaEmailsEl = document.getElementById("emailsUsersX");
+                const invitoGeneratoEl = document.getElementById("typeInviteLinkX");
+                const errEl = document.getElementById("errMsg");
+                if(listaEmailsEl.value == "")
+                {
+                    errEl.innerHTML = "Inserire almeno 1 email"
+                    return;
                 }
-                if (addr != '' && addr != defaultAddress) {
-                    aptInfo.address = addr;
-                }
-                if (rules != '' && rules != defaultRules) {
-                    aptInfo.rules = rules;
-                }
-                console.log(JSON.stringify(aptInfo));
-                
-                $(function() {
+
+                listaEmails = listaEmailsEl.value.split('\n')
+
+				$(function() {
                     $.ajax({
-                        url: "http://127.0.0.1:3000/api/v1/apartment/manage/info",
+                        url: "http://127.0.0.1:3000/api/v1/apartment/invites/new",
                         type: "patch",
                         contentType: "application/json",
                         headers: {'x-access-token' : getCookie("token")},
-                        data: JSON.stringify(aptInfo),
+						data: '{"users":' + JSON.stringify(listaEmails) + '}',
                         success: function(data, textStatus, jqXHR) {
-                            console.log("SUCCESS in modifyApartment");
-                            //window.location = "viewApartment.html";       //TODO fare il redirect solo quando si crea un appartamento
-                            window.location = "/invitesNew.html";
+                            invitoGeneratoEl.value = data.invite;
+							errEl.innerHTML = "";
+                            console.log("SUCCESS in invites");
                         },
-                        failure: function(jqXHR, textStatus, errorThrown) {
-                            console.log("FAILURE in modifyApartment");
+                        error: function(jqXHR, textStatus, errorThrown) {
+							errEl.innerHTML = jqXHR.responseJSON.motivation;
+                            console.log("FAILURE in invits");
                         }
                     })
                 })
-
-                return true;
-            }
-        </script>
+			}
+		</script>
     </head>
     <body>
-
-        <script>
-            viewApartment();
-        </script>
 
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -155,39 +120,35 @@
                                 
                                 <div class="mb-md-2 mt-md-4 pb-2">
 
-                                    <!--Retrive Appartment Data -->
-
-                                    <h2 class="fw-bold mb-5 text-uppercase">Gestione Appartamento</h2>
+                                    <h2 class="fw-bold mb-5 text-uppercase">Invito all'appartamento</h2>
 
                                     <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <label class="form-label" for="typeApNameX">Nome Appartamento</label>
-                                                <input type="text" id="typeApNameX" class="form-control" value=""/>
+                                        <div class="col-md-12 mb-4">
+
+                                            <div class="form-group">
+                                                <label for="emailsUsersX">Lista di email degli utenti abilitati:</label>
+                                                <textarea class="form-control" rows="7" id="emailsUsersX" value=""></textarea>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <label class="form-label" for="typeApAddressX">Indirizzo Appartamento</label>
-                                                <input type="text" id="typeApAddressX" class="form-control" value=""/>
-                                            </div>
+                                            
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="typeApRulesX">Regolamento:</label>
-                                        <textarea class="form-control" rows="7" id="typeApRulesX" value=""></textarea>
+                                    
+                                    <div class="form-outline">
+                                        <label class="form-label" for="typeInviteLinkX">Codice di invito generato</label>
+                                        <input type="text" id="typeInviteLinkX" class="form-control" readonly value=""/>
                                     </div>
 
-                                    <div>
+									<div>
                                         <p class="mt-4 text-danger" id="errMsg"></p>
                                     </div>
+
+                                    <a href="invitesConfirm.html" class="link-primary">Se avete già un invito</a>
 
                                     <div class="mt-5 pt-4">
                                         <button class="btn btn-outline-light btn-lg px-5" id="confirmBtn" type="submit">Conferma</button>
                                         <script>
                                             var btn = document.getElementById("confirmBtn");
-                                            btn.addEventListener("click", modifyApartment);
+                                            btn.addEventListener("click", sendInviteRequest);
                                         </script>
                                     </div>
 

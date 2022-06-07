@@ -60,7 +60,7 @@ async function updateTotal(user) {
 //ritorno se l'utente fa parte o meno di un appartamento (se sono riusco a modificarla o meno)
 async function createExpense(user, expense) {
 	const apartment = await apt.getApartment(user);
-	if (!apartment) return false;			//se l'utente non fa parte di nessun appartamento non cotinuo
+	if (!apartment) return null;			//se l'utente non fa parte di nessun appartamento non cotinuo
 	
 	const exp = await Expense.create(expense);
 	await apt.Apartment.updateOne(
@@ -68,7 +68,7 @@ async function createExpense(user, expense) {
 		{ $push: { expenses: exp._id } }
 	);
 	await updateTotal(user);
-	return true;
+	return exp;
 }
 
 //ritorno se sono riscito a modificare l'expense (expense esiste, ho i permessi per modificarla)

@@ -51,7 +51,6 @@ async function isOwner(user) {
 }
 
 
-//!!! funzionalità temporanea dello sprint 1 da cambiare con l'implementazione del sistema di inviti
 //se l'utente non fa parte di un appartamento viene creato, se invece ne fa parte ed è l'owner vigono modificate le info
 async function createOrUpdate(user, apartmentInfo) {
 	const apt = await getApartment(user);
