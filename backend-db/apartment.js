@@ -15,7 +15,8 @@ const apartmentSchema = new mongoose.Schema({
 			total: Number
 		}
 	]},
-	invite: { type: String, default: null }
+	invite: { type: String, default: null },
+	list: { type: [mongoose.Schema.Types.ObjectId], default: null }
 });
 const Apartment = mongoose.model("apartment", apartmentSchema);
 
