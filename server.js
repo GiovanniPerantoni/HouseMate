@@ -9,8 +9,8 @@ const PORT = process.env.PORT;
 const PREFIX = process.env.PREFIX;
 
 //---------------------WEBSITE SECTION---------------------\\
-app.use('/', express.static(__dirname + '/site'));
-app.use(     express.static(__dirname + '/site'));
+app.use('/', express.static(__dirname + '/site', { extensions: ['html'] }));
+app.use(     express.static(__dirname + '/site', { extensions: ['html'] }));
 
 //-------------------DOCUMENTATION SECTION------------------\\
 const swaggerDefinition = {

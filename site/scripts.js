@@ -11,8 +11,8 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-// Function used to retrive all users from api
-async function retriveUserInfo(userID) {
+// Function used to retrieve all users from api
+async function retrieveUserInfo(userID) {
     //$(async function() {
         await $.ajax({
             url: API_URI + "/apartment/users",
@@ -21,10 +21,10 @@ async function retriveUserInfo(userID) {
             headers: {'x-access-token' : userID},
             success: function(data, textStatus, jqXHR) {
                 usrInfo = data;
-                console.log("SUCCESS in retrive User Info");
+                console.log("SUCCESS in retrieve User Info");
             },
             failure: function(jqXHR, textStatus, errorThrown) {
-                console.log("FAILURE in retrive user info");
+                console.log("FAILURE in retrieve user info");
                 //return ["", "", ""];
             }
         });
@@ -41,26 +41,17 @@ function getUser(userID) {
     return "failure";
 }
 
-// Function used to get user info from email
-function getUserByEmail(email) {
-    for (let u=0; u<usrInfo.length; u++) {
-        if (usrInfo[u].email == email) {
-            return usrInfo[u];
-        }
-    }
-    return "failure";
-}
 
 // Function used to show the invites button
 async function showInvitesButton() {
-    await retriveUserInfo(getCookie("token"));
-    let usr = getUserByEmail(getCookie("email"));
+    await retrieveUserInfo(getCookie("token"));
+    let usr = getUser(getCookie("userID"));
     console.log(usr)
     if (usr.role == 'owner') {
         console.log("fue");
         document.getElementById("sxNavbar").innerHTML += 
             '<li class="nav-item mx-2">' +
-            '<a class="nav-link" href="invitesNew.html">Inviti</a>' +
+            '<a class="nav-link" href="invitesNew">Inviti</a>' +
             '</li>';
     }
 }
@@ -120,10 +111,10 @@ function sendData() {
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                   document.cookie = "email="+data.email+"; "+expires+"; path=/";
+                   document.cookie = "userID="+data.userID+"; "+expires+"; path=/";
                    //console.log(document.cookie);
                    //console.log("SUCCESS!");
-                   window.location = "choosing.html";
+                   window.location = "choosing";
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    document.getElementById('errMsg').innerHTML = "La mail è già in uso.";
@@ -160,7 +151,7 @@ function signIn() {
                    d.setTime(d.getTime() + (24*60*60*1000));
                    let expires = "expires="+d.toUTCString();
                    document.cookie = "token="+data.token+"; "+expires+"; path=/";
-                   document.cookie = "email="+data.email+"; "+expires+"; path=/";
+                   document.cookie = "userID="+data.userID+"; "+expires+"; path=/";
                    let appInfo;
                    // TODO: testing
                    $.ajax({
@@ -174,9 +165,9 @@ function signIn() {
                        error: function (jqXHR, textStatus, errorThrown) {}
                    });
                    if (appInfo == "") {
-                       window.location = "choosing.html";
+                       window.location = "choosing";
                    } else {
-                       window.location = "/viewExpenses.html";
+                       window.location = "/viewExpenses";
                    }
                },
                error: function (jqXHR, textStatus, errorThrown) {
@@ -247,7 +238,7 @@ function viewExpenses() {
 
 // Wrapper function used for the setup of the page
 async function setUpExpensePage() {
-    await retriveUserInfo(getCookie("token"));
+    await retrieveUserInfo(getCookie("token"));
     viewExpenses();
 }
 
@@ -515,7 +506,7 @@ defaultName = "";       //valori di default se per caso la richiesta get dovesse
 defaultAddress = "";
 defaultRules = "";
 
-// Function used to retrive the current infos about the apartment
+// Function used to retrieve the current infos about the apartment
 function manageApartment() {
     $(function() {
         $.ajax({
@@ -566,7 +557,7 @@ function modifyApartment() {
             data: JSON.stringify(aptInfo),
             success: function(data, textStatus, jqXHR) {
                 console.log("SUCCESS in modifyApartment");
-                window.location = "viewApartment.html";
+                window.location = "viewApartment";
             },
             failure: function(jqXHR, textStatus, errorThrown) {
                 console.log("FAILURE in modifyApartment");
@@ -613,7 +604,7 @@ function sendInviteRequest() {
 // ======= INVITES CONFIRM =======
 
 function sendInviteRequest() {
-    const inviteCodeEl = document.getElementById("inviteCodeX");
+    const inviteCodeEl = document.getElementById("typeInviteCodeX");
     const errEl = document.getElementById("errMsg");
 
     console.log(inviteCodeEl.value)
@@ -635,7 +626,7 @@ function sendInviteRequest() {
                 console.log("SUCCESS in invites");
 
                 setTimeout(() => {
-                    //window.location = "/viewExpenses.html"
+                    //window.location = "/viewExpenses"
                 }, 2000);
             },
             error: function (jqXHR, textStatus, errorThrown) {

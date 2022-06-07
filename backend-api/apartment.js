@@ -24,12 +24,15 @@ const com = require("./common");
  *         type: object
  *         required:
  *         - userID
+ *         - email
  *         - first_name
  *         - last_name
  *         - color
  *         - role
  *         properties:
  *          userID:
+ *           type: string
+ *          email:
  *           type: string
  *          first_name:
  *           type: string
@@ -43,13 +46,15 @@ const com = require("./common");
  *        - userID: '6290ec70f...'
  *          first_name: 'John'
  *          last_name: 'Doe'
+ *          email: 'john.doe@test.com'
  *          color: '#ffffff'
  *          role: 'owner'
  *        - userID: '2df0a1f9a...'
  *          first_name: 'Alice'
  *          last_name: 'Smith'
+ *          email: 'alice.smith@test.com'
  *          color: '#a01eff'
-*          	role: 'user'
+ *          role: 'user'
  *    '401':
  *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
  *     content:
@@ -93,7 +98,7 @@ const com = require("./common");
 async function users (req, res) {
 	try {
 		const users = await apt.getUsers(req.user);		//il parametro user viene messo in authentication/verifyToken prima di passare a questa funzione
-		res.status(200).json(com.cleanObjectDataArray(users, ["userID", "first_name", "last_name", "color", "role"]));
+		res.status(200).json(com.cleanObjectDataArray(users, ["userID", "email", "first_name", "last_name", "color", "role"]));
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." });
 		console.log(err);

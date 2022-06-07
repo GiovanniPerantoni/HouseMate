@@ -38,6 +38,7 @@ const apt = require('../backend-db/apartment');
  *        type: object
  *        required:
  *        - token
+ *        - userID
  *        properties:
  *         token:
  *          type: string
@@ -94,7 +95,7 @@ async function login(req, res) {
 		if (user == null)
 			res.status(401).send({ "motivation": "Invalid credentials." });
 		else
-			res.status(200).json(com.cleanObjectData(user, ["token"]));
+			res.status(200).json(com.cleanObjectData(user, ["token", "userID"]));
 
 	} catch (err) {
 		res.status(500).send({ "motivation": "Unexpected error." })
@@ -189,7 +190,7 @@ async function signup(req, res) {
 			res.status(400).send({ "motivation": "Email already used." });
 		else
 		{
-			res.status(200).json(com.cleanObjectData(user, ["token"]));
+			res.status(200).json(com.cleanObjectData(user, ["token", "userID"]));
 		}
 
 	} catch (err) {

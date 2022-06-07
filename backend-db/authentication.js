@@ -54,9 +54,8 @@ async function createAccount(first_name, last_name, email, password) {
 		}
 	);
 	user.token = token;
-	await user.save();
 
-	return user;
+	return await User.findOne({email});
 }
 
 async function exists(user) {
