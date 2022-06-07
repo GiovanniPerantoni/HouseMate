@@ -20,7 +20,7 @@ async function accept(invite, user) {
 		if (decoded.users.some(id => id == user.userID)) {
             await apt.Apartment.updateOne(
                 { owners: decoded.owner.userID },
-                { $push: { users: user.userID } }
+                { $push: { users: user.userID, totals: {userID: user.userID, total: 0} } }
             );
             return true;
         }
