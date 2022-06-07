@@ -15,9 +15,6 @@ userSchema.virtual('userID').get(function(){ return this._id.toHexString(); });
 userSchema.set('toJSON', { virtuals: true });
 const User = mongoose.model("User", userSchema);
 
-
-
-
 async function login(email, password) {
 	const user = await User.findOne({email});	//cerco se trovo un utente con l'email datami
 	if (user && user.password == password) {	//controllo che l'hash della password sia corretto
@@ -62,6 +59,15 @@ async function createAccount(first_name, last_name, email, password) {
 	return user;
 }
 
+async function exists(user) {
+	return await User.findOne({ userID: user.userID });
+}
+
+async function getUserByEmail(email) {
+	const user = await User.findOne({ email: email });
+	return user;
+}
+
 //questa funzione viene chiamata per controllare che l'utente che manda una richiesta abbia i
 function verifyToken(req, res, next) {
 	const token = req.body.token || req.query.token || req.headers["x-access-token"];
@@ -78,4 +84,4 @@ function verifyToken(req, res, next) {
 	return next();
 }
 
-module.exports = { User, login, createAccount, verifyToken };
+module.exports = { User, login, createAccount, exists, verifyToken, getUserByEmail };

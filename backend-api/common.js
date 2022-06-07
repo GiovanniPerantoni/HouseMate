@@ -25,7 +25,17 @@ function checkParameterType(parameter, parameterType)
 		case "email":
 			return typeof parameter == "string" && emailPattern.test(String(parameter).toLowerCase());
 		case "mongooseObjectID":
-			return mongoose.isValidObjectId(parameter)
+			return mongoose.isValidObjectId(parameter);
+		case "array-email":
+			if (typeof parameter != "object") {
+				return false;
+			}
+			for (let i=0; i<parameter.length; i++) {
+				if ((typeof parameter[i] != "string") || (!emailPattern.test(String(parameter).toLowerCase()))) {
+					return false;
+				}
+			}
+			return true;
 		default:
 			throw "parameter type not implemented";
 	}

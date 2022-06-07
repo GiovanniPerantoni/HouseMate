@@ -14,7 +14,9 @@ const apartmentSchema = new mongoose.Schema({
 			userID: { type: mongoose.Schema.Types.ObjectId },
 			total: Number
 		}
-	]}
+	]},
+	invite: { type: String, default: null },
+	list: { type: [mongoose.Schema.Types.ObjectId], default: null }
 });
 const Apartment = mongoose.model("apartment", apartmentSchema);
 
@@ -41,6 +43,8 @@ async function getUsers(user) {
 	const users = await auth.User.find({
 		_id: { $in : apartment.users }
 	}).select("userID first_name last_name color");
+	for (let u = 0; u < users.length; u++)
+		users[u].role = (apartment.owners.includes(users[u].userID)) ? "owner" : "user";
 	return users;
 }
 
@@ -49,7 +53,6 @@ async function isOwner(user) {
 }
 
 
-//!!! funzionalità temporanea dello sprint 1 da cambiare con l'implementazione del sistema di inviti
 //se l'utente non fa parte di un appartamento viene creato, se invece ne fa parte ed è l'owner vigono modificate le info
 async function createOrUpdate(user, apartmentInfo) {
 	const apt = await getApartment(user);

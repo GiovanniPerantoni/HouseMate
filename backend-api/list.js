@@ -1,12 +1,12 @@
-const expenses = require("../backend-db/expenses");
+const list = require("../backend-db/list");
 const com = require("./common");
 
 /**
  * @swagger
- * /apartment/expenses/view:
+ * /apartment/list/view:
  *  get:
- *   summary: Get shared expenses
- *   description: 'This method is used to get the **shared expenses** of the users residing in the same apartment and the **total amount** of money spent by each.'
+ *   summary: Get the elements of the shopping list
+ *   description: 'This method is used to get the **entries of the shopping list** of the users residing in the same apartment.'
  *   parameters:
  *   - name: x-access-token
  *     in: header
@@ -21,49 +21,33 @@ const com = require("./common");
  *       schema:
  *        type: object
  *        properties:
- *         totals:
+ *         products:
  *          type: array
  *          items:
  *           type: object
  *           properties:
- *            userID:
+ *            productID:
  *             type: string
- *            total:
- *             type: number
- *         expenses:
- *          type: array
- *          items:
- *           type: object
- *           properties:
- *            userID:
+ *            product:
  *             type: string
- *            expenseID:
+ *            userID:
  *             type: string
  *            date:
  *             type: date
- *            price:
- *             type: number
- *            product:
- *             type: string
  *       example:
- *        totals:
- *         - userID: '6290ec70f...'
- *           total: 25
- *         - userID: '2df0a1f9a...'
- *           total: 50.5
- *        expenses:
- *         - userID: '6290ec70f...'
- *           expenseID: '13a0fd10a...'
- *           price: 25
- *           product: 'Small chair'
- *         - userID: '2df0a1f9a...'
- *           expenseID: '4e5dcba29...'
- *           price: 45
- *           product: 'Weekly groceries'
- *         - userID: '2df0a1f9a...'
- *           expenseID: '9fe1731ad...'
- *           price: 5.5
- *           product: 'Beverages'
+ *        products:
+ *         - itemID: '6290ec70f...'
+ *           product: 'Earl Grey tea'
+ *           userID: 'Jonathan'
+ *           date: '2022-01-01T12:00'
+ *         - itemID: '2df0a1f9a...'
+ *           product: 'Coca Cola'
+ *           userID: 'Joseph'
+ *           date: '2022-01-01T12:00'
+ *         - itemID: '3cdf90d8a...'
+ *           product: 'Matcha Tea'
+ *           userID: 'Jotaro'
+ *           date: '2022-01-01T12:00'
  *    '400':
  *      description: >-
  *       This response is sent if the limit is not valid or if the body parameters are of the **wrong type**.
@@ -118,43 +102,42 @@ const com = require("./common");
  *       example:
  *        motivation: 'Unexpected error.'
  */
-async function view (req, res) {
-	try {
-		var { limit } = req.body;
-		if (!limit)
-			limit = 20;
-		
-		if(!com.checkOptionalParameters(res, [limit], ["int"]))
-			return;
-		if (limit < 1) {
-			res.status(400).send({ "motivation": "Invalid limit." });
-			return;
-		}
+async function view(req, res) {
+    try {
+        var { limit } = req.body;
+        if (!limit) {
+            limit = 20;
+        }
+        if(!com.checkOptionalParameters(res, [limit], ["int"])) {
+            return;
+        }
+        if (limit < 1) {
+            com.returnErrorMessage(res, 400, "Invalid limit.");
+            return;
+        }
 
-		const exps = await expenses.getExpenses(req.user, limit);
+        const shoppingList = await list.getProducts(req.user, limit);
+        
+        products = [];
+        for (let i=0; i<shoppingList.length; i++) {
+            products.push(com.cleanObjectData(shoppingList[i], ["productID", "product", "userID", "date"]));
+        }
 
-		let toRet = {
-			"totals": [],
-			"expenses": []
-		};
-		for (let i = 0; i < exps.expenses.length; i++)
-			toRet.expenses.push(com.cleanObjectData(exps.expenses[i], ["expenseID", "date", "userID", "price", "product"]));
-		for (let i = 0; i < exps.totals.length; i++)
-			toRet.totals.push(com.cleanObjectData(exps.totals[i], ["userID", "total"]));
+        res.status(200).json({ "products" : products});
+        
+    } catch (err) {
 
-		res.status(200).json(toRet);
-	} catch (err) {
-		res.status(500).send({ "motivation": "Unexpected error." });
-		console.log(err);
-	}
+        com.returnErrorMessage(res, 500, "Unexpected error");
+        console.log(err);
+    }
 }
 
 /**
  * @swagger
- * /apartment/expenses/add:
+ * /apartment/list/add:
  *  post:
- *   summary: Add a new expense
- *   description: 'This method is used to add **shared expenses**'
+ *   summary: Add a new element to the shopping list
+ *   description: 'This method is used to add a **new element** to the shopping list'
  *   parameters:
  *   - name: x-access-token
  *     in: header
@@ -166,147 +149,22 @@ async function view (req, res) {
  *      application/json:
  *       schema:
  *        required:
- *        - date
- *        - price
  *        - product
+ *        - date
  *        properties:
- *         date:
- *          type: date
- *         price:
- *          type: number
  *         product:
- *           type: string
+ *          type: string
+ *         date:
+ *           type: date
  *       example:
+ *        product: 'Mozzarella'
  *        date: '2022-01-01T12:00'
- *        price: 10
- *        product: 'Hamburger'
  *   responses:
  *    '200':
  *      description: 'Everything went smoothly.'
  *    '400':
  *      description: >-
- *       This response is sent if the price is negative, if the user doesn't reside in an apartment or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
- *      content:
- *       application/json:
- *        schema:
- *         type: object
- *         required:
- *         - motivation
- *         properties:
- *          motivation:
- *           type: string
- *        example:
- *         motivation: 'Invalid price.'
- *    '401':
- *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *        - motivation
- *        properties:
- *         motivation:
- *          type: string
- *       example:
- *        motivation: 'Invalid or expired token.'
- *    '403':
- *     description: 'This response is sent if no authentication `token` is provided.'
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *        - motivation
- *        properties:
- *         motivation:
- *          type: string
- *       example:
- *        motivation: 'A token is required for authentication.'
- *    '500':
- *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *        - motivation
- *        properties:
- *         motivation:
- *          type: string
- *       example:
- *        motivation: 'Unexpected error.'
- */
-async function add (req, res) {
-	try {
-		const { product, date, price } = req.body;
-
-		if(!com.checkObligatoryParameters(res, [product, date, price], ["string", "date", "float"]))
-			return;
-		if (price <= 0) {
-			res.status(400).send({ "motivation": "Invalid price." });
-			return;
-		}
-
-		const exp = await expenses.createExpense(req.user,
-			{
-				userID: req.user.userID,
-				product: product,
-				date: date,
-				price: price
-			}
-		);
-
-		if (exp == null)
-			res.status(400).send({ "motivation": "Couldn't add expense." });
-		else
-			res.status(200).send();
-	} catch (err) {
-		res.status(500).send({ "motivation": "Unexpected error." });
-		console.log(err);
-	}
-}
-
-
-/**
- * @swagger
- * /apartment/expenses/modify:
- *  patch:
- *   summary: Modify an expense
- *   description: >-
- *    This method is used to change one of the **shared expenses** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
- *   parameters:
- *   - name: x-access-token
- *     in: header
- *     description: Authentication token required for access.
- *     required: true
- *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
- *   requestBody:
- *     content:
- *      application/json:
- *       schema:
- *        required:
- *        - expenseID
- *        properties:
- *         expenseID:
- *          type: string
- *         date:
- *          type: date
- *         price:
- *          type: number
- *         product:
- *           type: string
- *       example:
- *        expenseID: '4e5dcba29...'
- *        date: '2022-01-02T13:45'
- *        price: 5
- *        product: 'Table spoons'
- *   responses:
- *    '200':
- *      description: 'Everything went smoothly.'
- *    '400':
- *      description: >-
- *       This response is sent if the price is negative, if the expense either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *       This response is sent when the user doesn't reside in an apartment or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
  *      content:
  *       application/json:
  *        schema:
@@ -318,7 +176,7 @@ async function add (req, res) {
  *           type: string
  *        example:
  *         motivation: >-
- *          Can't access expense.
+ *          Couldn't add list element.
  *    '401':
  *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
  *     content:
@@ -359,43 +217,41 @@ async function add (req, res) {
  *       example:
  *        motivation: 'Unexpected error.'
  */
-async function modify (req, res) {
-	try {
-		const { expenseID, product, date, price } = req.body;
-		if(!com.checkObligatoryParameters(res, [expenseID], ["mongooseObjectID"]))
-			return;
-		if(!com.checkOptionalParameters(res, [product, date, price], ["string", "date", "float"]))
-			return;
-		if (price <= 0) {
-			res.status(400).send({ "motivation": "Invalid price." });
-			return;
-		}
+async function add(req, res) {
+    try {
+        const { product, date } = req.body;
 
-		//genero un oggetto con solo i parametri passati
-		const expense = { _id: expenseID };
-		if (product) expense.product = product;
-		if (date) expense.date = date;
-		if (price) expense.price = price;
+        if(!com.checkObligatoryParameters(res, [product, date], ["string", "date"])) {
+            return;
+        }
 
+        const exp = await list.createProduct(req.user,
+            {
+                userID: req.user.userID,
+                product: product,
+                date: date
+            }
+        );
 
-		const result = await expenses.modifyExpense(req.user, expense)
-		if (!result)
-			res.status(400).send({ "motivation": "Can't access expense." });
-		else
-			res.status(200).send();
-	} catch (err) {
-		res.status(500).send({ "motivation": "Unexpected error." });
-		console.log(err);
-	}
+        if (exp == null) {
+            com.returnErrorMessage(res, 400, "Couldn't add list element.");
+        } else {
+            res.status(200).send();
+        }
+
+    } catch (err) {
+        com.returnErrorMessage(res, 500, "Unexpected error");
+        console.log(err);
+    }
 }
 
 /**
  * @swagger
- * /apartment/expenses/delete:
+ * /apartment/list/modify:
  *  patch:
- *   summary: Delete an expense
+ *   summary: Modify an entry of the shopping list
  *   description: >-
- *    This method is used to delete one of the **shared expenses** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
+ *    This method is used to change one of the **entries of the shopping list** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
  *   parameters:
  *   - name: x-access-token
  *     in: header
@@ -407,12 +263,21 @@ async function modify (req, res) {
  *      application/json:
  *       schema:
  *        required:
- *        - expenseID
+ *        - productID
  *        properties:
- *         expenseID:
+ *         productID:
  *          type: string
+ *         product:
+ *          type: string
+ *         userID:
+ *          type: string
+ *         lastBougth:
+ *          type: date
  *       example:
- *        expenseID: '4e5dcba29...'
+ *        productID: '4e5dcba29...'
+ *        product: 'Pasta'
+ *        userID: 'Polnareff'
+ *        date: '2022-01-02T13:45'
  *   responses:
  *    '200':
  *      description: 'Everything went smoothly.'
@@ -430,7 +295,7 @@ async function modify (req, res) {
  *           type: string
  *        example:
  *         motivation: >-
- *          Can't access expense.
+ *          Can't access list element.
  *    '401':
  *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
  *     content:
@@ -471,21 +336,134 @@ async function modify (req, res) {
  *       example:
  *        motivation: 'Unexpected error.'
  */
-async function _delete (req, res) {
-	try {
-		const { expenseID } = req.body;
-		if(!com.checkObligatoryParameters(res, [expenseID], ["mongooseObjectID"]))
-			return;
+async function modify(req, res) {
+    try {
+        const { productID, product, userID, date } = req.body;
+        // tipo productID
+        if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
+            return;
+        }
+        if(!com.checkOptionalParameters(res, [product, userID, date], ["string", "string", "date"])) {
+            return;
+        }
+        // controllo last bougth
 
-		const result = await expenses.deleteExpense(req.user, { _id: expenseID });
-		if (!result)
-			res.status(400).send({ "motivation": "Can't access expense." });
-		else
-			res.status(200).send();
-	} catch (err) {
-		res.status(500).send({ "motivation": "Unexpected error." });
-		console.log(err);
-	}
+        const listElem = { _id: productID };
+        if (product) { listElem.product = product; }
+        if (date) { listElem.date = date; }
+        if (userID) { listElem.userID = userID; }
+
+        const result = await list.modifyProduct(req.user, listElem);
+        if (!result) {
+            com.returnErrorMessage(res, 400, "Can't access list element");
+        } else {
+            res.status(200).send();
+        }
+    } catch (err) {
+        com.returnErrorMessage(res, 500, "Unexpected error");
+        console.log(err);
+    }
 }
 
-module.exports = { view, add, modify, _delete };
+/**
+ * @swagger
+ * /apartment/list/delete:
+ *  patch:
+ *   summary: Delete an entry of the shopping list
+ *   description: >-
+ *    This method is used to delete one of the **entries of the shpping list** which either has to belong to the current user if the user isn't the owner or doesn't have to, if the user is the owner.
+ *   parameters:
+ *   - name: x-access-token
+ *     in: header
+ *     description: Authentication token required for access.
+ *     required: true
+ *     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6I...'
+ *   requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        required:
+ *        - ProductID
+ *        properties:
+ *         ProductID:
+ *          type: string
+ *       example:
+ *        ProductID: '4e5dcba29...'
+ *   responses:
+ *    '200':
+ *      description: 'Everything went smoothly.'
+ *    '400':
+ *      description: >-
+ *       This response is sent if the shopping list element either doesn't exist or isn't modifiable by the user, or when the body parameters are of the **wrong type** or if any body parameter is **missing**.
+ *      content:
+ *       application/json:
+ *        schema:
+ *         type: object
+ *         required:
+ *         - motivation
+ *         properties:
+ *          motivation:
+ *           type: string
+ *        example:
+ *         motivation: >-
+ *          Can't access list element.
+ *    '401':
+ *     description: 'This response is sent if the provided authentication `token` is invalid or expired.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Invalid or expired token.'
+ *    '403':
+ *     description: 'This response is sent if no authentication `token` is provided.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'A token is required for authentication.'
+ *    '500':
+ *     description: 'This response is sent if some **unexpected internal error** occurs during execution.'
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *        - motivation
+ *        properties:
+ *         motivation:
+ *          type: string
+ *       example:
+ *        motivation: 'Unexpected error.'
+ */
+async function _delete(req, res) {
+    try {
+        const { productID } = req.body;
+        if(!com.checkObligatoryParameters(res, [productID], ["mongooseObjectID"])) {
+            return;
+        }
+
+        const result = await list.deleteProduct(req.user, { _id: productID });
+        if (!result) {
+            com.returnErrorMessage(res, 400, "Can't access list element.");
+        } else {
+            res.status(200).send();
+        }
+    } catch (err) {
+        com.returnErrorMessage(res, 500, "Unexpected error.");
+        console.log(err);
+    }
+}
+
+module.exports = {view, add, modify, _delete}

@@ -47,11 +47,11 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="sxNavbar">
                         <!-- Spese -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link active" aria-current="page" href="viewExpenses.html">Spese</a>
+                            <a class="nav-link" aria-current="page" href="viewExpenses.html">Spese</a>
                         </li>
                         <!-- Lista -->
                         <li class="nav-item mx-2">
-                            <a class="nav-link" href="viewList.html">Lista</a>
+                            <a class="nav-link active" href="viewList.html">Lista</a>
                         </li>
                         <!-- inviti -->
                     </ul>
@@ -79,30 +79,10 @@
         <div class="p-5 text-left gradient-custom">
 
             <script>
-                setUpExpensePage();
+                setUpListPage();
             </script>
 
-            <!-- Contributi -->
-            <section class="vh-200">
-                <div class="container py-5 h-100">
-                    <div class="row d-flex justify-content-left align-items-left h-100">
-                        <div class="col">
-                            <div class="card bg-dark text-white" id="list1" style="border-radius: .75rem;">
-                                <div class="card-body py-4 px-4 px-md-5">
-
-                                        <h1 class="mb-3 text-white">Contributi:</h1>
-
-                                        <div id="contribuenti"></div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-
-            <!-- Storico -->
+            <!-- Lista -->
             <section class="vh-200">
                 <div class="container py-5 h-100">
                     <div class="row d-flex justify-content-left align-items-left h-100">
@@ -110,26 +90,23 @@
                             <div class="card bg-dark text-white" id="list1" style="border-radius: .75rem;">
                                 <div class="card-body py-4 px-4 px-md-5">
                                     
-                                    <h1 class="mb-3 text-white">Storico:</h1>
+                                    <h1 class="mb-3 text-white">Lista della spesa:</h1>
 
-                                    <!-- Aggiunta Spesa -->
+                                    <!-- Aggiunta Item -->
                                     <div class="pb-2">
                                         <div class="card">
                                             <div class="card-body bg-secondary">
                                                 <div class="d-flex flex-row align-items-center">
                                                     <!-- Prodotto -->
                                                     <input type="text" class="form-control form-control-lg" id="typeProductX"
-                                                      placeholder="Aggiungi una nuova spesa...">
-                                                    <!-- Prezzo -->
-                                                    <div class="col-sx-2 mx-4">
-                                                        <input type="number" class="form-control form-control-lg" id="typePriceX"
-                                                          placeholder="Prezzo...">
-                                                    </div>
+                                                      placeholder="Aggiungi un nuovo prodotto...">
+                                                    <!-- Data -->
+                                                    <input type="date" class="form-control form-control-lg" id="typeDateX" placeholder="Date...">                                          
                                                     <div>
                                                         <button type="button" class="btn btn-dark mx-1" id="addBtn">Aggiungi</button>
                                                         <script>
                                                             var btn = document.getElementById("addBtn");
-                                                            btn.addEventListener("click", addExpense);
+                                                            btn.addEventListener("click", addProduct);
                                                         </script>
                                                     </div>
                                                 </div>
@@ -139,8 +116,7 @@
 
                                     <hr class="my-4">
                                    
-                                    <!-- Lista Spese -->
-                                    <div id="expensesList"></div>
+                                    <div id="productList"></div>
  
                                 </div>
                             </div>
@@ -151,13 +127,13 @@
 
         </div>
 
-        <!-- Modal per editare le spese -->
-        <div class="modal" id="editExpense">
+        <!-- Modal per editare i prodotti -->
+        <div class="modal" id="editProduct">
             <div class="modal-dialog">
                 <div class="modal-content bg-dark text-white">
                     <!-- Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title">Modifica Spesa</h4>
+                        <h4 class="modal-title">Modifica Prodotto</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -170,12 +146,12 @@
                                 <input type="text" class="form-control" id="modifyProductX" placeholder="Prodotto...">
                             </div>
                             <div class="form-group">
-                                <label for="modifyPriceX">Prezzo</label>
-                                <input type="number" class="form-control" id="modifyPriceX" placeholder="Prezzo...">
-                            </div>
-                            <div class="form-group">
                                 <label for="modifyDateX">Data</label>
                                 <input type="date" class="form-control" id="modifyDateX" placeholder="Date...">
+                            </div>
+                            <div class="form-group">
+                                <label for="modifyUserX">User</label>
+                                <select type="select" class="form-control" id="modifyUserX"></select>
                             </div>
                         </form>
                     </div>
@@ -186,13 +162,13 @@
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="deleteBtn">Elimina</button>
                         <script>
                             var btn = document.getElementById("deleteBtn");
-                            btn.addEventListener('click', deleteExpense);
+                            btn.addEventListener('click', deleteProduct);
                         </script>
 
                         <button type="button" class="btn btn-info" data-bs-dismiss="modal" id="modifyBtn">Salva</button>
                         <script>
                             var btn = document.getElementById("modifyBtn");
-                            btn.addEventListener('click', modifyExpense);
+                            btn.addEventListener('click', modifyProduct);
                         </script>
 
                     </div>
